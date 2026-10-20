@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0E0D0C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Semi">
+<title>Semi ሰሚ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Noto+Sans+Ethiopic:wght@400;600&family=Noto+Serif+Ethiopic:wght@600;700&display=swap">
+<style>
+/* Layout: full-height snap-scroll video feed, right-hand control rail, bottom tab bar; reading happens in a bottom sheet. */
+:root{
+  --ink:#0E0D0C; --panel:#1B1916; --raise:#262320; --line:#38332D;
+  --text:#F4EEE4; --muted:#A99F92;
+  --accent:#E3A33C;   /* mesob-fiber ochre */
+  --berbere:#C9472F;
+  --good:#6FB37A;
+  --ui:"Bricolage Grotesque",ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --fidel:"Noto Sans Ethiopic","Abyssinica SIL","Nyala",ui-sans-serif,sans-serif;
+  --fidel-d:"Noto Serif Ethiopic","Noto Sans Ethiopic","Abyssinica SIL",serif;
+  --navH:58px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ink);color:var(--text);font:15px/1.45 var(--ui);overflow:hidden;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+a{color:var(--accent)}
+[lang=am],.am{font-family:var(--fidel)}
+[hidden]{display:none!important}
+
+.app{position:fixed;inset:0;display:flex;flex-direction:column}
+.view{flex:1;min-height:0;position:relative}
+
+/* ---------- Feed ---------- */
+#feed{height:100%;overflow-y:auto;overflow-anchor:none;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none}
+#feed::-webkit-scrollbar{display:none}
+.card{height:var(--feedH,100%);scroll-snap-align:start;scroll-snap-stop:always;position:relative;overflow:hidden;background:#000}
+.stage{position:absolute;inset:0;display:grid;place-items:center}
+.thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:.9;transition:opacity .3s}
+.card.short .thumb{object-fit:cover}
+.host{position:absolute;inset:0}
+.host iframe{width:100%;height:100%;border:0;display:block}
+.card.live .thumb{opacity:0}
+.tap{position:absolute;inset:0;z-index:2}
+.paused-badge{position:absolute;z-index:3;width:72px;height:72px;border-radius:50%;background:rgba(14,13,12,.6);display:none;place-items:center;pointer-events:none}
+.card.paused .paused-badge{display:grid}
+.ear{position:absolute;inset:0;z-index:2;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(circle at 50% 45%,#2a211a,var(--ink) 70%);color:var(--accent);pointer-events:none;text-align:center;padding-inline:max(24px,env(safe-area-inset-left,0px))}
+.ear svg{width:64px;height:64px}
+.ear span{font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:12px}
+.ear small{color:var(--muted);max-width:30ch}
+.earMode .card .ear{display:flex}
+
+.topbar{position:absolute;top:0;left:0;right:0;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 10px) max(16px,env(safe-area-inset-right,0px)) 18px max(16px,env(safe-area-inset-left,0px));background:linear-gradient(rgba(14,13,12,.75),transparent);pointer-events:none}
+.brand{font:700 26px/1 var(--fidel-d);color:var(--text);display:flex;align-items:baseline;gap:8px}
+.brand small{font:600 11px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.seg{pointer-events:auto;display:flex;background:rgba(27,25,22,.8);border:1px solid var(--line);border-radius:999px;padding:3px;backdrop-filter:blur(8px)}
+.seg button{padding:6px 12px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--text);color:var(--ink)}
+
+.info{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:56px calc(max(16px,env(safe-area-inset-right,0px)) + 66px) 22px max(16px,env(safe-area-inset-left,0px));background:linear-gradient(transparent,rgba(14,13,12,.92) 55%);pointer-events:none}
+.meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px;font-size:12px;color:var(--muted)}
+.tag{padding:3px 8px;border-radius:6px;background:rgba(244,238,228,.12);color:var(--text);font-weight:600}
+.tag.cc{background:var(--accent);color:var(--ink)}
+.dur{font-variant-numeric:tabular-nums}
+.ttl{margin:0;font:600 19px/1.35 var(--fidel);text-wrap:balance;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ch{margin:6px 0 0;font-size:13px;color:var(--muted)}
+.prog{position:absolute;left:0;right:0;bottom:0;height:3px;z-index:5;background:rgba(244,238,228,.15)}
+.prog i{display:block;height:100%;width:0;background:var(--accent)}
+
+.rail{position:absolute;z-index:5;right:max(10px,env(safe-area-inset-right,0px));bottom:110px;display:flex;flex-direction:column;gap:14px;align-items:center}
+.rail button{width:50px;min-height:50px;border-radius:16px;background:rgba(27,25,22,.72);border:1px solid rgba(244,238,228,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;backdrop-filter:blur(8px)}
+.rail button svg{width:22px;height:22px}
+.rail button span{font-size:10px;font-weight:600;color:var(--muted)}
+.rail button span[lang=am]{font-size:11px}
+.rail button b{font-size:14px;font-variant-numeric:tabular-nums}
+.rail button[aria-pressed=true]{background:var(--accent);color:var(--ink);border-color:var(--accent)}
+.rail button[aria-pressed=true] span{color:var(--ink)}
+.rail .read{background:var(--berbere);border-color:var(--berbere)}
+.rail .read span{color:#fff}
+
+.endcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding-inline:max(24px,env(safe-area-inset-left,0px));background:var(--ink)}
+.endcard p{color:var(--muted);max-width:32ch;margin:0}
+.spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:12px;background:var(--text);color:var(--ink);font-weight:700;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.small{padding:8px 12px;font-size:13px;border-radius:10px}
+
+/* ---------- Pages (Words, Setup) ---------- */
+.page{height:100%;overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 20px) max(16px,env(safe-area-inset-right,0px)) 28px max(16px,env(safe-area-inset-left,0px))}
+.page .inner{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.page h1{margin:0;font:800 30px/1.1 var(--ui);display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.page h1 span{font:700 22px var(--fidel-d);color:var(--accent)}
+.page h2{margin:0 0 10px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.lede{margin:0;color:var(--muted)}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+label.f{display:block;font-weight:600;margin-bottom:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input[type=text],input[type=password],textarea{width:100%;background:var(--ink);border:1px solid var(--line);border-radius:10px;color:var(--text);font:15px var(--ui);padding:11px 12px}
+textarea{font-family:var(--fidel),var(--ui);min-height:84px;resize:vertical}
+.row input{flex:1;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--ink);font-weight:600;font-size:14px;display:inline-flex;gap:6px;align-items:baseline}
+.chip span{font-family:var(--fidel);font-size:13px;color:var(--muted)}
+.chip[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.chip[aria-pressed=true] span{color:var(--ink)}
+ol.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;color:var(--text)}
+ol.steps li::marker{color:var(--accent);font-weight:700}
+.note{font-size:13px;color:var(--muted);margin:10px 0 0}
+.toggle{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:4px 0}
+.switch{width:46px;height:28px;border-radius:999px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--text);transition:transform .2s}
+.switch[aria-checked=true]{background:var(--accent)}
+.switch[aria-checked=true]::after{transform:translateX(18px)}
+.msg{font-size:13px;margin-top:8px;min-height:1em}
+.msg.err{color:#F08A75}.msg.ok{color:var(--good)}
+
+/* Words */
+.wlist{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.witem{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
+.witem .fw{font:600 22px var(--fidel)}
+.witem .tr{color:var(--accent);font-size:14px}
+.witem .src{grid-column:1/-1;font-size:12px;color:var(--muted);font-family:var(--fidel);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.witem .acts{display:flex;gap:6px;grid-row:1/3;grid-column:2}
+.iconbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);text-decoration:none}
+.iconbtn svg{width:18px;height:18px}
+.empty{color:var(--muted);text-align:center;padding:30px 10px}
+.flash{text-align:center;padding:28px 16px;display:flex;flex-direction:column;gap:14px;align-items:center}
+.flash .big{font:700 48px/1.2 var(--fidel-d)}
+.flash .ans{min-height:3.2em;color:var(--accent)}
+.flash .ans small{display:block;color:var(--muted);font-family:var(--fidel);margin-top:4px}
+
+/* ---------- Bottom nav ---------- */
+nav.tabs{flex:none;display:grid;grid-template-columns:repeat(3,1fr);background:var(--panel);border-top:1px solid var(--line);padding:0 max(8px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(8px,env(safe-area-inset-left,0px))}
+nav.tabs button{height:var(--navH);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:600;color:var(--muted)}
+nav.tabs button svg{width:22px;height:22px}
+nav.tabs button[aria-current=page]{color:var(--accent)}
+.count{font-variant-numeric:tabular-nums}
+
+/* ---------- Reading sheet ---------- */
+.scrim{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:640px;max-height:88%;background:var(--panel);border-radius:22px 22px 0 0;border-top:1px solid var(--line);display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
+.sheet-head b{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.sheet-body{overflow-y:auto;padding:16px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:22px}
+.sheet h3{margin:0 0 10px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.fidel-title{font:600 24px/1.5 var(--fidel-d);margin:0}
+.fidel-text{font:16px/1.9 var(--fidel);margin:0;white-space:pre-line;overflow-wrap:anywhere}
+.roman{margin:8px 0 0;color:var(--accent);font-size:14px;line-height:1.6;white-space:pre-line;overflow-wrap:anywhere}
+.w{font:inherit;border-radius:5px;padding:0 1px;transition:background .15s}
+.w:hover{background:rgba(227,163,60,.18)}
+.w.on{background:var(--accent);color:var(--ink)}
+.w.saved{text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:4px}
+.wordbar{position:sticky;bottom:0;background:var(--raise);border-top:1px solid var(--line);padding:12px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.wordbar .wb{flex:1;min-width:140px}
+.wordbar .wb b{display:block;font:700 24px var(--fidel-d)}
+.wordbar .wb span{color:var(--accent);font-size:14px}
+.prompts{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.prompts li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start}
+.prompts li b{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);background:var(--accent);border-radius:6px;padding:3px 7px;margin-top:2px}
+.prompts li span{min-width:0}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#feed{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <section class="view" id="v-feed">
+    <div class="topbar">
+      <div class="brand">ሰሚ <small>Semi</small></div>
+      <div class="seg" role="group" aria-label="Video length">
+        <button data-format="shorts">Shorts</button>
+        <button data-format="mix">Mix</button>
+        <button data-format="long">Long</button>
+      </div>
+    </div>
+    <div id="feed">
+      <div class="card endcard" id="endcard">
+        <div class="spinner" id="spin"></div>
+        <p id="status">Finding Amharic videos…</p>
+        <button class="btn ghost small" id="moreBtn" hidden>Try again</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-words" hidden>
+    <div class="page"><div class="inner">
+      <h1>Words <span>ቃላት</span></h1>
+      <p class="lede">Words you tapped in videos. Review them a few at a time.</p>
+      <div class="box" id="review" hidden></div>
+      <div class="row"><button class="btn" id="reviewBtn">Review words</button></div>
+      <div class="wlist" id="wlist"></div>
+    </div></div>
+  </section>
+
+  <section class="view" id="v-setup" hidden>
+    <div class="page"><div class="inner">
+      <h1>Setup <span>ማስተካከያ</span></h1>
+
+      <div class="box">
+        <label class="f" for="keyIn">YouTube API key</label>
+        <div class="row">
+          <input type="password" id="keyIn" autocomplete="off" spellcheck="false" placeholder="Paste your key">
+          <button class="btn small" id="keySave">Save</button>
+        </div>
+        <div class="msg" id="keyMsg"></div>
+        <p class="note">Kept only on this device. It lets the app search YouTube for you.</p>
+      </div>
+
+      <div>
+        <h2>What to watch</h2>
+        <div class="chips" id="topicChips"></div>
+      </div>
+
+      <div class="box">
+        <div class="toggle"><span>Amharic captions when the video has them</span><button class="switch" role="switch" id="ccSw" aria-label="Amharic captions"></button></div>
+        <div class="toggle"><span>Clear watched history</span><button class="btn ghost small" id="clearSeen">Clear</button></div>
+      </div>
+
+      <details class="box" id="howto">
+        <summary><b>How to get a free API key</b></summary>
+        <ol class="steps" style="margin-top:12px">
+          <li>Open <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">console.cloud.google.com</a> and create a project.</li>
+          <li>Go to APIs &amp; Services → Library, search <b>YouTube Data API v3</b>, and enable it.</li>
+          <li>Go to APIs &amp; Services → Credentials → Create credentials → <b>API key</b>.</li>
+          <li>Restrict it: set Websites to this app's address, and limit it to YouTube Data API v3.</li>
+          <li>Paste it above.</li>
+        </ol>
+        <p class="note">The free daily quota covers roughly 90 feed refills, about 1,500 videos a day.</p>
+      </details>
+    </div></div>
+  </section>
+
+  <nav class="tabs" aria-label="Sections">
+    <button data-view="feed" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2.5" width="14" height="19" rx="3"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg>Feed</button>
+    <button data-view="words"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h11a3 3 0 0 1 3 3v12H7a3 3 0 0 1-3-3z"/><path d="M8 10h6M8 14h4"/></svg><span>Words <span class="count" id="wcount"></span></span></button>
+    <button data-view="setup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>Setup</button>
+  </nav>
+</div>
+
+<div class="scrim" id="scrim" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Read and practice">
+    <div class="sheet-head">
+      <b>Read &amp; practice</b>
+      <div class="row">
+        <button class="btn ghost small" id="romanBtn" aria-pressed="false">Romanized</button>
+        <button class="btn small" id="closeSheet">Done</button>
+      </div>
+    </div>
+    <div class="sheet-body" id="sheetBody"></div>
+    <div class="wordbar" id="wordbar" hidden>
+      <div class="wb"><b id="wbW" lang="am"></b><span id="wbT"></span></div>
+      <a class="btn ghost small" id="wbTr" target="_blank" rel="noopener">Translate ↗</a>
+      <button class="btn small" id="wbSave">Save word</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= storage ================= */
+const LS={
+  get(k,d){try{const v=localStorage.getItem('semi:'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem('semi:'+k,JSON.stringify(v))}catch(e){}}
+};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ETH=/[ሀ-፿]/;
+const ethCount=s=>(String(s).match(/[ሀ-፿]/g)||[]).length;
+
+/* ================= topics ================= */
+const TOPICS={
+  fashion:{label:'Fashion',am:'ፋሽን',q:['ፋሽን','የሀበሻ ልብስ','ሀበሻ ቀሚስ ዲዛይን','የፋሽን ትርዒት']},
+  making: {label:'Making', am:'ሥራ',  q:['ልብስ ስፌት','እንጨት ስራ','እደ ጥበብ','ሽመና','የቆዳ ስራ']},
+  soccer: {label:'Soccer', am:'እግር ኳስ',q:['እግር ኳስ','ኢትዮጵያ ፕሪምየር ሊግ','የእግር ኳስ ዜና','ፕሪምየር ሊግ ትንታኔ']},
+  food:   {label:'Food',   am:'ምግብ', q:['ምግብ አሰራር','የኢትዮጵያ ምግብ','ቀላል የምግብ አሰራር','የጎዳና ምግብ']},
+  comedy: {label:'Comedy', am:'ቀልድ', q:['አስቂኝ ቪዲዮ','ኮሜዲ','ቀልድ','አስቂኝ ድራማ']},
+  vlog:   {label:'Vlogs',  am:'ቭሎግ', q:['ቭሎግ','የአዲስ አበባ ቭሎግ','የእለት ተእለት ኑሮ']},
+  music:  {label:'Music',  am:'ሙዚቃ', q:['አዲስ ሙዚቃ','ባህላዊ ሙዚቃ']},
+};
+const DEFAULT_TOPICS=['fashion','making','soccer','food','comedy'];
+// Skip videos that teach Amharic; you want native content.
+const TEACHING=/learn\s*amharic|amharic\s*(lesson|class|for beginners|alphabet|phrases|words)|how to (say|speak)|speak amharic|ትምህርት|lesson/i;
+const EXCLUDE=' -learn -lesson -ትምህርት';
+
+/* ================= state ================= */
+const S={
+  key:LS.get('key',''),
+  topics:LS.get('topics',DEFAULT_TOPICS),
+  format:LS.get('format','shorts'),
+  speed:LS.get('speed',1),
+  cc:LS.get('cc',true),
+  seen:new Set(LS.get('seen',[])),
+  words:LS.get('words',[]),
+  notes:LS.get('notes',{}),
+  soundOn:false
+};
+const cursors={};       // per search query: {token, order, done}
+let feed=[];            // loaded videos
+const inFeed=new Set();
+let loading=false, failStreak=0;
+
+/* ================= Fidel → Latin ================= */
+const ROWS={0x1200:'h',0x1208:'l',0x1210:'h',0x1218:'m',0x1220:'s',0x1228:'r',0x1230:'s',0x1238:'sh',0x1240:'q',0x1250:'q',0x1260:'b',0x1268:'v',0x1270:'t',0x1278:'ch',0x1280:'h',0x1290:'n',0x1298:'ny',0x12A0:'',0x12A8:'k',0x12B8:'h',0x12C8:'w',0x12D0:'',0x12D8:'z',0x12E0:'zh',0x12E8:'y',0x12F0:'d',0x12F8:'d',0x1300:'j',0x1308:'g',0x1318:'g',0x1320:"t'",0x1328:"ch'",0x1330:"p'",0x1338:"ts'",0x1340:"ts'",0x1348:'f',0x1350:'p'};
+const LAB={0x1248:'q',0x1288:'h',0x12B0:'k',0x12C0:'h',0x1310:'g'};
+const VOW=['e','u','i','a','ē','ə','o','wa'];
+const PUNCT={0x1361:' ',0x1362:'.',0x1363:',',0x1364:';',0x1365:':',0x1366:':',0x1367:'?',0x1368:'¶'};
+function translit(str){
+  const ch=[...String(str)];let out='';
+  for(let i=0;i<ch.length;i++){
+    const c=ch[i].codePointAt(0);
+    if(PUNCT[c]!==undefined){out+=PUNCT[c];continue}
+    if(c<0x1200||c>0x135A){out+=ch[i];continue}
+    if(c===0x12A7){out+='e';continue}
+    const base=c-(c%8),ord=c%8;
+    if(LAB[base]!==undefined){
+      const v=['we','','wi','wa','wē','wi','',''][ord];
+      out+=v?LAB[base]+v:ch[i];continue;
+    }
+    if(ROWS[base]===undefined){out+=ch[i];continue}
+    const cons=ROWS[base];let v=VOW[ord];
+    if(ord===5){
+      const n=ch[i+1]?ch[i+1].codePointAt(0):0;
+      const nextIsSyllable=n>=0x1200&&n<=0x135A;
+      v=cons===''?'i':(nextIsSyllable?'i':'');
+    }
+    if(cons===''&&ord===0)v='a';
+    out+=cons+v;
+  }
+  return out;
+}
+window.translit=translit;
+
+/* ================= YouTube Data API ================= */
+async function yt(path,params){
+  const u=new URL('https://www.googleapis.com/youtube/v3/'+path);
+  for(const [k,v] of Object.entries({...params,key:S.key}))u.searchParams.set(k,v);
+  let r;
+  try{r=await fetch(u.toString())}
+  catch(e){throw new Error(location.protocol==='file:'||!/^https?:$/.test(location.protocol)
+    ?'This preview can\'t reach YouTube. Open the app from its web address instead.'
+    :'Couldn\'t reach YouTube. Check your connection, or open the app from its hosted web address.')}
+  let j={};
+  try{j=await r.json()}catch(e){}
+  if(!r.ok){
+    const reason=j?.error?.errors?.[0]?.reason||'';
+    if(reason==='quotaExceeded')throw new Error('Today\'s YouTube quota is used up. It resets at midnight Pacific time.');
+    if(r.status===400&&/key/i.test(j?.error?.message||''))throw new Error('That API key was rejected. Check it in Setup.');
+    if(r.status===403)throw new Error('YouTube refused the request. Make sure YouTube Data API v3 is enabled for this key and this site is allowed.');
+    throw new Error(j?.error?.message||('YouTube error '+r.status));
+  }
+  return j;
+}
+function parseDur(iso){const m=/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(iso||'');if(!m)return 0;return (+m[1]||0)*3600+(+m[2]||0)*60+(+m[3]||0)}
+const fmt=s=>{const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=String(s%60).padStart(2,'0');return h?`${h}:${String(m).padStart(2,'0')}:${x}`:`${m}:${x}`};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function plan(){
+  const active=S.topics.length?S.topics:DEFAULT_TOPICS;
+  const picks=shuffle([...active]).slice(0,2);
+  return picks.map(topic=>{
+    const dur=S.format==='shorts'?'short':S.format==='long'?'medium':pick(['short','short','medium']);
+    const open=TOPICS[topic].q.filter(q=>!cursors[topic+'|'+q+'|'+dur]?.done);
+    return {topic,q:pick(open.length?open:TOPICS[topic].q),dur};
+  });
+}
+
+async function fetchBatch(){
+  const found=[];
+  for(const {topic,q,dur} of plan()){
+    const ck=topic+'|'+q+'|'+dur;
+    const c=cursors[ck]||(cursors[ck]={order:pick(['date','relevance','viewCount'])});
+    if(c.done)continue;
+    const p={part:'snippet',type:'video',q:q+EXCLUDE,maxResults:25,relevanceLanguage:'am',safeSearch:'moderate',videoEmbeddable:'true',videoDuration:dur,order:c.order};
+    if(c.order==='date'||c.order==='viewCount')p.publishedAfter=new Date(Date.now()-365*864e5).toISOString();
+    if(c.token)p.pageToken=c.token;
+    const res=await yt('search',p);
+    c.token=res.nextPageToken;if(!c.token)c.done=true;
+    for(const it of res.items||[]){const id=it.id?.videoId;if(id)found.push({id,topic})}
+  }
+  const fresh=[...new Map(found.filter(f=>!S.seen.has(f.id)&&!inFeed.has(f.id)).map(f=>[f.id,f])).values()];
+  if(!fresh.length)return [];
+  const det=await yt('videos',{part:'snippet,contentDetails',id:fresh.map(f=>f.id).slice(0,50).join(',')});
+  const topicOf=Object.fromEntries(fresh.map(f=>[f.id,f.topic]));
+  const out=[];
+  for(const v of det.items||[]){
+    const sn=v.snippet||{},cd=v.contentDetails||{};
+    const dur=parseDur(cd.duration);
+    if(!dur||sn.liveBroadcastContent==='live'||sn.liveBroadcastContent==='upcoming')continue;
+    const text=(sn.title||'')+' '+(sn.description||'');
+    if(ethCount(sn.title)<3&&ethCount(text)<12)continue;   // must actually be in Fidel
+    if(TEACHING.test(text))continue;
+    if(S.format==='shorts'&&dur>180)continue;
+    if(S.format==='long'&&dur<=180)continue;
+    const th=sn.thumbnails||{};
+    out.push({id:v.id,topic:topicOf[v.id],title:sn.title||'',desc:sn.description||'',channel:sn.channelTitle||'',dur,cc:cd.caption==='true',
+      thumb:(th.maxres||th.high||th.medium||th.default||{}).url||''});
+  }
+  return shuffle(out);
+}
+
+/* ================= feed ================= */
+const feedEl=$('#feed'),endEl=$('#endcard');
+function setStatus(text,{spin=false,retry=false}={}){$('#status').textContent=text;$('#spin').hidden=!spin;$('#moreBtn').hidden=!retry}
+
+async function loadMore(){
+  if(loading)return;
+  if(!S.key){setStatus('Add your YouTube API key in Setup to start your feed.',{retry:false});return}
+  loading=true;setStatus('Finding Amharic videos…',{spin:true});
+  try{
+    let got=[];
+    for(let tries=0;tries<3&&got.length<4;tries++)got=got.concat(await fetchBatch());
+    if(got.length){failStreak=0;append(got);setStatus('Scroll for more videos')}
+    else{failStreak++;setStatus(failStreak>2?'No new videos for these topics right now. Add more topics in Setup or switch length.':'Nothing new in that batch.',{retry:true})}
+  }catch(e){setStatus(e.message||'Something went wrong loading videos.',{retry:true})}
+  finally{loading=false}
+}
+
+function cardHTML(v,i){
+  const t=TOPICS[v.topic]||{label:'',am:''};
+  return `<article class="card ${v.dur<=180?'short':'wide'}" data-i="${i}">
+  <div class="stage">
+    <img class="thumb" src="${esc(v.thumb)}" alt="" loading="lazy">
+    <div class="host"></div>
+    <div class="ear">${ICON.ear}<span>Listening only</span><small>Tap Read when you want to see the words.</small></div>
+    <button class="tap" aria-label="Play or pause"></button>
+    <div class="paused-badge">${ICON.play}</div>
+  </div>
+  <div class="info">
+    <div class="meta"><span class="tag">${esc(t.label)} · <span lang="am">${esc(t.am)}</span></span>${v.cc?'<span class="tag cc">CC</span>':''}<span class="dur">${fmt(v.dur)}</span></div>
+    <h2 class="ttl" lang="am">${esc(v.title)}</h2>
+    <p class="ch">${esc(v.channel)}</p>
+  </div>
+  <div class="rail">
+    <button data-act="sound" aria-label="Sound">${ICON.mute}</button>
+    <button data-act="back" aria-label="Back 5 seconds">${ICON.back}<span>5s</span></button>
+    <button data-act="speed" aria-label="Playback speed"><b class="spd">${S.speed}×</b><span>speed</span></button>
+    <button data-act="ear" aria-label="Listen only" aria-pressed="${feedEl.classList.contains('earMode')}">${ICON.ear}<span>listen</span></button>
+    <button data-act="read" class="read" aria-label="Read and practice">${ICON.read}<span lang="am">አንብብ</span></button>
+  </div>
+  <div class="prog"><i></i></div>
+</article>`;
+}
+function append(list){
+  const wasEmpty=!feed.length;
+  const frag=document.createElement('template');
+  frag.innerHTML=list.map(v=>{const i=feed.length;feed.push(v);inFeed.add(v.id);return cardHTML(v,i)}).join('');
+  [...frag.content.children].forEach(el=>{feedEl.insertBefore(el,endEl);io.observe(el)});
+  // Snap scrolling keeps the end card in view when cards are added above it, so jump to the first video.
+  if(wasEmpty)requestAnimationFrame(()=>{feedEl.scrollTop=0;const first=feedEl.querySelector('.card[data-i="0"]');if(first)activate(first)});
+}
+function resetFeed(){
+  destroyPlayer();feed=[];inFeed.clear();failStreak=0;
+  feedEl.querySelectorAll('.card:not(.endcard)').forEach(c=>c.remove());
+  feedEl.scrollTop=0;loadMore();
+}
+function sizeCards(){document.documentElement.style.setProperty('--feedH',feedEl.clientHeight+'px')}
+addEventListener('resize',sizeCards);
+
+const io=new IntersectionObserver(es=>{
+  for(const e of es)if(e.isIntersecting&&e.intersectionRatio>=.6)activate(e.target);
+},{root:feedEl,threshold:[.6]});
+const endIO=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting))loadMore()},{root:feedEl,rootMargin:'0px 0px 200% 0px'});
+endIO.observe(endEl);
+
+function markSeen(id){S.seen.add(id);const arr=[...S.seen].slice(-3000);LS.set('seen',arr)}
+
+/* ================= player ================= */
+let player=null,activeCard=null,progTimer=null;
+const ytReady=new Promise(res=>{window.onYouTubeIframeAPIReady=res});
+(function(){const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.append(s)})();
+
+function destroyPlayer(){
+  clearInterval(progTimer);
+  if(player){try{player.destroy()}catch(e){}player=null}
+  if(activeCard){activeCard.classList.remove('live','paused');activeCard.querySelector('.host').innerHTML=''}
+  activeCard=null;
+}
+async function activate(card){
+  if(card===activeCard||card===endEl||$('#v-feed').hidden)return;
+  destroyPlayer();activeCard=card;
+  const v=feed[+card.dataset.i];markSeen(v.id);
+  if(+card.dataset.i>=feed.length-3)loadMore();
+  await ytReady;if(activeCard!==card)return;
+  const mount=document.createElement('div');card.querySelector('.host').append(mount);
+  player=new YT.Player(mount,{
+    videoId:v.id,host:'https://www.youtube-nocookie.com',width:'100%',height:'100%',
+    playerVars:{autoplay:1,mute:S.soundOn?0:1,playsinline:1,controls:0,rel:0,modestbranding:1,iv_load_policy:3,
+      cc_load_policy:S.cc?1:0,cc_lang_pref:'am',loop:1,playlist:v.id,origin:location.origin},
+    events:{
+      onReady:e=>{
+        const p=e.target;try{p.setPlaybackRate(S.speed)}catch(x){}
+        if(S.soundOn)p.unMute();p.playVideo();
+        card.classList.add('live');syncSound();
+        // If the browser blocked playback with sound, fall back to muted.
+        setTimeout(()=>{if(player===p&&p.getPlayerState&&p.getPlayerState()!==1&&!p.isMuted()){p.mute();p.playVideo();syncSound()}},1600);
+      },
+      onStateChange:e=>{card.classList.toggle('paused',e.data===2)}
+    }
+  });
+  progTimer=setInterval(()=>{
+    if(!player||!player.getDuration)return;
+    const d=player.getDuration()||v.dur,t=player.getCurrentTime()||0;
+    card.querySelector('.prog i').style.width=Math.min(100,t/d*100)+'%';
+  },250);
+}
+function syncSound(){
+  if(!activeCard)return;const b=activeCard.querySelector('[data-act=sound]');
+  const muted=!player||!player.isMuted||player.isMuted();
+  b.innerHTML=muted?ICON.mute:ICON.sound;b.setAttribute('aria-pressed',String(!muted));
+}
+
+feedEl.addEventListener('click',e=>{
+  const card=e.target.closest('.card');if(!card||card===endEl)return;
+  if(card!==activeCard){activate(card);return}
+  if(e.target.closest('.tap')){
+    if(!player?.getPlayerState)return;
+    player.getPlayerState()===1?player.pauseVideo():player.playVideo();return;
+  }
+  const act=e.target.closest('[data-act]')?.dataset.act;if(!act)return;
+  if(act==='sound'&&player){
+    if(player.isMuted()){player.unMute();player.playVideo();S.soundOn=true}else{player.mute();S.soundOn=false}
+    setTimeout(syncSound,60);
+  }
+  if(act==='back'&&player)player.seekTo(Math.max(0,player.getCurrentTime()-5),true);
+  if(act==='speed'){
+    const steps=[0.5,0.75,1,1.25];S.speed=steps[(steps.indexOf(S.speed)+1)%steps.length];LS.set('speed',S.speed);
+    try{player&&player.setPlaybackRate(S.speed)}catch(x){}
+    feedEl.querySelectorAll('.spd').forEach(s=>s.textContent=S.speed+'×');
+  }
+  if(act==='ear'){
+    const on=feedEl.classList.toggle('earMode');
+    feedEl.querySelectorAll('[data-act=ear]').forEach(b=>b.setAttribute('aria-pressed',String(on)));
+  }
+  if(act==='read')openSheet(feed[+card.dataset.i]);
+});
+$('#moreBtn').addEventListener('click',()=>{failStreak=0;loadMore()});
+
+/* format switch */
+function syncFormat(){document.querySelectorAll('[data-format]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.format===S.format)))}
+document.querySelectorAll('[data-format]').forEach(b=>b.addEventListener('click',()=>{
+  if(S.format===b.dataset.format)return;S.format=b.dataset.format;LS.set('format',S.format);syncFormat();resetFeed();
+}));
+
+/* ================= reading sheet ================= */
+let sheetVideo=null,selWord=null;
+function wordify(text){
+  return String(text).split(/([ሀ-ፚ]+)/).map((seg,i)=>{
+    if(i%2===0)return esc(seg);
+    const saved=S.words.some(w=>w.w===seg);
+    return `<button class="w${saved?' saved':''}" data-w="${esc(seg)}">${seg}</button>`;
+  }).join('');
+}
+function cleanDesc(d){
+  return String(d).replace(/https?:\/\/\S+/g,'').replace(/^.*(subscribe|ሰብስክራይብ|follow us|instagram|tiktok|facebook|telegram).*$/gim,'')
+    .replace(/\n{3,}/g,'\n\n').trim().slice(0,900);
+}
+function openSheet(v){
+  sheetVideo=v;selWord=null;$('#wordbar').hidden=true;
+  try{player&&player.pauseVideo()}catch(e){}
+  const desc=cleanDesc(v.desc);
+  const note=S.notes[v.id]||'';
+  $('#sheetBody').innerHTML=`
+    <section>
+      <h3>Title</h3>
+      <p class="fidel-title" lang="am">${wordify(v.title)}</p>
+      <p class="roman" data-roman hidden>${esc(translit(v.title))}</p>
+    </section>
+    ${ETH.test(desc)?`<section>
+      <h3>Description</h3>
+      <p class="fidel-text" lang="am">${wordify(desc)}</p>
+      <p class="roman" data-roman hidden>${esc(translit(desc))}</p>
+    </section>`:''}
+    <section>
+      <h3>Practice</h3>
+      <ul class="prompts">
+        <li><b>Listen</b><span>Go back to the first 20 seconds at 0.75× and replay it three times. Write down every word you catch.</span></li>
+        <li><b>Speak</b><span>Read the title out loud, then turn on Romanized to check yourself.</span></li>
+        <li><b>Write</b><span>One or two sentences in Amharic about what happened in the video.</span></li>
+      </ul>
+      <label class="f" for="noteIn" style="margin-top:14px">Your writing</label>
+      <textarea id="noteIn" lang="am" placeholder="ይህ ቪዲዮ ስለ…">${esc(note)}</textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn small" id="copyNote">Copy for my tutor</button>
+        <a class="btn ghost small" href="https://www.youtube.com/watch?v=${esc(v.id)}" target="_blank" rel="noopener">Open on YouTube ↗</a>
+      </div>
+      <div class="msg" id="copyMsg"></div>
+    </section>`;
+  syncRoman();
+  $('#scrim').hidden=false;
+}
+function closeSheet(){$('#scrim').hidden=true;try{player&&player.playVideo()}catch(e){}}
+$('#closeSheet').addEventListener('click',closeSheet);
+$('#scrim').addEventListener('click',e=>{if(e.target.id==='scrim')closeSheet()});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#scrim').hidden)closeSheet()});
+let roman=LS.get('roman',false);
+function syncRoman(){$('#romanBtn').setAttribute('aria-pressed',String(roman));document.querySelectorAll('[data-roman]').forEach(p=>p.hidden=!roman)}
+$('#romanBtn').addEventListener('click',()=>{roman=!roman;LS.set('roman',roman);syncRoman()});
+
+$('#sheetBody').addEventListener('click',async e=>{
+  const w=e.target.closest('.w');
+  if(w){
+    document.querySelectorAll('.w.on').forEach(x=>x.classList.remove('on'));w.classList.add('on');
+    selWord=w.dataset.w;
+    $('#wbW').textContent=selWord;$('#wbT').textContent=translit(selWord);
+    $('#wbTr').href='https://translate.google.com/?sl=am&tl=en&op=translate&text='+encodeURIComponent(selWord);
+    const saved=S.words.some(x=>x.w===selWord);$('#wbSave').textContent=saved?'Saved':'Save word';
+    $('#wordbar').hidden=false;return;
+  }
+  if(e.target.id==='copyNote'){
+    const v=sheetVideo,text=`${v.title}\nhttps://www.youtube.com/watch?v=${v.id}\n\nMy writing:\n${$('#noteIn').value}`;
+    try{await navigator.clipboard.writeText(text);$('#copyMsg').className='msg ok';$('#copyMsg').textContent='Copied. Paste it to your tutor or to Claude for corrections.'}
+    catch(x){$('#noteIn').select();$('#copyMsg').className='msg';$('#copyMsg').textContent='Copy didn\'t work here. Your text is selected, so copy it manually.'}
+  }
+});
+$('#sheetBody').addEventListener('input',e=>{if(e.target.id==='noteIn'&&sheetVideo){S.notes[sheetVideo.id]=e.target.value;LS.set('notes',S.notes)}});
+$('#wbSave').addEventListener('click',()=>{
+  if(!selWord||S.words.some(x=>x.w===selWord))return;
+  S.words.unshift({w:selWord,tr:translit(selWord),src:sheetVideo.title,id:sheetVideo.id,box:0,t:Date.now()});
+  LS.set('words',S.words);$('#wbSave').textContent='Saved';
+  document.querySelectorAll(`.w[data-w="${CSS.escape(selWord)}"]`).forEach(x=>x.classList.add('saved'));
+  renderWords();
+});
+
+/* ================= words ================= */
+function renderWords(){
+  $('#wcount').textContent=S.words.length?`(${S.words.length})`:'';
+  $('#reviewBtn').hidden=!S.words.length;
+  $('#wlist').innerHTML=S.words.length?S.words.map((w,i)=>`
+    <div class="witem">
+      <div><div class="fw" lang="am">${esc(w.w)}</div><div class="tr">${esc(w.tr)}</div></div>
+      <div class="acts">
+        <a class="iconbtn" href="https://translate.google.com/?sl=am&tl=en&op=translate&text=${encodeURIComponent(w.w)}" target="_blank" rel="noopener" aria-label="Translate ${esc(w.w)}">${ICON.ext}</a>
+        <button class="iconbtn" data-del="${i}" aria-label="Remove ${esc(w.w)}">${ICON.x}</button>
+      </div>
+      <div class="src">from ${esc(w.src)}</div>
+    </div>`).join(''):`<p class="empty">No words yet. In the feed, tap <b>አንብብ</b>, then tap any word to save it.</p>`;
+}
+$('#wlist').addEventListener('click',e=>{
+  const d=e.target.closest('[data-del]');if(!d)return;
+  S.words.splice(+d.dataset.del,1);LS.set('words',S.words);renderWords();
+});
+let deck=[],cur=null;
+function nextCard(){
+  cur=deck.shift();
+  if(!cur){$('#review').innerHTML=`<div class="flash"><p class="lede">Round done. Watch a few more videos and come back.</p><button class="btn ghost small" id="endReview">Close</button></div>`;return}
+  $('#review').innerHTML=`<div class="flash">
+    <div class="big" lang="am">${esc(cur.w)}</div>
+    <div class="ans" id="ans"></div>
+    <div class="row" id="flashBtns"><button class="btn" id="showAns">Show</button></div>
+    <p class="note">${deck.length} left</p></div>`;
+}
+$('#reviewBtn').addEventListener('click',()=>{
+  deck=[...S.words].sort((a,b)=>(a.box-b.box)||(a.t-b.t)).slice(0,10);
+  $('#review').hidden=false;nextCard();
+});
+$('#review').addEventListener('click',e=>{
+  if(e.target.id==='showAns'){
+    $('#ans').innerHTML=`${esc(cur.tr)}<small>${esc(cur.src)}</small>`;
+    $('#flashBtns').innerHTML=`<button class="btn ghost" id="again">Again</button><button class="btn" id="knew">Knew it</button>`;
+  }
+  if(e.target.id==='again'||e.target.id==='knew'){
+    const w=S.words.find(x=>x.w===cur.w);
+    if(w){w.box=e.target.id==='knew'?(w.box||0)+1:0;w.t=Date.now();LS.set('words',S.words)}
+    if(e.target.id==='again')deck.push(cur);
+    nextCard();
+  }
+  if(e.target.id==='endReview')$('#review').hidden=true;
+});
+
+/* ================= setup ================= */
+function renderTopics(){
+  $('#topicChips').innerHTML=Object.entries(TOPICS).map(([k,t])=>
+    `<button class="chip" data-topic="${k}" aria-pressed="${S.topics.includes(k)}">${t.label}<span>${t.am}</span></button>`).join('');
+}
+let topicsDirty=false;
+$('#topicChips').addEventListener('click',e=>{
+  const b=e.target.closest('[data-topic]');if(!b)return;
+  const k=b.dataset.topic,on=S.topics.includes(k);
+  if(on&&S.topics.length===1)return;
+  S.topics=on?S.topics.filter(x=>x!==k):[...S.topics,k];LS.set('topics',S.topics);
+  b.setAttribute('aria-pressed',String(!on));topicsDirty=true;
+});
+$('#keyIn').value=S.key;
+$('#keySave').addEventListener('click',async()=>{
+  const k=$('#keyIn').value.trim(),m=$('#keyMsg');
+  if(!k){m.className='msg err';m.textContent='Paste a key first.';return}
+  m.className='msg';m.textContent='Checking…';
+  const old=S.key;S.key=k;
+  try{
+    await yt('videos',{part:'id',id:'jNQXAC9IVRw'});
+    LS.set('key',k);m.className='msg ok';m.textContent='Key works. Your feed is ready.';
+    if(!old||old!==k)topicsDirty=true;
+  }catch(err){S.key=old;m.className='msg err';m.textContent=err.message}
+});
+function syncCC(){$('#ccSw').setAttribute('aria-checked',String(S.cc))}
+$('#ccSw').addEventListener('click',()=>{S.cc=!S.cc;LS.set('cc',S.cc);syncCC()});
+$('#clearSeen').addEventListener('click',e=>{S.seen.clear();LS.set('seen',[]);e.target.textContent='Cleared'});
+
+/* ================= tabs ================= */
+function show(view){
+  ['feed','words','setup'].forEach(v=>$('#v-'+v).hidden=v!==view);
+  document.querySelectorAll('nav.tabs button').forEach(b=>{
+    if(b.dataset.view===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
+  });
+  if(view==='feed'){
+    sizeCards();
+    if(topicsDirty){topicsDirty=false;resetFeed()}
+    else if(!feed.length)loadMore();
+    else{
+      const i=Math.round(feedEl.scrollTop/Math.max(1,feedEl.clientHeight));
+      const c=feedEl.querySelector(`.card[data-i="${i}"]`);if(c)activate(c);
+    }
+  }else{
+    destroyPlayer();
+    if(view==='words')renderWords();
+    if(view==='setup')$('#keyMsg').textContent='';
+  }
+}
+document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view)));
+
+/* ================= icons ================= */
+const sv=(d,extra='')=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ${extra}>${d}</svg>`;
+const ICON={
+  mute:sv('<path d="M11 5L6 9H3v6h3l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/>'),
+  sound:sv('<path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>'),
+  back:sv('<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>'),
+  ear:sv('<path d="M6 8.5a6 6 0 0 1 12 0c0 3-2 4-3 5.5s-1 3-2.5 4.5A3 3 0 0 1 7.5 17"/><path d="M10 9a2 2 0 1 1 4 .5c-.3 1-1.5 1.5-1.5 2.5"/>'),
+  read:sv('<path d="M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2z"/><path d="M22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z"/>'),
+  play:sv('<path d="M8 5l11 7-11 7z" fill="currentColor"/>','width="34" height="34"'),
+  ext:sv('<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'),
+  x:sv('<path d="M6 6l12 12M18 6L6 18"/>')
+};
+
+/* ================= boot ================= */
+syncFormat();syncCC();renderTopics();renderWords();sizeCards();
+if(!S.key){show('setup');$('#howto').open=true;setStatus('Add your YouTube API key in Setup to start your feed.')}
+else loadMore();
+</script>
+</body>
+</html>
