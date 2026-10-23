@@ -8,6 +8,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Semi">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-512.png">
 <title>Semi ሰሚ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,15 +41,16 @@ a{color:var(--accent)}
 .view{flex:1;min-height:0;position:relative}
 
 /* ---------- Feed ---------- */
-#feed{height:100%;overflow-y:auto;overflow-anchor:none;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none}
+#feed{position:relative;height:100%;overflow-y:auto;overflow-anchor:none;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none}
 #feed::-webkit-scrollbar{display:none}
 .card{height:var(--feedH,100%);scroll-snap-align:start;scroll-snap-stop:always;position:relative;overflow:hidden;background:#000}
 .stage{position:absolute;inset:0;display:grid;place-items:center}
 .thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:.9;transition:opacity .3s}
 .card.short .thumb{object-fit:cover}
-.host{position:absolute;inset:0}
-.host iframe{width:100%;height:100%;border:0;display:block}
-.card.live .thumb{opacity:0}
+/* The single shared player floats above the cards (z 1) but under their buttons (z 2+). */
+#playerHost{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .15s}
+#playerHost.on{opacity:1}
+#playerHost iframe{width:100%;height:100%;border:0;display:block}
 .tap{position:absolute;inset:0;z-index:2}
 .paused-badge{position:absolute;z-index:3;width:72px;height:72px;border-radius:50%;background:rgba(14,13,12,.6);display:none;place-items:center;pointer-events:none}
 .card.paused .paused-badge{display:grid}
@@ -223,6 +226,7 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
         <button class="btn ghost small" id="moreBtn" hidden>Try again</button>
       </div>
     </div>
+    <div id="playerHost"></div>
   </section>
 
   <section class="view" id="v-saved" hidden>
@@ -495,7 +499,6 @@ function cardHTML(v,i){
   return `<article class="card ${v.dur<=180?'short':'wide'}" data-i="${i}" data-ch="${esc(v.channelId||'')}">
   <div class="stage">
     <img class="thumb" src="${esc(v.thumb)}" alt="" loading="lazy">
-    <div class="host"></div>
     <div class="ear">${ICON.ear}<span>Listening only</span><small>Tap Read when you want to see the words.</small></div>
     <button class="tap" aria-label="Play or pause"></button>
     <div class="paused-badge">${ICON.play}</div>
@@ -530,7 +533,7 @@ function append(list){
   if(wasEmpty)requestAnimationFrame(()=>{feedEl.scrollTop=0;const first=feedEl.querySelector('.card[data-i="0"]');if(first)activate(first)});
 }
 function resetFeed(){
-  destroyPlayer();feed=[];inFeed.clear();failStreak=0;
+  stopPlayback();feed=[];inFeed.clear();failStreak=0;
   feedEl.querySelectorAll('.card:not(.endcard)').forEach(c=>c.remove());
   feedEl.scrollTop=0;loadMore();
 }
@@ -570,7 +573,8 @@ function applySubs(p,card,announce){
     // The track list only appears once the captions module loads (onApiChange calls back here).
     // If it never does, the video has no captions.
     try{p.loadModule('captions')}catch(e){}
-    subsCheck=setTimeout(()=>{if(player===p&&S.subs!=='off'&&!captionTracks(p).length)subNote(card,'No captions on this video')},4000);
+    const vid=curId;
+    subsCheck=setTimeout(()=>{if(activeCard===card&&curId===vid&&S.subs!=='off'&&!captionTracks(p).length)subNote(card,'No captions on this video')},4000);
     return;
   }
   const am=tracks.find(t=>/^am/i.test(t.languageCode));
@@ -596,38 +600,68 @@ function cycleSubs(){
   if(player&&activeCard)applySubs(player,activeCard,true);
 }
 
-function destroyPlayer(){
+/* One YouTube player for the whole session. iPhones only allow sound after you tap,
+   and that permission belongs to a single player, so each video is loaded into the
+   same player instead of a new one per card. The player sits above the feed and is
+   shown only while the active card is snapped into place. */
+let playerReady=null,curId=null,playingId=null;
+const hostEl=$('#playerHost');
+const vidOf=p=>{try{return p.getVideoData().video_id}catch(e){return null}};
+const aligned=()=>!!activeCard&&Math.abs(activeCard.offsetTop-feedEl.scrollTop)<4;
+function syncPlayerVisible(){hostEl.classList.toggle('on',aligned()&&playingId===curId)}
+feedEl.addEventListener('scroll',syncPlayerVisible,{passive:true});
+
+function makePlayer(id){
+  return new Promise(res=>{
+    const mount=document.createElement('div');hostEl.append(mount);
+    player=new YT.Player(mount,{
+      videoId:id,host:'https://www.youtube-nocookie.com',width:'100%',height:'100%',
+      playerVars:{autoplay:1,mute:S.soundOn?0:1,playsinline:1,controls:0,rel:0,modestbranding:1,iv_load_policy:3,
+        cc_load_policy:S.subs==='off'?0:1,cc_lang_pref:S.subs==='en'?'en':'am',origin:location.origin},
+      events:{
+        onReady:e=>res(e.target),
+        onStateChange:onPlayerState,
+        onApiChange:()=>{if(activeCard&&player._subs!==S.subs&&captionTracks(player).length)applySubs(player,activeCard,false)}
+      }
+    });
+  });
+}
+function onPlayerState(e){
+  const s=e.data;
+  if(s===0){player.seekTo(0,true);player.playVideo();return}   // loop the video
+  if(activeCard)activeCard.classList.toggle('paused',s===2);
+  if(s===1&&vidOf(player)===curId){
+    playingId=curId;syncPlayerVisible();
+    if(player._subsFor!==curId){player._subsFor=curId;player._subs=null;applySubs(player,activeCard,false)}
+  }
+}
+function stopPlayback(){
   clearInterval(progTimer);clearTimeout(subsCheck);
-  if(player){try{player.destroy()}catch(e){}player=null}
-  if(activeCard){activeCard.classList.remove('live','paused');activeCard.querySelector('.host').innerHTML=''}
-  activeCard=null;
+  try{player&&player.pauseVideo&&player.pauseVideo()}catch(e){}
+  if(activeCard)activeCard.classList.remove('paused');
+  activeCard=null;syncPlayerVisible();
 }
 async function activate(card){
   if(card===activeCard||card===endEl||$('#v-feed').hidden)return;
-  destroyPlayer();activeCard=card;
-  const v=feed[+card.dataset.i];markSeen(v.id);
+  stopPlayback();activeCard=card;
+  const v=feed[+card.dataset.i];markSeen(v.id);curId=v.id;
   if(+card.dataset.i>=feed.length-3)loadMore();
+  syncSound();
   await ytReady;if(activeCard!==card)return;
-  const mount=document.createElement('div');card.querySelector('.host').append(mount);
-  player=new YT.Player(mount,{
-    videoId:v.id,host:'https://www.youtube-nocookie.com',width:'100%',height:'100%',
-    playerVars:{autoplay:1,mute:S.soundOn?0:1,playsinline:1,controls:0,rel:0,modestbranding:1,iv_load_policy:3,
-      cc_load_policy:S.subs==='off'?0:1,cc_lang_pref:S.subs==='en'?'en':'am',loop:1,playlist:v.id,origin:location.origin},
-    events:{
-      onReady:e=>{
-        const p=e.target;try{p.setPlaybackRate(S.speed)}catch(x){}
-        if(S.soundOn)p.unMute();p.playVideo();
-        card.classList.add('live');syncSound();applySubs(p,card,false);
-        // If the browser blocked playback with sound, fall back to muted.
-        setTimeout(()=>{if(player===p&&p.getPlayerState&&p.getPlayerState()!==1&&!p.isMuted()){p.mute();p.playVideo();syncSound()}},1600);
-      },
-      onStateChange:e=>{card.classList.toggle('paused',e.data===2)},
-      onApiChange:e=>{const p=e.target;if(player===p&&p._subs!==S.subs&&captionTracks(p).length)applySubs(p,card,false)}
-    }
-  });
+  const first=!playerReady;
+  if(first)playerReady=makePlayer(v.id);
+  const p=await playerReady;if(activeCard!==card)return;
+  if(!first){if(vidOf(p)===v.id)p.playVideo();else p.loadVideoById(v.id)}
+  try{p.setPlaybackRate(S.speed)}catch(x){}
+  if(S.soundOn)p.unMute();
+  p.playVideo();
+  // If the phone blocked playback with sound, play muted instead.
+  setTimeout(()=>{if(activeCard===card&&![1,3].includes(p.getPlayerState())&&!p.isMuted()){p.mute();p.playVideo()}},1600);
   progTimer=setInterval(()=>{
-    if(!player||!player.getDuration)return;
-    const d=player.getDuration()||v.dur,t=player.getCurrentTime()||0;
+    if(activeCard!==card)return;
+    syncSound();   // reflects the real sound state, even if the phone muted it
+    if(vidOf(p)!==v.id)return;
+    const d=p.getDuration()||v.dur,t=p.getCurrentTime()||0;
     card.querySelector('.prog i').style.width=Math.min(100,t/d*100)+'%';
     // Ask how much you understood once you've watched most of a short, or a good chunk of a longer video.
     if(d<=75?t>=d*.85:t>=Math.min(d*.6,180))askRating(card,v);
@@ -636,6 +670,7 @@ async function activate(card){
 function syncSound(){
   if(!activeCard)return;const b=activeCard.querySelector('[data-act=sound]');
   const muted=!player||!player.isMuted||player.isMuted();
+  if(b._muted===muted)return;b._muted=muted;
   b.innerHTML=muted?ICON.mute:ICON.sound;b.setAttribute('aria-pressed',String(!muted));
 }
 
@@ -943,7 +978,7 @@ function show(view){
       const c=feedEl.querySelector(`.card[data-i="${i}"]`);if(c)activate(c);
     }
   }else{
-    destroyPlayer();
+    stopPlayback();
     if(view==='words')renderWords();
     if(view==='saved')renderLib();
     if(view==='setup')$('#keyMsg').textContent='';
