@@ -74,8 +74,8 @@ a{color:var(--accent)}
 .prog{position:absolute;left:0;right:0;bottom:0;height:3px;z-index:5;background:rgba(244,238,228,.15)}
 .prog i{display:block;height:100%;width:0;background:var(--accent)}
 
-.rail{position:absolute;z-index:5;right:max(10px,env(safe-area-inset-right,0px));bottom:110px;display:flex;flex-direction:column;gap:14px;align-items:center}
-.rail button{width:50px;min-height:50px;border-radius:16px;background:rgba(27,25,22,.72);border:1px solid rgba(244,238,228,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;backdrop-filter:blur(8px)}
+.rail{position:absolute;z-index:5;right:max(10px,env(safe-area-inset-right,0px));bottom:110px;display:flex;flex-direction:column;gap:clamp(6px,1.4vh,12px);align-items:center}
+.rail button{width:clamp(40px,6vh,50px);min-height:clamp(40px,6vh,50px);border-radius:16px;background:rgba(27,25,22,.72);border:1px solid rgba(244,238,228,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;backdrop-filter:blur(8px)}
 .rail button svg{width:22px;height:22px}
 .rail button span{font-size:10px;font-weight:600;color:var(--muted)}
 .rail button span[lang=am]{font-size:11px}
@@ -83,6 +83,25 @@ a{color:var(--accent)}
 .rail button[aria-pressed=true]{background:var(--accent);color:var(--ink);border-color:var(--accent)}
 .rail button[aria-pressed=true] span{color:var(--ink)}
 .rail .read{background:var(--berbere);border-color:var(--berbere)}
+.subnote{position:absolute;z-index:6;left:50%;top:calc(80px + env(safe-area-inset-top,0px));transform:translateX(-50%);max-width:80%;padding:7px 12px;border-radius:10px;background:rgba(27,25,22,.88);font-size:13px;font-weight:600;text-align:center;pointer-events:none;opacity:0;transition:opacity .25s}
+.subnote.on{opacity:1}
+@media (max-height:760px){.rail button span:not(.subl){display:none}}
+.rail button[aria-pressed=true] svg.fill{fill:currentColor}
+.rail button.like[aria-pressed=true]{background:var(--berbere);border-color:var(--berbere);color:#fff}
+
+/* Follow pill and understanding rating (inside .info, which ignores taps by default) */
+.ch{display:flex;align-items:center;gap:10px;min-width:0}
+.ch .chn{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.follow{pointer-events:auto;flex:none;padding:4px 11px;border-radius:999px;border:1px solid var(--text);color:var(--text);font-size:12px;font-weight:700}
+.follow[aria-pressed=true]{border-color:var(--line);color:var(--muted)}
+.rate{pointer-events:auto;margin-top:12px;background:rgba(27,25,22,.92);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.rate p{margin:0 0 8px;font-size:13px;font-weight:600}
+.rate .opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.rate button{padding:7px 2px;border-radius:10px;background:var(--raise);font-size:12px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:1px}
+.rate button span{font:11px var(--fidel);color:var(--muted)}
+.rate button[aria-pressed=true]{background:var(--accent);color:var(--ink)}
+.rate button[aria-pressed=true] span{color:var(--ink)}
+.tag.got{background:rgba(111,179,122,.22);color:var(--good)}
 .rail .read span{color:#fff}
 
 .endcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding-inline:max(24px,env(safe-area-inset-left,0px));background:var(--ink)}
@@ -132,13 +151,28 @@ ol.steps li::marker{color:var(--accent);font-weight:700}
 .iconbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);text-decoration:none}
 .iconbtn svg{width:18px;height:18px}
 .empty{color:var(--muted);text-align:center;padding:30px 10px}
+
+/* Saved */
+.page .seg{align-self:flex-start}
+.vlist{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.vitem{display:grid;grid-template-columns:104px 1fr auto;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
+.vitem .vt{width:104px;aspect-ratio:16/9;border-radius:8px;background:var(--raise) center/cover no-repeat;position:relative;overflow:hidden}
+.vitem .vt span{position:absolute;right:4px;bottom:4px;font-size:11px;font-weight:700;background:rgba(14,13,12,.8);border-radius:4px;padding:1px 4px}
+.vitem .vm{min-width:0;display:flex;flex-direction:column;gap:3px}
+.vitem .vm b{font:600 15px/1.4 var(--fidel);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.vitem .vm small{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vitem .vm .tag{align-self:flex-start;font-size:11px}
+.vitem .acts{display:flex;gap:6px}
+.citem{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.citem b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.citem .acts{display:flex;gap:6px;flex:none}
 .flash{text-align:center;padding:28px 16px;display:flex;flex-direction:column;gap:14px;align-items:center}
 .flash .big{font:700 48px/1.2 var(--fidel-d)}
 .flash .ans{min-height:3.2em;color:var(--accent)}
 .flash .ans small{display:block;color:var(--muted);font-family:var(--fidel);margin-top:4px}
 
 /* ---------- Bottom nav ---------- */
-nav.tabs{flex:none;display:grid;grid-template-columns:repeat(3,1fr);background:var(--panel);border-top:1px solid var(--line);padding:0 max(8px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(8px,env(safe-area-inset-left,0px))}
+nav.tabs{flex:none;display:grid;grid-template-columns:repeat(4,1fr);background:var(--panel);border-top:1px solid var(--line);padding:0 max(8px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(8px,env(safe-area-inset-left,0px))}
 nav.tabs button{height:var(--navH);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:600;color:var(--muted)}
 nav.tabs button svg{width:22px;height:22px}
 nav.tabs button[aria-current=page]{color:var(--accent)}
@@ -191,6 +225,19 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
     </div>
   </section>
 
+  <section class="view" id="v-saved" hidden>
+    <div class="page"><div class="inner">
+      <h1>Saved <span>የተቀመጡ</span></h1>
+      <div class="seg" role="group" aria-label="Show">
+        <button data-lib="saved" aria-pressed="true">Saved</button>
+        <button data-lib="liked">Liked</button>
+        <button data-lib="following">Following</button>
+      </div>
+      <div id="lib"></div>
+      <p class="note">Saved, liked, and followed items are kept in this browser only.</p>
+    </div></div>
+  </section>
+
   <section class="view" id="v-words" hidden>
     <div class="page"><div class="inner">
       <h1>Words <span>ቃላት</span></h1>
@@ -221,7 +268,8 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
       </div>
 
       <div class="box">
-        <div class="toggle"><span>Amharic captions when the video has them</span><button class="switch" role="switch" id="ccSw" aria-label="Amharic captions"></button></div>
+        <div class="toggle"><span>Only show videos with captions</span><button class="switch" role="switch" id="ccSw" aria-label="Only show videos with captions"></button></div>
+        <p class="note">Fewer videos, but more of them can show subtitles. Use the CC button on a video to switch between Fidel and English. Each only shows when the video has captions in that language.</p>
         <div class="toggle"><span>Clear watched history</span><button class="btn ghost small" id="clearSeen">Clear</button></div>
       </div>
 
@@ -241,6 +289,7 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
 
   <nav class="tabs" aria-label="Sections">
     <button data-view="feed" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2.5" width="14" height="19" rx="3"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg>Feed</button>
+    <button data-view="saved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg>Saved</button>
     <button data-view="words"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h11a3 3 0 0 1 3 3v12H7a3 3 0 0 1-3-3z"/><path d="M8 10h6M8 14h4"/></svg><span>Words <span class="count" id="wcount"></span></span></button>
     <button data-view="setup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>Setup</button>
   </nav>
@@ -296,7 +345,12 @@ const S={
   topics:LS.get('topics',DEFAULT_TOPICS),
   format:LS.get('format','shorts'),
   speed:LS.get('speed',1),
-  cc:LS.get('cc',true),
+  subs:LS.get('subs',LS.get('cc',true)?'am':'off'),   // 'off' | 'am' (Fidel) | 'en'
+  ccOnly:LS.get('ccOnly',false),
+  saved:LS.get('saved',[]),         // video objects, newest first
+  liked:LS.get('liked',[]),
+  following:LS.get('following',[]), // {id, title} channels
+  ratings:LS.get('ratings',{}),     // videoId -> {r: 0-3, t}
   seen:new Set(LS.get('seen',[])),
   words:LS.get('words',[]),
   notes:LS.get('notes',{}),
@@ -363,24 +417,34 @@ const fmt=s=>{const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=String(s%60).
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 
+const FOLLOW='_follow';   // topic id for videos from creators you follow
+const cursorKey=(topic,q,dur)=>[topic,q,dur,S.ccOnly?'cc':''].join('|');
 function plan(){
   const active=S.topics.length?S.topics:DEFAULT_TOPICS;
   const picks=shuffle([...active]).slice(0,2);
-  return picks.map(topic=>{
-    const dur=S.format==='shorts'?'short':S.format==='long'?'medium':pick(['short','short','medium']);
-    const open=TOPICS[topic].q.filter(q=>!cursors[topic+'|'+q+'|'+dur]?.done);
-    return {topic,q:pick(open.length?open:TOPICS[topic].q),dur};
+  const dur=()=>S.format==='shorts'?'short':S.format==='long'?'medium':pick(['short','short','medium']);
+  const out=picks.map(topic=>{
+    const d=dur();
+    const open=TOPICS[topic].q.filter(q=>!cursors[cursorKey(topic,q,d)]?.done);
+    return {topic,q:pick(open.length?open:TOPICS[topic].q),dur:d};
   });
+  // Half the time, swap one topic search for the latest uploads from a creator you follow.
+  const open=S.following.filter(ch=>!['short','medium'].every(d=>cursors[cursorKey(FOLLOW,ch.id,d)]?.done));
+  if(open.length&&Math.random()<.5)out[out.length-1]={topic:FOLLOW,channel:pick(open).id,dur:dur()};
+  return out;
 }
 
 async function fetchBatch(){
   const found=[];
-  for(const {topic,q,dur} of plan()){
-    const ck=topic+'|'+q+'|'+dur;
-    const c=cursors[ck]||(cursors[ck]={order:pick(['date','relevance','viewCount'])});
+  for(const {topic,q,channel,dur} of plan()){
+    const ck=cursorKey(topic,channel||q,dur);
+    const c=cursors[ck]||(cursors[ck]={order:channel?'date':pick(['date','relevance','viewCount'])});
     if(c.done)continue;
-    const p={part:'snippet',type:'video',q:q+EXCLUDE,maxResults:25,relevanceLanguage:'am',safeSearch:'moderate',videoEmbeddable:'true',videoDuration:dur,order:c.order};
-    if(c.order==='date'||c.order==='viewCount')p.publishedAfter=new Date(Date.now()-365*864e5).toISOString();
+    const p=channel
+      ?{part:'snippet',type:'video',channelId:channel,maxResults:25,videoEmbeddable:'true',videoDuration:dur,order:'date'}
+      :{part:'snippet',type:'video',q:q+EXCLUDE,maxResults:25,relevanceLanguage:'am',safeSearch:'moderate',videoEmbeddable:'true',videoDuration:dur,order:c.order};
+    if(!channel&&(c.order==='date'||c.order==='viewCount'))p.publishedAfter=new Date(Date.now()-365*864e5).toISOString();
+    if(S.ccOnly)p.videoCaption='closedCaption';
     if(c.token)p.pageToken=c.token;
     const res=await yt('search',p);
     c.token=res.nextPageToken;if(!c.token)c.done=true;
@@ -396,12 +460,13 @@ async function fetchBatch(){
     const dur=parseDur(cd.duration);
     if(!dur||sn.liveBroadcastContent==='live'||sn.liveBroadcastContent==='upcoming')continue;
     const text=(sn.title||'')+' '+(sn.description||'');
-    if(ethCount(sn.title)<3&&ethCount(text)<12)continue;   // must actually be in Fidel
-    if(TEACHING.test(text))continue;
+    const followed=topicOf[v.id]===FOLLOW;   // you picked this creator, so skip the content filters
+    if(!followed&&ethCount(sn.title)<3&&ethCount(text)<12)continue;   // must actually be in Fidel
+    if(!followed&&TEACHING.test(text))continue;
     if(S.format==='shorts'&&dur>180)continue;
     if(S.format==='long'&&dur<=180)continue;
     const th=sn.thumbnails||{};
-    out.push({id:v.id,topic:topicOf[v.id],title:sn.title||'',desc:sn.description||'',channel:sn.channelTitle||'',dur,cc:cd.caption==='true',
+    out.push({id:v.id,topic:topicOf[v.id],title:sn.title||'',desc:sn.description||'',channel:sn.channelTitle||'',channelId:sn.channelId||'',dur,cc:cd.caption==='true',
       thumb:(th.maxres||th.high||th.medium||th.default||{}).url||''});
   }
   return shuffle(out);
@@ -425,24 +490,31 @@ async function loadMore(){
 }
 
 function cardHTML(v,i){
-  const t=TOPICS[v.topic]||{label:'',am:''};
-  return `<article class="card ${v.dur<=180?'short':'wide'}" data-i="${i}">
+  const t=v.topic===FOLLOW?{label:'Following',am:'የሚከተሉት'}:TOPICS[v.topic]||{label:'Saved',am:'የተቀመጠ'};
+  const following=isFollowing(v.channelId);
+  return `<article class="card ${v.dur<=180?'short':'wide'}" data-i="${i}" data-ch="${esc(v.channelId||'')}">
   <div class="stage">
     <img class="thumb" src="${esc(v.thumb)}" alt="" loading="lazy">
     <div class="host"></div>
     <div class="ear">${ICON.ear}<span>Listening only</span><small>Tap Read when you want to see the words.</small></div>
     <button class="tap" aria-label="Play or pause"></button>
     <div class="paused-badge">${ICON.play}</div>
+    <div class="subnote" role="status"></div>
   </div>
   <div class="info">
-    <div class="meta"><span class="tag">${esc(t.label)} · <span lang="am">${esc(t.am)}</span></span>${v.cc?'<span class="tag cc">CC</span>':''}<span class="dur">${fmt(v.dur)}</span></div>
+    <div class="meta"><span class="tag">${esc(t.label)} · <span lang="am">${esc(t.am)}</span></span>${v.cc?'<span class="tag cc">CC</span>':''}${gotTag(v.id)}<span class="dur">${fmt(v.dur)}</span></div>
     <h2 class="ttl" lang="am">${esc(v.title)}</h2>
-    <p class="ch">${esc(v.channel)}</p>
+    <p class="ch"><span class="chn">${esc(v.channel)}</span>${v.channelId?`<button class="follow" data-act="follow" aria-pressed="${following}">${following?'Following':'Follow'}</button>`:''}</p>
+    <div class="rate" hidden></div>
   </div>
   <div class="rail">
+    <button data-act="like" class="like" aria-label="Like" aria-pressed="${inList('liked',v.id)}">${ICON.heart}<span>like</span></button>
+    <button data-act="save" aria-label="Save for later" aria-pressed="${inList('saved',v.id)}">${ICON.bookmark}<span>save</span></button>
+    <button data-act="share" aria-label="Share">${ICON.share}<span>share</span></button>
     <button data-act="sound" aria-label="Sound">${ICON.mute}</button>
     <button data-act="back" aria-label="Back 5 seconds">${ICON.back}<span>5s</span></button>
     <button data-act="speed" aria-label="Playback speed"><b class="spd">${S.speed}×</b><span>speed</span></button>
+    <button data-act="subs" aria-label="Subtitles: ${SUB_NAME[S.subs]}" aria-pressed="${S.subs!=='off'}"><b>CC</b><span class="subl">${SUB_LABEL[S.subs]}</span></button>
     <button data-act="ear" aria-label="Listen only" aria-pressed="${feedEl.classList.contains('earMode')}">${ICON.ear}<span>listen</span></button>
     <button data-act="read" class="read" aria-label="Read and practice">${ICON.read}<span lang="am">አንብብ</span></button>
   </div>
@@ -478,8 +550,54 @@ let player=null,activeCard=null,progTimer=null;
 const ytReady=new Promise(res=>{window.onYouTubeIframeAPIReady=res});
 (function(){const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.append(s)})();
 
+/* ================= subtitles (YouTube's own caption tracks) ================= */
+const SUBS=['off','am','en'];
+const SUB_LABEL={off:'off',am:'ፊደል',en:'EN'};
+const SUB_NAME={off:'off',am:'Fidel',en:'English'};
+let subsCheck=null;
+function captionTracks(p){try{return p.getOption('captions','tracklist')||[]}catch(e){return []}}
+function subNote(card,text){
+  const n=card&&card.querySelector('.subnote');if(!n)return;
+  n.textContent=text;n.classList.add('on');clearTimeout(n._t);n._t=setTimeout(()=>n.classList.remove('on'),2400);
+}
+function applySubs(p,card,announce){
+  if(!p||!p.setOption)return;
+  clearTimeout(subsCheck);
+  const tracks=captionTracks(p);
+  // An empty track hides captions but keeps them loaded, so switching back on is instant.
+  if(S.subs==='off'){if(tracks.length)try{p.setOption('captions','track',{})}catch(e){}p._subs='off';if(announce)subNote(card,'Subtitles off');return}
+  if(!tracks.length){
+    // The track list only appears once the captions module loads (onApiChange calls back here).
+    // If it never does, the video has no captions.
+    try{p.loadModule('captions')}catch(e){}
+    subsCheck=setTimeout(()=>{if(player===p&&S.subs!=='off'&&!captionTracks(p).length)subNote(card,'No captions on this video')},4000);
+    return;
+  }
+  const am=tracks.find(t=>/^am/i.test(t.languageCode));
+  const en=tracks.find(t=>/^en/i.test(t.languageCode));
+  try{
+    if(S.subs==='am'){
+      if(am){p.setOption('captions','track',{languageCode:am.languageCode});if(announce)subNote(card,'Fidel subtitles')}
+      else{p.setOption('captions','track',{});subNote(card,'No Amharic captions on this video')}
+    }else{
+      // YouTube's auto-translate doesn't work in embedded players, so English needs a real English track.
+      if(en){p.setOption('captions','track',{languageCode:en.languageCode});if(announce)subNote(card,'English subtitles')}
+      else{p.setOption('captions','track',{});subNote(card,'No English subtitles on this video')}
+    }
+  }catch(e){}
+  p._subs=S.subs;
+}
+function cycleSubs(){
+  S.subs=SUBS[(SUBS.indexOf(S.subs)+1)%SUBS.length];LS.set('subs',S.subs);
+  feedEl.querySelectorAll('[data-act=subs]').forEach(b=>{
+    b.setAttribute('aria-pressed',String(S.subs!=='off'));b.setAttribute('aria-label','Subtitles: '+SUB_NAME[S.subs]);
+    b.querySelector('.subl').textContent=SUB_LABEL[S.subs];
+  });
+  if(player&&activeCard)applySubs(player,activeCard,true);
+}
+
 function destroyPlayer(){
-  clearInterval(progTimer);
+  clearInterval(progTimer);clearTimeout(subsCheck);
   if(player){try{player.destroy()}catch(e){}player=null}
   if(activeCard){activeCard.classList.remove('live','paused');activeCard.querySelector('.host').innerHTML=''}
   activeCard=null;
@@ -494,22 +612,25 @@ async function activate(card){
   player=new YT.Player(mount,{
     videoId:v.id,host:'https://www.youtube-nocookie.com',width:'100%',height:'100%',
     playerVars:{autoplay:1,mute:S.soundOn?0:1,playsinline:1,controls:0,rel:0,modestbranding:1,iv_load_policy:3,
-      cc_load_policy:S.cc?1:0,cc_lang_pref:'am',loop:1,playlist:v.id,origin:location.origin},
+      cc_load_policy:S.subs==='off'?0:1,cc_lang_pref:S.subs==='en'?'en':'am',loop:1,playlist:v.id,origin:location.origin},
     events:{
       onReady:e=>{
         const p=e.target;try{p.setPlaybackRate(S.speed)}catch(x){}
         if(S.soundOn)p.unMute();p.playVideo();
-        card.classList.add('live');syncSound();
+        card.classList.add('live');syncSound();applySubs(p,card,false);
         // If the browser blocked playback with sound, fall back to muted.
         setTimeout(()=>{if(player===p&&p.getPlayerState&&p.getPlayerState()!==1&&!p.isMuted()){p.mute();p.playVideo();syncSound()}},1600);
       },
-      onStateChange:e=>{card.classList.toggle('paused',e.data===2)}
+      onStateChange:e=>{card.classList.toggle('paused',e.data===2)},
+      onApiChange:e=>{const p=e.target;if(player===p&&p._subs!==S.subs&&captionTracks(p).length)applySubs(p,card,false)}
     }
   });
   progTimer=setInterval(()=>{
     if(!player||!player.getDuration)return;
     const d=player.getDuration()||v.dur,t=player.getCurrentTime()||0;
     card.querySelector('.prog i').style.width=Math.min(100,t/d*100)+'%';
+    // Ask how much you understood once you've watched most of a short, or a good chunk of a longer video.
+    if(d<=75?t>=d*.85:t>=Math.min(d*.6,180))askRating(card,v);
   },250);
 }
 function syncSound(){
@@ -521,6 +642,9 @@ function syncSound(){
 feedEl.addEventListener('click',e=>{
   const card=e.target.closest('.card');if(!card||card===endEl)return;
   if(card!==activeCard){activate(card);return}
+  const v=feed[+card.dataset.i];
+  const rb=e.target.closest('[data-rate]');
+  if(rb){rateVideo(card,v,+rb.dataset.rate);return}
   if(e.target.closest('.tap')){
     if(!player?.getPlayerState)return;
     player.getPlayerState()===1?player.pauseVideo():player.playVideo();return;
@@ -536,6 +660,11 @@ feedEl.addEventListener('click',e=>{
     try{player&&player.setPlaybackRate(S.speed)}catch(x){}
     feedEl.querySelectorAll('.spd').forEach(s=>s.textContent=S.speed+'×');
   }
+  if(act==='subs')cycleSubs();
+  if(act==='like')subNote(card,toggleList('liked',v)?'Liked':'Removed from liked');
+  if(act==='save')subNote(card,toggleList('saved',v)?'Saved. Find it in the Saved tab.':'Removed from saved');
+  if(act==='share')shareVideo(v,card);
+  if(act==='follow')subNote(card,toggleFollow(v)?`Following ${v.channel}. Their new videos will show up in your feed.`:`Unfollowed ${v.channel}`);
   if(act==='ear'){
     const on=feedEl.classList.toggle('earMode');
     feedEl.querySelectorAll('[data-act=ear]').forEach(b=>b.setAttribute('aria-pressed',String(on)));
@@ -549,6 +678,100 @@ function syncFormat(){document.querySelectorAll('[data-format]').forEach(b=>b.se
 document.querySelectorAll('[data-format]').forEach(b=>b.addEventListener('click',()=>{
   if(S.format===b.dataset.format)return;S.format=b.dataset.format;LS.set('format',S.format);syncFormat();resetFeed();
 }));
+
+/* ================= likes, saves, follows, ratings ================= */
+const RATES=[['Nothing','ምንም'],['A little','ትንሽ'],['Most','አብዛኛው'],['All','ሁሉንም']];
+const inList=(k,id)=>S[k].some(x=>x.id===id);
+const isFollowing=ch=>!!ch&&S.following.some(c=>c.id===ch);
+const gotTag=id=>S.ratings[id]?`<span class="tag got">Understood: ${RATES[S.ratings[id].r][0].toLowerCase()}</span>`:'';
+const keep=v=>({id:v.id,topic:v.topic,title:v.title,desc:String(v.desc||'').slice(0,1500),channel:v.channel,channelId:v.channelId||'',dur:v.dur,cc:v.cc,thumb:v.thumb,t:Date.now()});
+
+// Bring every card's like / save / follow buttons in line with what's stored.
+function syncCards(){
+  feedEl.querySelectorAll('.card[data-i]').forEach(c=>{
+    const v=feed[+c.dataset.i];if(!v)return;
+    c.querySelector('[data-act=like]').setAttribute('aria-pressed',String(inList('liked',v.id)));
+    c.querySelector('[data-act=save]').setAttribute('aria-pressed',String(inList('saved',v.id)));
+    const f=c.querySelector('.follow');
+    if(f){const on=isFollowing(v.channelId);f.setAttribute('aria-pressed',String(on));f.textContent=on?'Following':'Follow'}
+  });
+}
+function toggleList(k,v){
+  const on=!inList(k,v.id);
+  S[k]=on?[keep(v),...S[k]]:S[k].filter(x=>x.id!==v.id);LS.set(k,S[k]);syncCards();
+  return on;
+}
+function toggleFollow(v){
+  if(!v.channelId)return false;
+  const on=!isFollowing(v.channelId);
+  S.following=on?[{id:v.channelId,title:v.channel,t:Date.now()},...S.following]:S.following.filter(c=>c.id!==v.channelId);
+  LS.set('following',S.following);syncCards();
+  return on;
+}
+async function shareVideo(v,card){
+  const url='https://www.youtube.com/watch?v='+v.id;
+  if(navigator.share){try{await navigator.share({title:v.title,url});return}catch(e){if(e.name==='AbortError')return}}
+  try{await navigator.clipboard.writeText(url);subNote(card,'Link copied')}catch(e){subNote(card,'Couldn\'t copy the link')}
+}
+function askRating(card,v){
+  if(card._asked||S.ratings[v.id])return;
+  card._asked=true;
+  const box=card.querySelector('.rate');
+  box.innerHTML=`<p>How much did you understand?</p><div class="opts">${RATES.map(([en,am],r)=>
+    `<button data-rate="${r}" aria-pressed="false">${en}<span lang="am">${am}</span></button>`).join('')}</div>`;
+  box.hidden=false;
+}
+function rateVideo(card,v,r){
+  S.ratings[v.id]={r,t:Date.now()};LS.set('ratings',S.ratings);
+  card.querySelectorAll('[data-rate]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.rate===r)));
+  setTimeout(()=>{
+    card.querySelector('.rate').hidden=true;
+    const meta=card.querySelector('.meta');meta.querySelector('.got')?.remove();
+    meta.querySelector('.dur').insertAdjacentHTML('beforebegin',gotTag(v.id));
+  },700);
+}
+
+// Play a saved or liked video: slot it into the feed right after the current one.
+function playVideo(v){
+  show('feed');
+  const i=feed.length;feed.push({...v});inFeed.add(v.id);
+  const tpl=document.createElement('template');tpl.innerHTML=cardHTML(v,i);
+  const el=tpl.content.firstElementChild;
+  feedEl.insertBefore(el,activeCard?activeCard.nextSibling:feedEl.firstElementChild);
+  io.observe(el);
+  requestAnimationFrame(()=>{el.scrollIntoView({block:'start'});activate(el)});
+}
+
+let libTab='saved';
+function renderLib(){
+  document.querySelectorAll('[data-lib]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lib===libTab)));
+  const el=$('#lib');
+  if(libTab==='following'){
+    el.innerHTML=S.following.length?`<div class="vlist">${S.following.map(c=>`<div class="citem">
+        <b>${esc(c.title)}</b>
+        <div class="acts"><a class="iconbtn" href="https://www.youtube.com/channel/${esc(c.id)}" target="_blank" rel="noopener" aria-label="Open on YouTube">${ICON.ext}</a>
+        <button class="btn ghost small" data-unfollow="${esc(c.id)}">Unfollow</button></div></div>`).join('')}</div>`
+      :`<p class="empty">You're not following anyone yet. Tap <b>Follow</b> next to a creator's name in the feed, and their new videos will show up in your feed.</p>`;
+    return;
+  }
+  const list=S[libTab];
+  el.innerHTML=list.length?`<div class="vlist">${list.map(v=>`<div class="vitem">
+      <button class="vt" data-play="${esc(v.id)}" style="background-image:url('${esc(v.thumb)}')" aria-label="Play"><span>${fmt(v.dur)}</span></button>
+      <div class="vm"><b lang="am">${esc(v.title)}</b><small>${esc(v.channel)}</small>${gotTag(v.id)}</div>
+      <div class="acts"><button class="iconbtn" data-play="${esc(v.id)}" aria-label="Play">${ICON.playSm}</button>
+      <button class="iconbtn" data-remove="${esc(v.id)}" aria-label="Remove">${ICON.x}</button></div>
+    </div>`).join('')}</div>`
+    :`<p class="empty">${libTab==='saved'?'Nothing saved yet. Tap the bookmark on a video to keep it here.':'No liked videos yet. Tap the heart on a video.'}</p>`;
+}
+document.querySelectorAll('[data-lib]').forEach(b=>b.addEventListener('click',()=>{libTab=b.dataset.lib;renderLib()}));
+$('#lib').addEventListener('click',e=>{
+  const p=e.target.closest('[data-play]');
+  if(p){const v=S[libTab].find(x=>x.id===p.dataset.play);if(v)playVideo(v);return}
+  const r=e.target.closest('[data-remove]');
+  if(r){S[libTab]=S[libTab].filter(x=>x.id!==r.dataset.remove);LS.set(libTab,S[libTab]);renderLib();return}
+  const u=e.target.closest('[data-unfollow]');
+  if(u){S.following=S.following.filter(c=>c.id!==u.dataset.unfollow);LS.set('following',S.following);renderLib()}
+});
 
 /* ================= reading sheet ================= */
 let sheetVideo=null,selWord=null;
@@ -701,18 +924,18 @@ $('#keySave').addEventListener('click',async()=>{
     if(!old||old!==k)topicsDirty=true;
   }catch(err){S.key=old;m.className='msg err';m.textContent=err.message}
 });
-function syncCC(){$('#ccSw').setAttribute('aria-checked',String(S.cc))}
-$('#ccSw').addEventListener('click',()=>{S.cc=!S.cc;LS.set('cc',S.cc);syncCC()});
+function syncCC(){$('#ccSw').setAttribute('aria-checked',String(S.ccOnly))}
+$('#ccSw').addEventListener('click',()=>{S.ccOnly=!S.ccOnly;LS.set('ccOnly',S.ccOnly);syncCC();topicsDirty=true});
 $('#clearSeen').addEventListener('click',e=>{S.seen.clear();LS.set('seen',[]);e.target.textContent='Cleared'});
 
 /* ================= tabs ================= */
 function show(view){
-  ['feed','words','setup'].forEach(v=>$('#v-'+v).hidden=v!==view);
+  ['feed','saved','words','setup'].forEach(v=>$('#v-'+v).hidden=v!==view);
   document.querySelectorAll('nav.tabs button').forEach(b=>{
     if(b.dataset.view===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
   });
   if(view==='feed'){
-    sizeCards();
+    sizeCards();syncCards();
     if(topicsDirty){topicsDirty=false;resetFeed()}
     else if(!feed.length)loadMore();
     else{
@@ -722,6 +945,7 @@ function show(view){
   }else{
     destroyPlayer();
     if(view==='words')renderWords();
+    if(view==='saved')renderLib();
     if(view==='setup')$('#keyMsg').textContent='';
   }
 }
@@ -737,6 +961,10 @@ const ICON={
   read:sv('<path d="M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2z"/><path d="M22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z"/>'),
   play:sv('<path d="M8 5l11 7-11 7z" fill="currentColor"/>','width="34" height="34"'),
   ext:sv('<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'),
+  heart:sv('<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>','class="fill"'),
+  bookmark:sv('<path d="M6 3h12v18l-6-4-6 4z"/>','class="fill"'),
+  share:sv('<path d="M12 3v13M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>'),
+  playSm:sv('<path d="M8 5l11 7-11 7z" fill="currentColor"/>'),
   x:sv('<path d="M6 6l12 12M18 6L6 18"/>')
 };
 
