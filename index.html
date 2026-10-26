@@ -277,6 +277,22 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
         <div class="toggle"><span>Clear watched history</span><button class="btn ghost small" id="clearSeen">Clear</button></div>
       </div>
 
+      <div class="box">
+        <h2>Your data</h2>
+        <p class="note" style="margin-top:0">Back up your words, saved videos, ratings, and listening time, move them to another device, or share them with your tutor or Claude.</p>
+        <div class="row" style="margin-top:12px">
+          <button class="btn small" id="exportBtn">Copy my data</button>
+          <button class="btn ghost small" id="importOpen">Import data</button>
+        </div>
+        <div class="msg" id="dataMsg"></div>
+        <textarea id="exportOut" hidden readonly spellcheck="false" style="font:12px/1.4 ui-monospace,monospace;margin-top:8px"></textarea>
+        <div id="importBox" hidden style="margin-top:8px">
+          <textarea id="importIn" placeholder="Paste the data you copied from Semi" spellcheck="false" style="font:12px/1.4 ui-monospace,monospace"></textarea>
+          <div class="row" style="margin-top:8px"><button class="btn small" id="importBtn">Import</button></div>
+          <p class="note">Importing adds to what's here. Nothing on this device gets deleted.</p>
+        </div>
+      </div>
+
       <details class="box" id="howto">
         <summary><b>How to get your own free API key</b></summary>
         <ol class="steps" style="margin-top:12px">
@@ -357,7 +373,8 @@ const S={
   saved:LS.get('saved',[]),         // video objects, newest first
   liked:LS.get('liked',[]),
   following:LS.get('following',[]), // {id, title} channels
-  ratings:LS.get('ratings',{}),     // videoId -> {r: 0-3, t}
+  ratings:LS.get('ratings',{}),     // videoId -> {r: 0-3, t, title, channel, topic, level, dur, cc, src, watched, …}
+  listen:LS.get('listen',{}),       // 'YYYY-MM-DD' -> {w: seconds playing, l: seconds playing with sound}
   seen:new Set(LS.get('seen',[])),
   words:LS.get('words',[]),
   notes:LS.get('notes',{}),
@@ -455,12 +472,15 @@ async function fetchBatch(){
     if(c.token)p.pageToken=c.token;
     const res=await yt('search',p);
     c.token=res.nextPageToken;if(!c.token)c.done=true;
-    for(const it of res.items||[]){const id=it.id?.videoId;if(id)found.push({id,topic})}
+    // Remember where each video came from, so ratings can show which searches work.
+    const src=channel?{k:'follow',ch:channel,dur}:{k:'search',topic,q,order:c.order,dur,cc:S.ccOnly};
+    for(const it of res.items||[]){const id=it.id?.videoId;if(id)found.push({id,topic,src})}
   }
   const fresh=[...new Map(found.filter(f=>!S.seen.has(f.id)&&!inFeed.has(f.id)).map(f=>[f.id,f])).values()];
   if(!fresh.length)return [];
   const det=await yt('videos',{part:'snippet,contentDetails',id:fresh.map(f=>f.id).slice(0,50).join(',')});
   const topicOf=Object.fromEntries(fresh.map(f=>[f.id,f.topic]));
+  const srcOf=Object.fromEntries(fresh.map(f=>[f.id,f.src]));
   const out=[];
   for(const v of det.items||[]){
     const sn=v.snippet||{},cd=v.contentDetails||{};
@@ -473,7 +493,7 @@ async function fetchBatch(){
     if(S.format==='shorts'&&dur>180)continue;
     if(S.format==='long'&&dur<=180)continue;
     const th=sn.thumbnails||{};
-    out.push({id:v.id,topic:topicOf[v.id],title:sn.title||'',desc:sn.description||'',channel:sn.channelTitle||'',channelId:sn.channelId||'',dur,cc:cd.caption==='true',
+    out.push({id:v.id,topic:topicOf[v.id],src:srcOf[v.id],title:sn.title||'',desc:sn.description||'',channel:sn.channelTitle||'',channelId:sn.channelId||'',dur,cc:cd.caption==='true',
       thumb:(th.maxres||th.high||th.medium||th.default||{}).url||''});
   }
   return shuffle(out);
@@ -638,7 +658,28 @@ function onPlayerState(e){
     if(player._subsFor!==curId){player._subsFor=curId;player._subs=null;applySubs(player,activeCard,false)}
   }
 }
+/* Listening time: seconds playing per day (w), and playing with sound on (l). */
+const watchSec={};          // videoId -> seconds played this session
+let lastTick=0,listenDirty=0;
+const today=()=>new Date().toLocaleDateString('en-CA');   // local YYYY-MM-DD
+function tickListen(p,id){
+  const now=Date.now(),dt=Math.min(1,(now-lastTick)/1000);lastTick=now;
+  if(dt<=0||p.getPlayerState()!==1)return;
+  const d=S.listen[today()]||(S.listen[today()]={w:0,l:0});
+  d.w+=dt;if(!p.isMuted())d.l+=dt;
+  watchSec[id]=(watchSec[id]||0)+dt;
+  if((listenDirty+=dt)>=10)saveListen();
+}
+function saveListen(){
+  listenDirty=0;
+  for(const k in S.listen){S.listen[k].w=Math.round(S.listen[k].w*10)/10;S.listen[k].l=Math.round(S.listen[k].l*10)/10}
+  LS.set('listen',S.listen);
+}
+addEventListener('pagehide',saveListen);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)saveListen()});
+
 function stopPlayback(){
+  if(listenDirty)saveListen();
   clearInterval(progTimer);clearTimeout(subsCheck);
   try{player&&player.pauseVideo&&player.pauseVideo()}catch(e){}
   if(activeCard)activeCard.classList.remove('paused');
@@ -660,10 +701,12 @@ async function activate(card){
   p.playVideo();
   // If the phone blocked playback with sound, play muted instead.
   setTimeout(()=>{if(activeCard===card&&![1,3].includes(p.getPlayerState())&&!p.isMuted()){p.mute();p.playVideo()}},1600);
+  lastTick=Date.now();
   progTimer=setInterval(()=>{
     if(activeCard!==card)return;
     syncSound();   // reflects the real sound state, even if the phone muted it
-    if(vidOf(p)!==v.id)return;
+    if(vidOf(p)!==v.id){lastTick=Date.now();return}
+    tickListen(p,v.id);
     const d=p.getDuration()||v.dur,t=p.getCurrentTime()||0;
     card.querySelector('.prog i').style.width=Math.min(100,t/d*100)+'%';
     // Ask how much you understood once you've watched most of a short, or a good chunk of a longer video.
@@ -722,7 +765,7 @@ const RATES=[['Nothing','ምንም'],['A little','ትንሽ'],['Most','አብዛ
 const inList=(k,id)=>S[k].some(x=>x.id===id);
 const isFollowing=ch=>!!ch&&S.following.some(c=>c.id===ch);
 const gotTag=id=>S.ratings[id]?`<span class="tag got">Understood: ${RATES[S.ratings[id].r][0].toLowerCase()}</span>`:'';
-const keep=v=>({id:v.id,topic:v.topic,title:v.title,desc:String(v.desc||'').slice(0,1500),channel:v.channel,channelId:v.channelId||'',dur:v.dur,cc:v.cc,thumb:v.thumb,t:Date.now()});
+const keep=v=>({id:v.id,topic:v.topic,src:v.src||null,title:v.title,desc:String(v.desc||'').slice(0,1500),channel:v.channel,channelId:v.channelId||'',dur:v.dur,cc:v.cc,thumb:v.thumb,t:Date.now()});
 
 // Bring every card's like / save / follow buttons in line with what's stored.
 function syncCards(){
@@ -760,7 +803,14 @@ function askRating(card,v){
   box.hidden=false;
 }
 function rateVideo(card,v,r){
-  S.ratings[v.id]={r,t:Date.now()};LS.set('ratings',S.ratings);
+  // Keep enough context to learn from later: who, what, how long, and where it came from.
+  S.ratings[v.id]={r,t:Date.now(),
+    title:v.title,channel:v.channel,channelId:v.channelId||'',topic:v.topic,
+    level:'native',            // the only level until the Kids / Easy / Native switch arrives
+    dur:v.dur,cc:!!v.cc,format:S.format,subs:S.subs,
+    src:v.src||null,via:v.via||'feed',
+    watched:Math.round(watchSec[v.id]||0)};
+  LS.set('ratings',S.ratings);
   card.querySelectorAll('[data-rate]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.rate===r)));
   setTimeout(()=>{
     card.querySelector('.rate').hidden=true;
@@ -772,7 +822,7 @@ function rateVideo(card,v,r){
 // Play a saved or liked video: slot it into the feed right after the current one.
 function playVideo(v){
   show('feed');
-  const i=feed.length;feed.push({...v});inFeed.add(v.id);
+  const i=feed.length;feed.push({...v,via:libTab});inFeed.add(v.id);
   const tpl=document.createElement('template');tpl.innerHTML=cardHTML(v,i);
   const el=tpl.content.firstElementChild;
   feedEl.insertBefore(el,activeCard?activeCard.nextSibling:feedEl.firstElementChild);
@@ -971,6 +1021,61 @@ $('#keySave').addEventListener('click',async()=>{
 function syncCC(){$('#ccSw').setAttribute('aria-checked',String(S.ccOnly))}
 $('#ccSw').addEventListener('click',()=>{S.ccOnly=!S.ccOnly;LS.set('ccOnly',S.ccOnly);syncCC();topicsDirty=true});
 $('#clearSeen').addEventListener('click',e=>{S.seen.clear();LS.set('seen',[]);e.target.textContent='Cleared'});
+
+/* ================= export / import ================= */
+function exportData(){
+  saveListen();
+  return JSON.stringify({app:'semi',version:1,exportedAt:new Date().toISOString(),
+    words:S.words,saved:S.saved,liked:S.liked,following:S.following,
+    ratings:S.ratings,notes:S.notes,listen:S.listen,seen:[...S.seen]});
+}
+// Merge imported data into this device. Never deletes anything already here.
+function importData(text){
+  let d;
+  try{d=JSON.parse(text.trim())}catch(e){d=null}
+  if(!d||d.app!=='semi')throw new Error('That doesn\'t look like Semi data. Copy it again and paste the whole thing.');
+  const n={};
+  const mergeList=(k,key)=>{
+    const have=new Set(S[k].map(x=>x[key]));
+    const add=(Array.isArray(d[k])?d[k]:[]).filter(x=>x&&x[key]&&!have.has(x[key]));
+    S[k]=[...S[k],...add];n[k]=add.length;
+  };
+  mergeList('words','w');mergeList('saved','id');mergeList('liked','id');mergeList('following','id');
+  S.saved.sort((a,b)=>(b.t||0)-(a.t||0));S.liked.sort((a,b)=>(b.t||0)-(a.t||0));
+  n.ratings=0;
+  for(const [id,r] of Object.entries(d.ratings||{})){   // keep whichever rating is newer
+    const mine=S.ratings[id];
+    if(!mine)n.ratings++;
+    if(!mine||(r.t||0)>(mine.t||0))S.ratings[id]=r;
+  }
+  for(const [id,txt] of Object.entries(d.notes||{}))if(!S.notes[id])S.notes[id]=txt;
+  // Listening time: take the larger number per day, so importing the same backup twice doesn't double it.
+  for(const [day,x] of Object.entries(d.listen||{})){
+    const m=S.listen[day]||{w:0,l:0};S.listen[day]={w:Math.max(m.w,+x.w||0),l:Math.max(m.l,+x.l||0)};
+  }
+  for(const id of d.seen||[])S.seen.add(id);
+  ['words','saved','liked','following','ratings','notes','listen'].forEach(k=>LS.set(k,S[k]));
+  LS.set('seen',[...S.seen].slice(-3000));
+  renderWords();
+  return n;
+}
+$('#exportBtn').addEventListener('click',async()=>{
+  const text=exportData(),m=$('#dataMsg'),out=$('#exportOut');
+  try{await navigator.clipboard.writeText(text);out.hidden=true;m.className='msg ok';m.textContent='Copied. Paste it into a note, a message, or Import on another device.'}
+  catch(e){out.hidden=false;out.value=text;out.select();m.className='msg';m.textContent='Copy didn\'t work here. Your data is selected below, so copy it manually.'}
+});
+$('#importOpen').addEventListener('click',()=>{$('#importBox').hidden=!$('#importBox').hidden;$('#dataMsg').textContent=''});
+$('#importBtn').addEventListener('click',()=>{
+  const m=$('#dataMsg');
+  try{
+    const n=importData($('#importIn').value);
+    const parts=[[n.words,'word'],[n.saved,'saved video'],[n.liked,'liked video'],[n.following,'creator'],[n.ratings,'rating']]
+      .filter(([c])=>c).map(([c,w])=>`${c} ${w}${c===1?'':'s'}`);
+    m.className='msg ok';
+    m.textContent=parts.length?`Added ${parts.join(', ')}. Everything already here was kept.`:'Nothing new to add. This device already has all of it.';
+    $('#importIn').value='';
+  }catch(e){m.className='msg err';m.textContent=e.message}
+});
 
 /* ================= tabs ================= */
 function show(view){
