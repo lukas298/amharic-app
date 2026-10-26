@@ -257,13 +257,13 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
       <h1>Setup <span>ማስተካከያ</span></h1>
 
       <div class="box">
-        <label class="f" for="keyIn">YouTube API key</label>
+        <label class="f" for="keyIn">Your own YouTube API key <span style="color:var(--muted);font-weight:400">(optional)</span></label>
         <div class="row">
-          <input type="password" id="keyIn" autocomplete="off" spellcheck="false" placeholder="Paste your key">
+          <input type="password" id="keyIn" autocomplete="off" spellcheck="false" placeholder="Using the built-in key">
           <button class="btn small" id="keySave">Save</button>
         </div>
         <div class="msg" id="keyMsg"></div>
-        <p class="note">Kept only on this device. It lets the app search YouTube for you.</p>
+        <p class="note">The app has a key built in, so you can leave this empty. Paste a key here only to use your own instead; it's kept on this device. Save with the field empty to go back to the built-in key.</p>
       </div>
 
       <div>
@@ -278,7 +278,7 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
       </div>
 
       <details class="box" id="howto">
-        <summary><b>How to get a free API key</b></summary>
+        <summary><b>How to get your own free API key</b></summary>
         <ol class="steps" style="margin-top:12px">
           <li>Open <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">console.cloud.google.com</a> and create a project.</li>
           <li>Go to APIs &amp; Services → Library, search <b>YouTube Data API v3</b>, and enable it.</li>
@@ -344,8 +344,11 @@ const TEACHING=/learn\s*amharic|amharic\s*(lesson|class|for beginners|alphabet|p
 const EXCLUDE=' -learn -lesson -ትምህርት';
 
 /* ================= state ================= */
+// Built-in YouTube key. Google only accepts it from this app's web address (and localhost),
+// and only for the YouTube Data API. A key saved in Setup overrides it.
+const BUILTIN_KEY='AIzaSyB2hv2yF55U4D-XczcvYWVrWxLLJF2dYYs';
 const S={
-  key:LS.get('key',''),
+  key:LS.get('key','')||BUILTIN_KEY,
   topics:LS.get('topics',DEFAULT_TOPICS),
   format:LS.get('format','shorts'),
   speed:LS.get('speed',1),
@@ -947,10 +950,16 @@ $('#topicChips').addEventListener('click',e=>{
   S.topics=on?S.topics.filter(x=>x!==k):[...S.topics,k];LS.set('topics',S.topics);
   b.setAttribute('aria-pressed',String(!on));topicsDirty=true;
 });
-$('#keyIn').value=S.key;
+$('#keyIn').value=S.key===BUILTIN_KEY?'':S.key;
 $('#keySave').addEventListener('click',async()=>{
   const k=$('#keyIn').value.trim(),m=$('#keyMsg');
-  if(!k){m.className='msg err';m.textContent='Paste a key first.';return}
+  if(!k||k===BUILTIN_KEY){
+    const changed=S.key!==BUILTIN_KEY;
+    S.key=BUILTIN_KEY;LS.set('key','');$('#keyIn').value='';
+    m.className='msg ok';m.textContent='Using the built-in key.';
+    if(changed)topicsDirty=true;
+    return;
+  }
   m.className='msg';m.textContent='Checking…';
   const old=S.key;S.key=k;
   try{
