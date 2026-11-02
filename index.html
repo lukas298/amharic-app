@@ -98,6 +98,7 @@ a{color:var(--accent)}
 .ch .chn{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .follow{pointer-events:auto;flex:none;padding:4px 11px;border-radius:999px;border:1px solid var(--text);color:var(--text);font-size:12px;font-weight:700}
 .follow[aria-pressed=true]{border-color:var(--line);color:var(--muted)}
+.follow.nt{border-color:var(--line);color:var(--muted);font-weight:600}
 .rate{pointer-events:auto;margin-top:12px;background:rgba(27,25,22,.92);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
 .rate p{margin:0 0 8px;font-size:13px;font-weight:600}
 .rate .opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
@@ -280,6 +281,12 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
       </div>
 
       <div class="box">
+        <h2>Hidden channels</h2>
+        <p class="note" style="margin-top:0">Channels you marked "No talking" on a video. Their videos stay out of your feed.</p>
+        <div id="hiddenList"></div>
+      </div>
+
+      <div class="box">
         <h2>Your data</h2>
         <p class="note" style="margin-top:0">Back up your words, saved videos, ratings, and listening time, move them to another device, or share them with your tutor or Claude.</p>
         <div class="row" style="margin-top:12px">
@@ -347,19 +354,36 @@ const ETH=/[ሀ-፿]/;
 const ethCount=s=>(String(s).match(/[ሀ-፿]/g)||[]).length;
 
 /* ================= topics ================= */
+// q: plain topic searches. talk: the same topic paired with spoken formats (interviews,
+// podcasts, conversations, vlogs, sketches), used two times in three so more videos have people talking.
 const TOPICS={
-  fashion:{label:'Fashion',am:'ፋሽን',q:['ፋሽን','የሀበሻ ልብስ','ሀበሻ ቀሚስ ዲዛይን','የፋሽን ትርዒት']},
-  making: {label:'Making', am:'ሥራ',  q:['ልብስ ስፌት','እንጨት ስራ','እደ ጥበብ','ሽመና','የቆዳ ስራ']},
-  soccer: {label:'Soccer', am:'እግር ኳስ',q:['እግር ኳስ','ኢትዮጵያ ፕሪምየር ሊግ','የእግር ኳስ ዜና','ፕሪምየር ሊግ ትንታኔ']},
-  food:   {label:'Food',   am:'ምግብ', q:['ምግብ አሰራር','የኢትዮጵያ ምግብ','ቀላል የምግብ አሰራር','የጎዳና ምግብ']},
-  comedy: {label:'Comedy', am:'ቀልድ', q:['አስቂኝ ቪዲዮ','ኮሜዲ','ቀልድ','አስቂኝ ድራማ']},
-  vlog:   {label:'Vlogs',  am:'ቭሎግ', q:['ቭሎግ','የአዲስ አበባ ቭሎግ','የእለት ተእለት ኑሮ']},
+  fashion:{label:'Fashion',am:'ፋሽን',q:['ፋሽን','የሀበሻ ልብስ','ሀበሻ ቀሚስ ዲዛይን','የፋሽን ትርዒት'],
+    talk:['ፋሽን ቃለ መጠይቅ','ዲዛይነር ቃለ መጠይቅ','ፋሽን ፖድካስት','ፋሽን ቭሎግ','ሞዴል ቃለ መጠይቅ']},
+  making: {label:'Making', am:'ሥራ',  q:['ልብስ ስፌት','እንጨት ስራ','እደ ጥበብ','ሽመና','የቆዳ ስራ'],
+    talk:['የእጅ ስራ ቃለ መጠይቅ','ስራ ፈጣሪ ቃለ መጠይቅ','ልብስ ስፌት ቭሎግ','የስራ ፈጠራ ውይይት']},
+  soccer: {label:'Soccer', am:'እግር ኳስ',q:['እግር ኳስ','ኢትዮጵያ ፕሪምየር ሊግ','የእግር ኳስ ዜና','ፕሪምየር ሊግ ትንታኔ'],
+    talk:['ስፖርት ፖድካስት','የእግር ኳስ ውይይት','ተጫዋች ቃለ መጠይቅ','የስፖርት ዜና','የእግር ኳስ ትንታኔ ውይይት']},
+  food:   {label:'Food',   am:'ምግብ', q:['ምግብ አሰራር','የኢትዮጵያ ምግብ','ቀላል የምግብ አሰራር','የጎዳና ምግብ'],
+    talk:['ምግብ ቭሎግ','የምግብ አሰራር በቤት ውስጥ','ሼፍ ቃለ መጠይቅ','የጎዳና ምግብ ቃለ መጠይቅ']},
+  comedy: {label:'Comedy', am:'ቀልድ', q:['አስቂኝ ቪዲዮ','ኮሜዲ','ቀልድ','አስቂኝ ድራማ'],
+    talk:['አጭር ድራማ','ፕራንክ','የመንገድ ላይ ጥያቄ','ኮሜዲ ቃለ መጠይቅ','ሲትኮም']},
+  talk:   {label:'Talk',    am:'ውይይት',q:['ቃለ መጠይቅ','ፖድካስት','ውይይት','የመንገድ ላይ ቃለ መጠይቅ','ቶክ ሾው'],
+    talk:['ቃለ መጠይቅ','ፖድካስት','ውይይት','የመንገድ ላይ ቃለ መጠይቅ','ቶክ ሾው']},
+  vlog:   {label:'Vlogs',  am:'ቭሎግ', q:['ቭሎግ','የአዲስ አበባ ቭሎግ','የእለት ተእለት ኑሮ'],
+    talk:['ቭሎግ ውይይት','የቤተሰብ ቭሎግ','የአዲስ አበባ ቭሎግ']},
   music:  {label:'Music',  am:'ሙዚቃ', q:['አዲስ ሙዚቃ','ባህላዊ ሙዚቃ']},
 };
-const DEFAULT_TOPICS=['fashion','making','soccer','food','comedy'];
+const DEFAULT_TOPICS=['fashion','making','soccer','food','comedy','talk'];
 // Skip videos that teach Amharic; you want native content.
 const TEACHING=/learn\s*amharic|amharic\s*(lesson|class|for beginners|alphabet|phrases|words)|how to (say|speak)|speak amharic|ትምህርት|lesson/i;
-const EXCLUDE=' -learn -lesson -ትምህርት';
+const EXCLUDE=' -learn -lesson -ትምህርት -lyrics';
+// Titles that mean music, lyrics or a photo slideshow rather than people talking.
+const NO_TALK=/\b(music|lyrics?|mezmur|karaoke|instrumental|remix|slide ?show)\b|official (video|audio)|\baudio\b|ሙዚቃ|ዘፈን|መዝሙር|ክሊፕ|ሊሪክስ/i;
+// ...unless the title says it's people talking (an interview with a singer, a street quiz filed under Music).
+const TALK_WORDS=/\b(interview|podcast|talk ?show|street quiz)\b|ቃለ ?መጠይቅ|ፖድካስት|ውይይት|ጥያቄ|ቆይታ/i;
+// YouTube categories: 10 Music is dropped. These talk-heavy ones are favored:
+// 17 Sports, 22 People & Blogs, 23 Comedy, 24 Entertainment, 25 News, 26 Howto & Style.
+const MUSIC_CAT='10',TALK_CATS=new Set(['17','22','23','24','25','26']);
 
 /* ================= state ================= */
 // Built-in YouTube key. Google only accepts it from this app's web address (and localhost),
@@ -375,6 +399,8 @@ const S={
   saved:LS.get('saved',[]),         // video objects, newest first
   liked:LS.get('liked',[]),
   following:LS.get('following',[]), // {id, title} channels
+  hidden:LS.get('hidden',[]),       // {id, title, t} channels marked "No talking"
+  skips:LS.get('skips',[]),         // "No talking" taps, with where each video came from
   ratings:LS.get('ratings',{}),     // videoId -> {r: 0-3, t, title, channel, topic, level, dur, cc, src, watched, …}
   listen:LS.get('listen',{}),       // 'YYYY-MM-DD' -> {w: seconds playing, l: seconds playing with sound}
   seen:new Set(LS.get('seen',[])),
@@ -382,6 +408,10 @@ const S={
   notes:LS.get('notes',{}),
   soundOn:false
 };
+// The Talk topic is new: switch it on once for people who already picked their topics.
+if(!LS.get('talkAdded',false)){if(!S.topics.includes('talk'))S.topics.push('talk');LS.set('topics',S.topics);LS.set('talkAdded',true)}
+S.topics=S.topics.filter(t=>TOPICS[t]);
+const isHidden=ch=>!!ch&&S.hidden.some(c=>c.id===ch);
 const cursors={};       // per search query: {token, order, done}
 let feed=[];            // loaded videos
 const inFeed=new Set();
@@ -450,8 +480,11 @@ function plan(n){
   const picks=shuffle([...active]).slice(0,n);
   return picks.map(topic=>{
     const d=S.format==='shorts'?'short':S.format==='long'?'medium':pick(['short','short','medium']);
-    const open=TOPICS[topic].q.filter(q=>!cursors[cursorKey(topic,q,d)]?.done);
-    return {topic,q:pick(open.length?open:TOPICS[topic].q),dur:d};
+    // Two times in three, use a spoken-format search for this topic.
+    const t=TOPICS[topic],talk=!!t.talk&&Math.random()<2/3;
+    const qs=talk?t.talk:t.q;
+    const open=qs.filter(q=>!cursors[cursorKey(topic,q,d)]?.done);
+    return {topic,q:pick(open.length?open:qs),dur:d,talk};
   });
 }
 
@@ -465,7 +498,7 @@ async function fetchBatch(){
   const share=followShare(),out=[];
   if(S.format!=='following'){
     const found=[];
-    for(const {topic,q,dur} of plan(share>=.4?1:2)){
+    for(const {topic,q,dur,talk} of plan(share>=.4?1:2)){
       const ck=cursorKey(topic,q,dur);
       const c=cursors[ck]||(cursors[ck]={order:pick(['date','relevance','viewCount'])});
       if(c.done)continue;
@@ -476,8 +509,8 @@ async function fetchBatch(){
       const res=await yt('search',p);
       c.token=res.nextPageToken;if(!c.token)c.done=true;
       // Remember where each video came from, so ratings can show which searches work.
-      const src={k:'search',topic,q,order:c.order,dur,cc:S.ccOnly};
-      for(const it of res.items||[]){const id=it.id?.videoId;if(id)found.push({id,topic,src})}
+      const src={k:talk?'talk':'search',topic,q,order:c.order,dur,cc:S.ccOnly};
+      for(const it of res.items||[]){const id=it.id?.videoId;if(id&&!isHidden(it.snippet?.channelId))found.push({id,topic,src})}
     }
     out.push(...await details(found));
   }
@@ -540,23 +573,28 @@ async function details(found){
   const det=await yt('videos',{part:'snippet,contentDetails,status',id:fresh.map(f=>f.id).join(',')});
   const topicOf=Object.fromEntries(fresh.map(f=>[f.id,f.topic]));
   const srcOf=Object.fromEntries(fresh.map(f=>[f.id,f.src]));
-  const out=[];
+  const out=[],other=[];
   for(const v of det.items||[]){
     const sn=v.snippet||{},cd=v.contentDetails||{};
     const dur=parseDur(cd.duration);
     if(!dur||sn.liveBroadcastContent==='live'||sn.liveBroadcastContent==='upcoming')continue;
     if(v.status&&v.status.embeddable===false)continue;   // uploads lists include videos that can't play in the app
+    if(isHidden(sn.channelId))continue;
     const text=(sn.title||'')+' '+(sn.description||'');
-    const followed=topicOf[v.id]===FOLLOW;   // you picked this creator, so skip the content filters
+    const topic=topicOf[v.id],cat=sn.categoryId||'';
+    const followed=topic===FOLLOW;   // you picked this creator, so skip the content filters
     if(!followed&&ethCount(sn.title)<3&&ethCount(text)<12)continue;   // must actually be in Fidel
     if(!followed&&TEACHING.test(text))continue;
+    if(!followed&&topic!=='music'&&!TALK_WORDS.test(sn.title||'')&&(cat===MUSIC_CAT||NO_TALK.test(sn.title||'')))continue;   // music, lyrics, slideshows
     if(S.format==='shorts'&&dur>180)continue;
     if(S.format==='long'&&dur<=180)continue;
     const th=sn.thumbnails||{};
-    out.push({id:v.id,topic:topicOf[v.id],src:srcOf[v.id],title:sn.title||'',desc:sn.description||'',channel:sn.channelTitle||'',channelId:sn.channelId||'',dur,cc:cd.caption==='true',
-      thumb:(th.maxres||th.high||th.medium||th.default||{}).url||''});
+    const item={id:v.id,topic,src:srcOf[v.id],cat,title:sn.title||'',desc:sn.description||'',channel:sn.channelTitle||'',channelId:sn.channelId||'',dur,cc:cd.caption==='true',
+      thumb:(th.maxres||th.high||th.medium||th.default||{}).url||''};
+    (followed||topic==='music'||TALK_CATS.has(cat)?out:other).push(item);
   }
-  return out;
+  // Favor talk-heavy categories: other categories make up about a third of what's kept at most.
+  return out.concat(other.slice(0,Math.max(2,Math.ceil(out.length/2))));
 }
 
 /* ================= feed ================= */
@@ -593,7 +631,7 @@ function cardHTML(v,i){
   <div class="info">
     <div class="meta"><span class="tag">${esc(t.label)} · <span lang="am">${esc(t.am)}</span></span>${v.cc?'<span class="tag cc">CC</span>':''}${gotTag(v.id)}<span class="dur">${fmt(v.dur)}</span></div>
     <h2 class="ttl" lang="am">${esc(v.title)}</h2>
-    <p class="ch"><span class="chn">${esc(v.channel)}</span>${v.channelId?`<button class="follow" data-act="follow" aria-pressed="${following}">${following?'Following':'Follow'}</button>`:''}</p>
+    <p class="ch"><span class="chn">${esc(v.channel)}</span>${v.channelId?`<button class="follow" data-act="follow" aria-pressed="${following}">${following?'Following':'Follow'}</button><button class="follow nt" data-act="notalk" aria-label="No talking: skip and hide this channel">No talking</button>`:''}</p>
     <div class="rate" hidden></div>
   </div>
   <div class="rail">
@@ -810,6 +848,7 @@ feedEl.addEventListener('click',e=>{
   if(act==='save')subNote(card,toggleList('saved',v)?'Saved. Find it in the Saved tab.':'Removed from saved');
   if(act==='share')shareVideo(v,card);
   if(act==='follow')subNote(card,toggleFollow(v)?`Following ${v.channel}. Their new videos will show up in your feed.`:`Unfollowed ${v.channel}`);
+  if(act==='notalk')noTalking(card,v);
   if(act==='ear'){
     const on=feedEl.classList.toggle('earMode');
     feedEl.querySelectorAll('[data-act=ear]').forEach(b=>b.setAttribute('aria-pressed',String(on)));
@@ -829,7 +868,7 @@ const RATES=[['Nothing','ምንም'],['A little','ትንሽ'],['Most','አብዛ
 const inList=(k,id)=>S[k].some(x=>x.id===id);
 const isFollowing=ch=>!!ch&&S.following.some(c=>c.id===ch);
 const gotTag=id=>S.ratings[id]?`<span class="tag got">Understood: ${RATES[S.ratings[id].r][0].toLowerCase()}</span>`:'';
-const keep=v=>({id:v.id,topic:v.topic,src:v.src||null,title:v.title,desc:String(v.desc||'').slice(0,1500),channel:v.channel,channelId:v.channelId||'',dur:v.dur,cc:v.cc,thumb:v.thumb,t:Date.now()});
+const keep=v=>({id:v.id,topic:v.topic,src:v.src||null,cat:v.cat||'',title:v.title,desc:String(v.desc||'').slice(0,1500),channel:v.channel,channelId:v.channelId||'',dur:v.dur,cc:v.cc,thumb:v.thumb,t:Date.now()});
 
 // Bring every card's like / save / follow buttons in line with what's stored.
 function syncCards(){
@@ -856,6 +895,27 @@ function toggleFollow(v){
 }
 // After unfollowing, don't keep showing that creator's queued videos.
 function dropFollowed(ch){followPool=followPool.filter(x=>x.channelId!==ch);delete fcursors[ch]}
+
+/* "No talking": log it (with where the video came from), hide the channel,
+   take its other videos out of the feed, and move on to the next video. */
+function noTalking(card,v){
+  if(!v.channelId)return;
+  S.skips=[{id:v.id,t:Date.now(),title:v.title,channel:v.channel,channelId:v.channelId,topic:v.topic,cat:v.cat||'',
+    dur:v.dur,src:v.src||null,watched:Math.round(watchSec[v.id]||0)},...S.skips].slice(0,500);
+  LS.set('skips',S.skips);
+  if(!isHidden(v.channelId)){S.hidden=[{id:v.channelId,title:v.channel,t:Date.now()},...S.hidden];LS.set('hidden',S.hidden)}
+  if(isFollowing(v.channelId)){S.following=S.following.filter(c=>c.id!==v.channelId);LS.set('following',S.following)}
+  dropFollowed(v.channelId);syncCards();
+  feedEl.querySelectorAll('.card[data-i]').forEach(c=>{
+    if(c!==card&&c.dataset.ch===v.channelId&&+c.dataset.i>+card.dataset.i){io.unobserve(c);c.remove()}
+  });
+  subNote(card,`Hidden: ${v.channel}. Undo in Setup.`);
+  renderHidden();
+  setTimeout(()=>{
+    const next=card.nextElementSibling;
+    if(next)feedEl.scrollTo({top:next.offsetTop,behavior:'smooth'});
+  },900);
+}
 async function shareVideo(v,card){
   const url='https://www.youtube.com/watch?v='+v.id;
   if(navigator.share){try{await navigator.share({title:v.title,url});return}catch(e){if(e.name==='AbortError')return}}
@@ -874,7 +934,7 @@ function rateVideo(card,v,r){
   S.ratings[v.id]={r,t:Date.now(),
     title:v.title,channel:v.channel,channelId:v.channelId||'',topic:v.topic,
     level:'native',            // the only level until the Kids / Easy / Native switch arrives
-    dur:v.dur,cc:!!v.cc,format:S.format,subs:S.subs,
+    dur:v.dur,cc:!!v.cc,cat:v.cat||'',format:S.format,subs:S.subs,
     src:v.src||null,via:v.via||'feed',
     watched:Math.round(watchSec[v.id]||0)};
   LS.set('ratings',S.ratings);
@@ -1088,12 +1148,22 @@ $('#keySave').addEventListener('click',async()=>{
 function syncCC(){$('#ccSw').setAttribute('aria-checked',String(S.ccOnly))}
 $('#ccSw').addEventListener('click',()=>{S.ccOnly=!S.ccOnly;LS.set('ccOnly',S.ccOnly);syncCC();topicsDirty=true});
 $('#clearSeen').addEventListener('click',e=>{S.seen.clear();LS.set('seen',[]);e.target.textContent='Cleared'});
+function renderHidden(){
+  $('#hiddenList').innerHTML=S.hidden.length?`<div class="vlist">${S.hidden.map(c=>`<div class="citem">
+    <b>${esc(c.title)}</b><button class="btn ghost small" data-unhide="${esc(c.id)}">Show again</button></div>`).join('')}</div>`
+    :'<p class="note">None yet.</p>';
+}
+$('#hiddenList').addEventListener('click',e=>{
+  const b=e.target.closest('[data-unhide]');if(!b)return;
+  S.hidden=S.hidden.filter(c=>c.id!==b.dataset.unhide);LS.set('hidden',S.hidden);renderHidden();
+});
+renderHidden();
 
 /* ================= export / import ================= */
 function exportData(){
   saveListen();
   return JSON.stringify({app:'semi',version:1,exportedAt:new Date().toISOString(),
-    words:S.words,saved:S.saved,liked:S.liked,following:S.following,
+    words:S.words,saved:S.saved,liked:S.liked,following:S.following,hidden:S.hidden,skips:S.skips,
     ratings:S.ratings,notes:S.notes,listen:S.listen,seen:[...S.seen]});
 }
 // Merge imported data into this device. Never deletes anything already here.
@@ -1107,7 +1177,11 @@ function importData(text){
     const add=(Array.isArray(d[k])?d[k]:[]).filter(x=>x&&x[key]&&!have.has(x[key]));
     S[k]=[...S[k],...add];n[k]=add.length;
   };
-  mergeList('words','w');mergeList('saved','id');mergeList('liked','id');mergeList('following','id');
+  mergeList('words','w');mergeList('saved','id');mergeList('liked','id');mergeList('following','id');mergeList('hidden','id');
+  // Skips: one per video and tap time.
+  const haveSkip=new Set(S.skips.map(x=>x.id+'|'+x.t));
+  S.skips=[...S.skips,...(Array.isArray(d.skips)?d.skips:[]).filter(x=>x&&x.id&&!haveSkip.has(x.id+'|'+x.t))]
+    .sort((a,b)=>(b.t||0)-(a.t||0)).slice(0,500);
   S.saved.sort((a,b)=>(b.t||0)-(a.t||0));S.liked.sort((a,b)=>(b.t||0)-(a.t||0));
   n.ratings=0;
   for(const [id,r] of Object.entries(d.ratings||{})){   // keep whichever rating is newer
@@ -1121,9 +1195,9 @@ function importData(text){
     const m=S.listen[day]||{w:0,l:0};S.listen[day]={w:Math.max(m.w,+x.w||0),l:Math.max(m.l,+x.l||0)};
   }
   for(const id of d.seen||[])S.seen.add(id);
-  ['words','saved','liked','following','ratings','notes','listen'].forEach(k=>LS.set(k,S[k]));
+  ['words','saved','liked','following','hidden','skips','ratings','notes','listen'].forEach(k=>LS.set(k,S[k]));
   LS.set('seen',[...S.seen].slice(-3000));
-  renderWords();
+  renderWords();renderHidden();
   return n;
 }
 $('#exportBtn').addEventListener('click',async()=>{
