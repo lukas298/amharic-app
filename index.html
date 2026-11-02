@@ -66,6 +66,7 @@ a{color:var(--accent)}
 .seg{pointer-events:auto;display:flex;background:rgba(27,25,22,.8);border:1px solid var(--line);border-radius:999px;padding:3px;backdrop-filter:blur(8px)}
 .seg button{padding:6px 12px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted)}
 .seg button[aria-pressed=true]{background:var(--text);color:var(--ink)}
+@media (max-width:420px){.topbar .seg button{padding:6px 9px}.brand small{display:none}}
 
 .info{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:56px calc(max(16px,env(safe-area-inset-right,0px)) + 66px) 22px max(16px,env(safe-area-inset-left,0px));background:linear-gradient(transparent,rgba(14,13,12,.92) 55%);pointer-events:none}
 .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px;font-size:12px;color:var(--muted)}
@@ -217,6 +218,7 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
         <button data-format="shorts">Shorts</button>
         <button data-format="mix">Mix</button>
         <button data-format="long">Long</button>
+        <button data-format="following" aria-label="Following only">Following</button>
       </div>
     </div>
     <div id="feed">
@@ -302,7 +304,7 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
           <li>Restrict it: set Websites to this app's address, and limit it to YouTube Data API v3.</li>
           <li>Paste it above.</li>
         </ol>
-        <p class="note">The free daily quota covers roughly 90 feed refills, about 1,500 videos a day.</p>
+        <p class="note">A key gets 10,000 free units a day. A feed refill uses about 100–200, and creators you follow cost almost nothing.</p>
       </details>
     </div></div>
   </section>
@@ -443,42 +445,99 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 
 const FOLLOW='_follow';   // topic id for videos from creators you follow
 const cursorKey=(topic,q,dur)=>[topic,q,dur,S.ccOnly?'cc':''].join('|');
-function plan(){
+function plan(n){
   const active=S.topics.length?S.topics:DEFAULT_TOPICS;
-  const picks=shuffle([...active]).slice(0,2);
-  const dur=()=>S.format==='shorts'?'short':S.format==='long'?'medium':pick(['short','short','medium']);
-  const out=picks.map(topic=>{
-    const d=dur();
+  const picks=shuffle([...active]).slice(0,n);
+  return picks.map(topic=>{
+    const d=S.format==='shorts'?'short':S.format==='long'?'medium':pick(['short','short','medium']);
     const open=TOPICS[topic].q.filter(q=>!cursors[cursorKey(topic,q,d)]?.done);
     return {topic,q:pick(open.length?open:TOPICS[topic].q),dur:d};
   });
-  // Half the time, swap one topic search for the latest uploads from a creator you follow.
-  const open=S.following.filter(ch=>!['short','medium'].every(d=>cursors[cursorKey(FOLLOW,ch.id,d)]?.done));
-  if(open.length&&Math.random()<.5)out[out.length-1]={topic:FOLLOW,channel:pick(open).id,dur:dur()};
-  return out;
 }
 
+// Share of the feed that comes from creators you follow: 10% per creator, up to half at 5+.
+const followShare=()=>S.format==='following'?1:Math.min(.5,S.following.length*.1);
+
+/* Feed batch. Topic searches cost 100 quota units each; a followed creator's
+   uploads list costs 1. With a big enough follow list, one search is enough
+   and followed creators fill the other half. */
 async function fetchBatch(){
-  const found=[];
-  for(const {topic,q,channel,dur} of plan()){
-    const ck=cursorKey(topic,channel||q,dur);
-    const c=cursors[ck]||(cursors[ck]={order:channel?'date':pick(['date','relevance','viewCount'])});
-    if(c.done)continue;
-    const p=channel
-      ?{part:'snippet',type:'video',channelId:channel,maxResults:25,videoEmbeddable:'true',videoDuration:dur,order:'date'}
-      :{part:'snippet',type:'video',q:q+EXCLUDE,maxResults:25,relevanceLanguage:'am',safeSearch:'moderate',videoEmbeddable:'true',videoDuration:dur,order:c.order};
-    if(!channel&&(c.order==='date'||c.order==='viewCount'))p.publishedAfter=new Date(Date.now()-365*864e5).toISOString();
-    if(S.ccOnly)p.videoCaption='closedCaption';
-    if(c.token)p.pageToken=c.token;
-    const res=await yt('search',p);
-    c.token=res.nextPageToken;if(!c.token)c.done=true;
-    // Remember where each video came from, so ratings can show which searches work.
-    const src=channel?{k:'follow',ch:channel,dur}:{k:'search',topic,q,order:c.order,dur,cc:S.ccOnly};
-    for(const it of res.items||[]){const id=it.id?.videoId;if(id)found.push({id,topic,src})}
+  const share=followShare(),out=[];
+  if(S.format!=='following'){
+    const found=[];
+    for(const {topic,q,dur} of plan(share>=.4?1:2)){
+      const ck=cursorKey(topic,q,dur);
+      const c=cursors[ck]||(cursors[ck]={order:pick(['date','relevance','viewCount'])});
+      if(c.done)continue;
+      const p={part:'snippet',type:'video',q:q+EXCLUDE,maxResults:25,relevanceLanguage:'am',safeSearch:'moderate',videoEmbeddable:'true',videoDuration:dur,order:c.order};
+      if(c.order==='date'||c.order==='viewCount')p.publishedAfter=new Date(Date.now()-365*864e5).toISOString();
+      if(S.ccOnly)p.videoCaption='closedCaption';
+      if(c.token)p.pageToken=c.token;
+      const res=await yt('search',p);
+      c.token=res.nextPageToken;if(!c.token)c.done=true;
+      // Remember where each video came from, so ratings can show which searches work.
+      const src={k:'search',topic,q,order:c.order,dur,cc:S.ccOnly};
+      for(const it of res.items||[]){const id=it.id?.videoId;if(id)found.push({id,topic,src})}
+    }
+    out.push(...await details(found));
   }
-  const fresh=[...new Map(found.filter(f=>!S.seen.has(f.id)&&!inFeed.has(f.id)).map(f=>[f.id,f])).values()];
+  if(share>0&&S.following.length){
+    const want=share>=1?12:Math.max(2,Math.round(out.length*share/(1-share)));
+    out.push(...await takeFollowed(want));
+  }
+  return shuffle(out);
+}
+
+/* Followed creators: page through each channel's uploads playlist (1 unit a page),
+   keeping filtered, ready-to-show videos in a pool. */
+let followPool=[],fcursors={};   // fcursors: channelId -> {token, done, last}
+const uploadsIds={};
+async function uploadsOf(ch){
+  if(uploadsIds[ch])return uploadsIds[ch];
+  if(/^UC/.test(ch))return uploadsIds[ch]='UU'+ch.slice(2);   // a channel's uploads list shares its ID
+  const r=await yt('channels',{part:'contentDetails',id:ch});
+  return uploadsIds[ch]=r.items?.[0]?.contentDetails?.relatedPlaylists?.uploads||null;
+}
+async function fetchUploads(ch){
+  const c=fcursors[ch.id]||(fcursors[ch.id]={});
+  c.last=Date.now();
+  try{
+    const pl=await uploadsOf(ch.id);
+    if(!pl){c.done=true;return []}
+    const res=await yt('playlistItems',{part:'contentDetails',playlistId:pl,maxResults:15,...(c.token?{pageToken:c.token}:{})});
+    c.token=res.nextPageToken;if(!c.token)c.done=true;
+    return (res.items||[]).map(it=>it.contentDetails?.videoId).filter(Boolean)
+      .map(id=>({id,topic:FOLLOW,src:{k:'follow',ch:ch.id,via:'uploads'}}));
+  }catch(e){
+    if(/quota|reach YouTube/i.test(e.message))throw e;
+    c.done=true;return [];   // channel gone or private: skip it
+  }
+}
+async function takeFollowed(want){
+  const channels=()=>new Set(followPool.map(v=>v.channelId)).size;
+  for(let tries=0;tries<3;tries++){
+    // Least recently fetched creators first, so everyone you follow gets a turn.
+    const open=S.following.filter(c=>!fcursors[c.id]?.done)
+      .sort((a,b)=>(fcursors[a.id]?.last||0)-(fcursors[b.id]?.last||0));
+    if(!open.length||(followPool.length>=want&&channels()>=Math.min(3,open.length)))break;
+    // Up to 15 newest from three creators at a time: 3 units, plus 1 for details.
+    const found=(await Promise.all(open.slice(0,3).map(fetchUploads))).flat();
+    followPool.push(...await details(found));
+  }
+  // Take videos in turn from each creator, so one channel doesn't fill the feed.
+  const lists=[...followPool.reduce((m,v)=>m.set(v.channelId,[...(m.get(v.channelId)||[]),v]),new Map()).values()];
+  const taken=[];
+  while(taken.length<want&&lists.some(l=>l.length))for(const l of lists)if(l.length&&taken.length<want)taken.push(l.shift());
+  const ids=new Set(taken.map(v=>v.id));
+  followPool=followPool.filter(v=>!ids.has(v.id));
+  return taken;
+}
+
+// Look up details for found videos (1 unit per 50) and keep the ones that fit.
+async function details(found){
+  const fresh=[...new Map(found.filter(f=>!S.seen.has(f.id)&&!inFeed.has(f.id)&&!followPool.some(p=>p.id===f.id)).map(f=>[f.id,f])).values()].slice(0,50);
   if(!fresh.length)return [];
-  const det=await yt('videos',{part:'snippet,contentDetails',id:fresh.map(f=>f.id).slice(0,50).join(',')});
+  const det=await yt('videos',{part:'snippet,contentDetails,status',id:fresh.map(f=>f.id).join(',')});
   const topicOf=Object.fromEntries(fresh.map(f=>[f.id,f.topic]));
   const srcOf=Object.fromEntries(fresh.map(f=>[f.id,f.src]));
   const out=[];
@@ -486,6 +545,7 @@ async function fetchBatch(){
     const sn=v.snippet||{},cd=v.contentDetails||{};
     const dur=parseDur(cd.duration);
     if(!dur||sn.liveBroadcastContent==='live'||sn.liveBroadcastContent==='upcoming')continue;
+    if(v.status&&v.status.embeddable===false)continue;   // uploads lists include videos that can't play in the app
     const text=(sn.title||'')+' '+(sn.description||'');
     const followed=topicOf[v.id]===FOLLOW;   // you picked this creator, so skip the content filters
     if(!followed&&ethCount(sn.title)<3&&ethCount(text)<12)continue;   // must actually be in Fidel
@@ -496,7 +556,7 @@ async function fetchBatch(){
     out.push({id:v.id,topic:topicOf[v.id],src:srcOf[v.id],title:sn.title||'',desc:sn.description||'',channel:sn.channelTitle||'',channelId:sn.channelId||'',dur,cc:cd.caption==='true',
       thumb:(th.maxres||th.high||th.medium||th.default||{}).url||''});
   }
-  return shuffle(out);
+  return out;
 }
 
 /* ================= feed ================= */
@@ -506,11 +566,14 @@ function setStatus(text,{spin=false,retry=false}={}){$('#status').textContent=te
 async function loadMore(){
   if(loading)return;
   if(!S.key){setStatus('Add your YouTube API key in Setup to start your feed.',{retry:false});return}
+  const followingOnly=S.format==='following';
+  if(followingOnly&&!S.following.length){setStatus('You\'re not following anyone yet. Switch to Shorts or Mix and tap Follow next to a creator\'s name.');return}
   loading=true;setStatus('Finding Amharic videos…',{spin:true});
   try{
     let got=[];
     for(let tries=0;tries<3&&got.length<4;tries++)got=got.concat(await fetchBatch());
     if(got.length){failStreak=0;append(got);setStatus('Scroll for more videos')}
+    else if(followingOnly)setStatus('You\'ve seen every video from the creators you follow. Follow more creators, or clear watched history in Setup.',{retry:true});
     else{failStreak++;setStatus(failStreak>2?'No new videos for these topics right now. Add more topics in Setup or switch length.':'Nothing new in that batch.',{retry:true})}
   }catch(e){setStatus(e.message||'Something went wrong loading videos.',{retry:true})}
   finally{loading=false}
@@ -557,6 +620,7 @@ function append(list){
 }
 function resetFeed(){
   stopPlayback();feed=[];inFeed.clear();failStreak=0;
+  followPool=[];fcursors={};   // pool was filtered for the old length setting
   feedEl.querySelectorAll('.card:not(.endcard)').forEach(c=>c.remove());
   feedEl.scrollTop=0;loadMore();
 }
@@ -787,8 +851,11 @@ function toggleFollow(v){
   const on=!isFollowing(v.channelId);
   S.following=on?[{id:v.channelId,title:v.channel,t:Date.now()},...S.following]:S.following.filter(c=>c.id!==v.channelId);
   LS.set('following',S.following);syncCards();
+  if(!on)dropFollowed(v.channelId);
   return on;
 }
+// After unfollowing, don't keep showing that creator's queued videos.
+function dropFollowed(ch){followPool=followPool.filter(x=>x.channelId!==ch);delete fcursors[ch]}
 async function shareVideo(v,card){
   const url='https://www.youtube.com/watch?v='+v.id;
   if(navigator.share){try{await navigator.share({title:v.title,url});return}catch(e){if(e.name==='AbortError')return}}
@@ -858,7 +925,7 @@ $('#lib').addEventListener('click',e=>{
   const r=e.target.closest('[data-remove]');
   if(r){S[libTab]=S[libTab].filter(x=>x.id!==r.dataset.remove);LS.set(libTab,S[libTab]);renderLib();return}
   const u=e.target.closest('[data-unfollow]');
-  if(u){S.following=S.following.filter(c=>c.id!==u.dataset.unfollow);LS.set('following',S.following);renderLib()}
+  if(u){S.following=S.following.filter(c=>c.id!==u.dataset.unfollow);LS.set('following',S.following);dropFollowed(u.dataset.unfollow);renderLib()}
 });
 
 /* ================= reading sheet ================= */
