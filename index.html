@@ -270,6 +270,16 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
       </div>
 
       <div>
+        <h2>Level</h2>
+        <div class="seg" role="group" aria-label="Level" id="levelSeg">
+          <button data-level="kids">Kids <span lang="am">ልጆች</span></button>
+          <button data-level="easy">Easy <span lang="am">ቀላል</span></button>
+          <button data-level="native">Native <span lang="am">መደበኛ</span></button>
+        </div>
+        <p class="note" id="levelNote"></p>
+      </div>
+
+      <div>
         <h2>What to watch</h2>
         <div class="chips" id="topicChips"></div>
       </div>
@@ -358,19 +368,26 @@ const ethCount=s=>(String(s).match(/[ሀ-፿]/g)||[]).length;
 // podcasts, conversations, vlogs, sketches), used two times in three so more videos have people talking.
 const TOPICS={
   fashion:{label:'Fashion',am:'ፋሽን',q:['ፋሽን','የሀበሻ ልብስ','ሀበሻ ቀሚስ ዲዛይን','የፋሽን ትርዒት'],
-    talk:['ፋሽን ቃለ መጠይቅ','ዲዛይነር ቃለ መጠይቅ','ፋሽን ፖድካስት','ፋሽን ቭሎግ','ሞዴል ቃለ መጠይቅ']},
+    talk:['ፋሽን ቃለ መጠይቅ','ዲዛይነር ቃለ መጠይቅ','ፋሽን ፖድካስት','ፋሽን ቭሎግ','ሞዴል ቃለ መጠይቅ'],
+    easy:['የፀጉር አሰራር','የሀበሻ ቀሚስ አለባበስ','ሜካፕ አሰራር']},
   making: {label:'Making', am:'ሥራ',  q:['ልብስ ስፌት','እንጨት ስራ','እደ ጥበብ','ሽመና','የቆዳ ስራ'],
-    talk:['የእጅ ስራ ቃለ መጠይቅ','ስራ ፈጣሪ ቃለ መጠይቅ','ልብስ ስፌት ቭሎግ','የስራ ፈጠራ ውይይት']},
+    talk:['የእጅ ስራ ቃለ መጠይቅ','ስራ ፈጣሪ ቃለ መጠይቅ','ልብስ ስፌት ቭሎግ','የስራ ፈጠራ ውይይት'],
+    easy:['ልብስ ስፌት አሰራር','የእጅ ስራ አሰራር','ቀሚስ አቆራረጥ']},
   soccer: {label:'Soccer', am:'እግር ኳስ',q:['እግር ኳስ','ኢትዮጵያ ፕሪምየር ሊግ','የእግር ኳስ ዜና','ፕሪምየር ሊግ ትንታኔ'],
-    talk:['ስፖርት ፖድካስት','የእግር ኳስ ውይይት','ተጫዋች ቃለ መጠይቅ','የስፖርት ዜና','የእግር ኳስ ትንታኔ ውይይት']},
+    talk:['ስፖርት ፖድካስት','የእግር ኳስ ውይይት','ተጫዋች ቃለ መጠይቅ','የስፖርት ዜና','የእግር ኳስ ትንታኔ ውይይት'],
+    easy:['የስፖርት ዜና','የእግር ኳስ ዜና','የዕለቱ የስፖርት ዜና']},
   food:   {label:'Food',   am:'ምግብ', q:['ምግብ አሰራር','የኢትዮጵያ ምግብ','ቀላል የምግብ አሰራር','የጎዳና ምግብ'],
-    talk:['ምግብ ቭሎግ','የምግብ አሰራር በቤት ውስጥ','ሼፍ ቃለ መጠይቅ','የጎዳና ምግብ ቃለ መጠይቅ']},
+    talk:['ምግብ ቭሎግ','የምግብ አሰራር በቤት ውስጥ','ሼፍ ቃለ መጠይቅ','የጎዳና ምግብ ቃለ መጠይቅ'],
+    easy:['ቀላል የምግብ አሰራር','የምግብ አዘገጃጀት','የቁርስ አሰራር']},
   comedy: {label:'Comedy', am:'ቀልድ', q:['አስቂኝ ቪዲዮ','ኮሜዲ','ቀልድ','አስቂኝ ድራማ'],
-    talk:['አጭር ድራማ','ፕራንክ','የመንገድ ላይ ጥያቄ','ኮሜዲ ቃለ መጠይቅ','ሲትኮም']},
+    talk:['አጭር ድራማ','ፕራንክ','የመንገድ ላይ ጥያቄ','ኮሜዲ ቃለ መጠይቅ','ሲትኮም'],
+    easy:['አስቂኝ ተረት','አስቂኝ ታሪክ','አጭር አስቂኝ ትረካ']},
   talk:   {label:'Talk',    am:'ውይይት',q:['ቃለ መጠይቅ','ፖድካስት','ውይይት','የመንገድ ላይ ቃለ መጠይቅ','ቶክ ሾው'],
-    talk:['ቃለ መጠይቅ','ፖድካስት','ውይይት','የመንገድ ላይ ቃለ መጠይቅ','ቶክ ሾው']},
+    talk:['ቃለ መጠይቅ','ፖድካስት','ውይይት','የመንገድ ላይ ቃለ መጠይቅ','ቶክ ሾው'],
+    easy:['አጭር ትረካ','የዕለቱ ዜና','የሬዲዮ ፕሮግራም']},
   vlog:   {label:'Vlogs',  am:'ቭሎግ', q:['ቭሎግ','የአዲስ አበባ ቭሎግ','የእለት ተእለት ኑሮ'],
-    talk:['ቭሎግ ውይይት','የቤተሰብ ቭሎግ','የአዲስ አበባ ቭሎግ']},
+    talk:['ቭሎግ ውይይት','የቤተሰብ ቭሎግ','የአዲስ አበባ ቭሎግ'],
+    easy:['የቀን ውሎ ቭሎግ','የቤት ቭሎግ']},
   music:  {label:'Music',  am:'ሙዚቃ', q:['አዲስ ሙዚቃ','ባህላዊ ሙዚቃ']},
 };
 const DEFAULT_TOPICS=['fashion','making','soccer','food','comedy','talk'];
@@ -378,12 +395,32 @@ const DEFAULT_TOPICS=['fashion','making','soccer','food','comedy','talk'];
 const TEACHING=/learn\s*amharic|amharic\s*(lesson|class|for beginners|alphabet|phrases|words)|how to (say|speak)|speak amharic|ትምህርት|lesson/i;
 const EXCLUDE=' -learn -lesson -ትምህርት -lyrics';
 // Titles that mean music, lyrics or a photo slideshow rather than people talking.
-const NO_TALK=/\b(music|lyrics?|mezmur|karaoke|instrumental|remix|slide ?show)\b|official (video|audio)|\baudio\b|ሙዚቃ|ዘፈን|መዝሙር|ክሊፕ|ሊሪክስ/i;
+const NO_TALK=/\b(music|lyrics?|mezmur|karaoke|instrumental|remix|slide ?show)\b|official (video|audio)|\baudio\b|ሙዚቃ|ዘፈን|መዝሙር|ዘማሪ|ክሊፕ|ሊሪክስ/i;
 // ...unless the title says it's people talking (an interview with a singer, a street quiz filed under Music).
 const TALK_WORDS=/\b(interview|podcast|talk ?show|street quiz)\b|ቃለ ?መጠይቅ|ፖድካስት|ውይይት|ጥያቄ|ቆይታ/i;
 // YouTube categories: 10 Music is dropped. These talk-heavy ones are favored:
 // 17 Sports, 22 People & Blogs, 23 Comedy, 24 Entertainment, 25 News, 26 Howto & Style.
 const MUSIC_CAT='10',TALK_CATS=new Set(['17','22','23','24','25','26']);
+
+/* ================= levels ================= */
+// Kids: children's stories and cartoons. Easy: one clear speaker at a steady pace
+// (narrated stories, news, single-host how-to). Native: everything, at full speed.
+const LEVELS={kids:{label:'Kids',am:'ልጆች'},easy:{label:'Easy',am:'ቀላል'},native:{label:'Native',am:'መደበኛ'}};
+// Searches that belong to a level rather than one of your topics.
+const LEVEL_TOPICS={
+  kids: {label:'Kids', am:'ልጆች',q:['የልጆች ተረት','ተረት ተረት','አማርኛ ተረት','የልጆች ካርቱን','የልጆች ታሪክ','Tsehai Loves Learning','የልጆች አኒሜሽን','አዝናኝ ተረት']},
+  story:{label:'Story',am:'ትረካ',q:['ትረካ','አጭር ትረካ','የሬዲዮ ትረካ','አጭር ታሪክ','አጭር ልቦለድ ትረካ']},
+  news: {label:'News', am:'ዜና', q:['የዕለቱ ዋና ዋና ዜናዎች','BBC News አማርኛ','የዕለቱ ዜና','VOA አማርኛ','የሬዲዮ ዜና']},
+};
+const topicInfo=k=>TOPICS[k]||LEVEL_TOPICS[k];
+// Kids level: the video must be marked made-for-kids, or be a story or cartoon by its title
+// ("for children" alone also matches parenting talks and church programs).
+const KIDS_WORDS=/ተረት|ካርቱን|አኒሜሽን|የልጆች ታሪክ|\b(fairy ?tales?|kids? stor(y|ies)|cartoons?|animation|tsehai)\b/i;
+// Still no lessons at any level: alphabet, numbers and colors videos are teaching.
+const KIDS_TEACH=/ፊደል|ሀ ?ሁ|ቁጥሮች|ቀለማት|\b(alphabet|abcd?|numbers|colou?rs|shapes|phonics)\b/i;
+// Easy level: skip shouty "breaking news" channels.
+const CLICKBAIT=/ሰበር/;
+const EASY_CATS=new Set([...TALK_CATS,'1','27']);
 
 /* ================= state ================= */
 // Built-in YouTube key. Google only accepts it from this app's web address (and localhost),
@@ -393,6 +430,7 @@ const S={
   key:LS.get('key','')||BUILTIN_KEY,
   topics:LS.get('topics',DEFAULT_TOPICS),
   format:LS.get('format','shorts'),
+  level:LS.get('level','native'),   // 'kids' | 'easy' | 'native'
   speed:LS.get('speed',1),
   subs:LS.get('subs',LS.get('cc',true)?'am':'off'),   // 'off' | 'am' (Fidel) | 'en'
   ccOnly:LS.get('ccOnly',false),
@@ -476,20 +514,33 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 const FOLLOW='_follow';   // topic id for videos from creators you follow
 const cursorKey=(topic,q,dur)=>[topic,q,dur,S.ccOnly?'cc':''].join('|');
 function plan(n){
-  const active=S.topics.length?S.topics:DEFAULT_TOPICS;
-  const picks=shuffle([...active]).slice(0,n);
-  return picks.map(topic=>{
+  const active=(S.topics.length?S.topics:DEFAULT_TOPICS).filter(k=>TOPICS[k]);
+  const order=shuffle([...active]);
+  return Array.from({length:n},(_,i)=>{
     const d=S.format==='shorts'?'short':S.format==='long'?'medium':pick(['short','short','medium']);
-    // Two times in three, use a spoken-format search for this topic.
-    const t=TOPICS[topic],talk=!!t.talk&&Math.random()<2/3;
-    const qs=talk?t.talk:t.q;
+    let topic,qs,k;
+    if(S.level==='kids'){topic='kids';qs=LEVEL_TOPICS.kids.q;k='kids'}
+    else if(S.level==='easy'){
+      // Half from your topics' easy searches (single-host how-to, sports news),
+      // half from narrated stories and news, which are easy on any topic.
+      const withEasy=active.filter(t=>TOPICS[t].easy);
+      if(withEasy.length&&(n>1?i===0:Math.random()<.5)){topic=pick(withEasy);qs=TOPICS[topic].easy}
+      else{topic=pick(['story','news']);qs=LEVEL_TOPICS[topic].q}
+      k='easy';
+    }else{
+      // Native: two times in three, a spoken-format search for the topic.
+      topic=order[i%order.length]||'talk';
+      const t=TOPICS[topic],talk=!!t.talk&&Math.random()<2/3;
+      qs=talk?t.talk:t.q;k=talk?'talk':'search';
+    }
     const open=qs.filter(q=>!cursors[cursorKey(topic,q,d)]?.done);
-    return {topic,q:pick(open.length?open:qs),dur:d,talk};
+    return {topic,q:pick(open.length?open:qs),dur:d,k};
   });
 }
 
 // Share of the feed that comes from creators you follow: 10% per creator, up to half at 5+.
-const followShare=()=>S.format==='following'?1:Math.min(.5,S.following.length*.1);
+// Kids level leaves them out (they're grown-up videos); Easy uses half as many.
+const followShare=()=>S.format==='following'?1:S.level==='kids'?0:Math.min(.5,S.following.length*.1)*(S.level==='easy'?.5:1);
 
 /* Feed batch. Topic searches cost 100 quota units each; a followed creator's
    uploads list costs 1. With a big enough follow list, one search is enough
@@ -498,18 +549,18 @@ async function fetchBatch(){
   const share=followShare(),out=[];
   if(S.format!=='following'){
     const found=[];
-    for(const {topic,q,dur,talk} of plan(share>=.4?1:2)){
+    for(const {topic,q,dur,k} of plan(share>=.4?1:2)){
       const ck=cursorKey(topic,q,dur);
       const c=cursors[ck]||(cursors[ck]={order:pick(['date','relevance','viewCount'])});
       if(c.done)continue;
-      const p={part:'snippet',type:'video',q:q+EXCLUDE,maxResults:25,relevanceLanguage:'am',safeSearch:'moderate',videoEmbeddable:'true',videoDuration:dur,order:c.order};
+      const p={part:'snippet',type:'video',q:q+EXCLUDE,maxResults:25,relevanceLanguage:'am',safeSearch:S.level==='kids'?'strict':'moderate',videoEmbeddable:'true',videoDuration:dur,order:c.order};
       if(c.order==='date'||c.order==='viewCount')p.publishedAfter=new Date(Date.now()-365*864e5).toISOString();
       if(S.ccOnly)p.videoCaption='closedCaption';
       if(c.token)p.pageToken=c.token;
       const res=await yt('search',p);
       c.token=res.nextPageToken;if(!c.token)c.done=true;
       // Remember where each video came from, so ratings can show which searches work.
-      const src={k:talk?'talk':'search',topic,q,order:c.order,dur,cc:S.ccOnly};
+      const src={k,level:S.level,topic,q,order:c.order,dur,cc:S.ccOnly};
       for(const it of res.items||[]){const id=it.id?.videoId;if(id&&!isHidden(it.snippet?.channelId))found.push({id,topic,src})}
     }
     out.push(...await details(found));
@@ -586,12 +637,17 @@ async function details(found){
     if(!followed&&ethCount(sn.title)<3&&ethCount(text)<12)continue;   // must actually be in Fidel
     if(!followed&&TEACHING.test(text))continue;
     if(!followed&&topic!=='music'&&!TALK_WORDS.test(sn.title||'')&&(cat===MUSIC_CAT||NO_TALK.test(sn.title||'')))continue;   // music, lyrics, slideshows
+    const kids=!!v.status?.madeForKids;
+    const level=followed?'native':(srcOf[v.id]?.level||'native');
+    if(level==='kids'&&(!(kids||KIDS_WORDS.test(sn.title||''))||KIDS_TEACH.test(text)))continue;
+    if(level==='easy'&&CLICKBAIT.test(sn.title||''))continue;
     if(S.format==='shorts'&&dur>180)continue;
     if(S.format==='long'&&dur<=180)continue;
     const th=sn.thumbnails||{};
-    const item={id:v.id,topic,src:srcOf[v.id],cat,title:sn.title||'',desc:sn.description||'',channel:sn.channelTitle||'',channelId:sn.channelId||'',dur,cc:cd.caption==='true',
+    const item={id:v.id,topic,src:srcOf[v.id],level,cat,kids,title:sn.title||'',desc:sn.description||'',channel:sn.channelTitle||'',channelId:sn.channelId||'',dur,cc:cd.caption==='true',
       thumb:(th.maxres||th.high||th.medium||th.default||{}).url||''};
-    (followed||topic==='music'||TALK_CATS.has(cat)?out:other).push(item);
+    const favored=followed||topic==='music'||(level==='kids'?kids:level==='easy'?EASY_CATS.has(cat):TALK_CATS.has(cat));
+    (favored?out:other).push(item);
   }
   // Favor talk-heavy categories: other categories make up about a third of what's kept at most.
   return out.concat(other.slice(0,Math.max(2,Math.ceil(out.length/2))));
@@ -601,24 +657,30 @@ async function details(found){
 const feedEl=$('#feed'),endEl=$('#endcard');
 function setStatus(text,{spin=false,retry=false}={}){$('#status').textContent=text;$('#spin').hidden=!spin;$('#moreBtn').hidden=!retry}
 
+// Bumped by resetFeed, so a load that started under old settings is thrown away.
+let feedGen=0,reloadAfter=false;
 async function loadMore(){
-  if(loading)return;
+  if(loading){if(!feed.length)reloadAfter=true;return}
   if(!S.key){setStatus('Add your YouTube API key in Setup to start your feed.',{retry:false});return}
   const followingOnly=S.format==='following';
   if(followingOnly&&!S.following.length){setStatus('You\'re not following anyone yet. Switch to Shorts or Mix and tap Follow next to a creator\'s name.');return}
   loading=true;setStatus('Finding Amharic videos…',{spin:true});
+  const gen=feedGen;
   try{
     let got=[];
-    for(let tries=0;tries<3&&got.length<4;tries++)got=got.concat(await fetchBatch());
+    for(let tries=0;tries<3&&got.length<4&&gen===feedGen;tries++)got=got.concat(await fetchBatch());
+    if(gen!==feedGen)return;   // settings changed while loading
     if(got.length){failStreak=0;append(got);setStatus('Scroll for more videos')}
     else if(followingOnly)setStatus('You\'ve seen every video from the creators you follow. Follow more creators, or clear watched history in Setup.',{retry:true});
-    else{failStreak++;setStatus(failStreak>2?'No new videos for these topics right now. Add more topics in Setup or switch length.':'Nothing new in that batch.',{retry:true})}
-  }catch(e){setStatus(e.message||'Something went wrong loading videos.',{retry:true})}
-  finally{loading=false}
+    else{failStreak++;setStatus(failStreak>2?(S.level!=='native'&&S.format==='shorts'
+      ?'Few short videos at this level: most stories and news run 3–10 minutes. Try Mix or Long.'
+      :'No new videos for these topics right now. Add more topics in Setup or switch length.'):'Nothing new in that batch.',{retry:true})}
+  }catch(e){if(gen===feedGen)setStatus(e.message||'Something went wrong loading videos.',{retry:true})}
+  finally{loading=false;if(reloadAfter){reloadAfter=false;loadMore()}}
 }
 
 function cardHTML(v,i){
-  const t=v.topic===FOLLOW?{label:'Following',am:'የሚከተሉት'}:TOPICS[v.topic]||{label:'Saved',am:'የተቀመጠ'};
+  const t=v.topic===FOLLOW?{label:'Following',am:'የሚከተሉት'}:topicInfo(v.topic)||{label:'Saved',am:'የተቀመጠ'};
   const following=isFollowing(v.channelId);
   return `<article class="card ${v.dur<=180?'short':'wide'}" data-i="${i}" data-ch="${esc(v.channelId||'')}">
   <div class="stage">
@@ -629,7 +691,7 @@ function cardHTML(v,i){
     <div class="subnote" role="status"></div>
   </div>
   <div class="info">
-    <div class="meta"><span class="tag">${esc(t.label)} · <span lang="am">${esc(t.am)}</span></span>${v.cc?'<span class="tag cc">CC</span>':''}${gotTag(v.id)}<span class="dur">${fmt(v.dur)}</span></div>
+    <div class="meta"><span class="tag">${esc(t.label)} · <span lang="am">${esc(t.am)}</span></span>${v.level==='easy'&&TOPICS[v.topic]?'<span class="tag">Easy</span>':''}${v.cc?'<span class="tag cc">CC</span>':''}${gotTag(v.id)}<span class="dur">${fmt(v.dur)}</span></div>
     <h2 class="ttl" lang="am">${esc(v.title)}</h2>
     <p class="ch"><span class="chn">${esc(v.channel)}</span>${v.channelId?`<button class="follow" data-act="follow" aria-pressed="${following}">${following?'Following':'Follow'}</button><button class="follow nt" data-act="notalk" aria-label="No talking: skip and hide this channel">No talking</button>`:''}</p>
     <div class="rate" hidden></div>
@@ -657,7 +719,7 @@ function append(list){
   if(wasEmpty)requestAnimationFrame(()=>{feedEl.scrollTop=0;const first=feedEl.querySelector('.card[data-i="0"]');if(first)activate(first)});
 }
 function resetFeed(){
-  stopPlayback();feed=[];inFeed.clear();failStreak=0;
+  stopPlayback();feed=[];inFeed.clear();failStreak=0;feedGen++;
   followPool=[];fcursors={};   // pool was filtered for the old length setting
   feedEl.querySelectorAll('.card:not(.endcard)').forEach(c=>c.remove());
   feedEl.scrollTop=0;loadMore();
@@ -746,6 +808,7 @@ function makePlayer(id){
       events:{
         onReady:e=>res(e.target),
         onStateChange:onPlayerState,
+        onError:onPlayerError,
         onApiChange:()=>{if(activeCard&&player._subs!==S.subs&&captionTracks(player).length)applySubs(player,activeCard,false)}
       }
     });
@@ -759,6 +822,20 @@ function onPlayerState(e){
     playingId=curId;syncPlayerVisible();
     if(player._subsFor!==curId){player._subsFor=curId;player._subs=null;applySubs(player,activeCard,false)}
   }
+}
+/* A video that won't play here (blocked from embedding, removed, or restricted, which can
+   happen with made-for-kids videos): note it and move on to the next one. */
+function onPlayerError(e){
+  const card=activeCard,v=card&&feed[+card.dataset.i];
+  if(!v||v.id!==curId||card._failed)return;
+  card._failed=true;
+  const log=LS.get('playErr',[]);log.unshift({id:v.id,t:Date.now(),code:e.data,kids:!!v.kids,level:v.level||'native'});LS.set('playErr',log.slice(0,200));
+  subNote(card,'This video can\'t play here. Skipping…');
+  setTimeout(()=>{
+    if(activeCard!==card)return;
+    const next=card.nextElementSibling;
+    if(next&&next!==endEl)feedEl.scrollTo({top:next.offsetTop,behavior:'smooth'});
+  },1400);
 }
 /* Listening time: seconds playing per day (w), and playing with sound on (l). */
 const watchSec={};          // videoId -> seconds played this session
@@ -868,7 +945,7 @@ const RATES=[['Nothing','ምንም'],['A little','ትንሽ'],['Most','አብዛ
 const inList=(k,id)=>S[k].some(x=>x.id===id);
 const isFollowing=ch=>!!ch&&S.following.some(c=>c.id===ch);
 const gotTag=id=>S.ratings[id]?`<span class="tag got">Understood: ${RATES[S.ratings[id].r][0].toLowerCase()}</span>`:'';
-const keep=v=>({id:v.id,topic:v.topic,src:v.src||null,cat:v.cat||'',title:v.title,desc:String(v.desc||'').slice(0,1500),channel:v.channel,channelId:v.channelId||'',dur:v.dur,cc:v.cc,thumb:v.thumb,t:Date.now()});
+const keep=v=>({id:v.id,topic:v.topic,src:v.src||null,cat:v.cat||'',level:v.level||'native',kids:!!v.kids,title:v.title,desc:String(v.desc||'').slice(0,1500),channel:v.channel,channelId:v.channelId||'',dur:v.dur,cc:v.cc,thumb:v.thumb,t:Date.now()});
 
 // Bring every card's like / save / follow buttons in line with what's stored.
 function syncCards(){
@@ -933,7 +1010,7 @@ function rateVideo(card,v,r){
   // Keep enough context to learn from later: who, what, how long, and where it came from.
   S.ratings[v.id]={r,t:Date.now(),
     title:v.title,channel:v.channel,channelId:v.channelId||'',topic:v.topic,
-    level:'native',            // the only level until the Kids / Easy / Native switch arrives
+    level:v.level||'native',kids:!!v.kids,
     dur:v.dur,cc:!!v.cc,cat:v.cat||'',format:S.format,subs:S.subs,
     src:v.src||null,via:v.via||'feed',
     watched:Math.round(watchSec[v.id]||0)};
@@ -1145,6 +1222,20 @@ $('#keySave').addEventListener('click',async()=>{
     if(!old||old!==k)topicsDirty=true;
   }catch(err){S.key=old;m.className='msg err';m.textContent=err.message}
 });
+const LEVEL_NOTE={
+  kids:'Children\'s stories and cartoons: slow, clear speech. Your topics and followed creators are set aside at this level.',
+  easy:'One clear speaker at a steady pace: narrated stories, news, and single-host how-to and cooking from your topics.',
+  native:'Everything: interviews, podcasts, comedy and vlogs at full speed.'
+};
+function syncLevel(){
+  document.querySelectorAll('[data-level]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.level===S.level)));
+  $('#levelNote').textContent=LEVEL_NOTE[S.level];
+}
+$('#levelSeg').addEventListener('click',e=>{
+  const b=e.target.closest('[data-level]');if(!b||b.dataset.level===S.level)return;
+  S.level=b.dataset.level;LS.set('level',S.level);syncLevel();topicsDirty=true;
+});
+syncLevel();
 function syncCC(){$('#ccSw').setAttribute('aria-checked',String(S.ccOnly))}
 $('#ccSw').addEventListener('click',()=>{S.ccOnly=!S.ccOnly;LS.set('ccOnly',S.ccOnly);syncCC();topicsDirty=true});
 $('#clearSeen').addEventListener('click',e=>{S.seen.clear();LS.set('seen',[]);e.target.textContent='Cleared'});
