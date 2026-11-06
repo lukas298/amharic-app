@@ -78,8 +78,8 @@ a{color:var(--accent)}
 .prog{position:absolute;left:0;right:0;bottom:0;height:3px;z-index:5;background:rgba(244,238,228,.15)}
 .prog i{display:block;height:100%;width:0;background:var(--accent)}
 
-.rail{position:absolute;z-index:5;right:max(10px,env(safe-area-inset-right,0px));bottom:110px;display:flex;flex-direction:column;gap:clamp(6px,1.4vh,12px);align-items:center}
-.rail button{width:clamp(40px,6vh,50px);min-height:clamp(40px,6vh,50px);border-radius:16px;background:rgba(27,25,22,.72);border:1px solid rgba(244,238,228,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;backdrop-filter:blur(8px)}
+.rail{position:absolute;z-index:5;right:max(10px,env(safe-area-inset-right,0px));bottom:110px;display:flex;flex-direction:column;gap:clamp(4px,1vh,12px);align-items:center}
+.rail button{--rb:clamp(34px,calc((100vh - 250px) / 11),50px);--rb:clamp(34px,calc((100dvh - 250px) / 11),50px);width:var(--rb);min-height:var(--rb);border-radius:16px;background:rgba(27,25,22,.72);border:1px solid rgba(244,238,228,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;backdrop-filter:blur(8px)}
 .rail button svg{width:22px;height:22px}
 .rail button span{font-size:10px;font-weight:600;color:var(--muted)}
 .rail button span[lang=am]{font-size:11px}
@@ -90,6 +90,7 @@ a{color:var(--accent)}
 .subnote{position:absolute;z-index:6;left:50%;top:calc(80px + env(safe-area-inset-top,0px));transform:translateX(-50%);max-width:80%;padding:7px 12px;border-radius:10px;background:rgba(27,25,22,.88);font-size:13px;font-weight:600;text-align:center;pointer-events:none;opacity:0;transition:opacity .25s}
 .subnote.on{opacity:1}
 @media (max-height:760px){.rail button span:not(.subl){display:none}}
+@media (max-height:700px){.rail{bottom:24px}}
 .rail button[aria-pressed=true] svg.fill{fill:currentColor}
 .rail button.like[aria-pressed=true]{background:var(--berbere);border-color:var(--berbere);color:#fff}
 
@@ -107,6 +108,28 @@ a{color:var(--accent)}
 .rate button[aria-pressed=true]{background:var(--accent);color:var(--ink)}
 .rate button[aria-pressed=true] span{color:var(--ink)}
 .tag.got{background:rgba(111,179,122,.22);color:var(--good)}
+
+/* Clips: the reusable clip controls (.clipbar), the feed's clip row, and the "Clip this" editor */
+.tag.clip{background:rgba(232,163,61,.2);color:var(--accent)}
+.card:not(.isclip) .tag.clip,.card:not(.isclip) .cliprow{display:none}
+.cliprow{pointer-events:auto;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;flex-wrap:wrap}
+.clipbar{display:flex;align-items:center;gap:6px}
+.clipbar button{height:34px;min-width:34px;padding:0 8px;border-radius:10px;background:rgba(27,25,22,.8);border:1px solid var(--line);display:grid;place-items:center;color:var(--text)}
+.clipbar button svg{width:18px;height:18px}
+.clipbar button b{font-size:12px}
+.clipbar button[aria-pressed=true]{background:var(--accent);color:var(--ink);border-color:var(--accent)}
+.clipbar .cpt{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:72px}
+.keep{height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--text);color:var(--text);font-size:12px;font-weight:700}
+.clipedit{pointer-events:auto;margin-top:10px;background:rgba(27,25,22,.94);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.clipedit .ceh{margin:0;font-size:13px;display:flex;justify-content:space-between;gap:8px}
+.clipedit .ceh span{color:var(--muted);font-variant-numeric:tabular-nums}
+.clipedit .cen{display:grid;grid-template-columns:44px 1fr 1fr;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.clipedit .cen b{color:var(--text);font-variant-numeric:tabular-nums}
+.clipedit .cen button{padding:8px 4px;border-radius:10px;background:var(--raise);color:var(--text);font-weight:700;font-size:12px}
+.clipedit .row{display:flex;gap:8px}
+.card.editing .ttl,.card.editing .ch,.card.editing .cliprow,.card.editing .rate{display:none}
+.vitem .words{display:flex;flex-wrap:wrap;gap:4px}
+.vitem .words span{font:600 12px/1.3 var(--fidel);padding:2px 6px;border-radius:6px;background:var(--raise)}
 .rail .read span{color:#fff}
 
 .endcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding-inline:max(24px,env(safe-area-inset-left,0px));background:var(--ink)}
@@ -239,6 +262,7 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
         <button data-lib="saved" aria-pressed="true">Saved</button>
         <button data-lib="liked">Liked</button>
         <button data-lib="following">Following</button>
+        <button data-lib="clips">Clips</button>
       </div>
       <div id="lib"></div>
       <p class="note">Saved, liked, and followed items are kept in this browser only.</p>
@@ -287,6 +311,8 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
       <div class="box">
         <div class="toggle"><span>Only show videos with captions</span><button class="switch" role="switch" id="ccSw" aria-label="Only show videos with captions"></button></div>
         <p class="note">Fewer videos, but more of them can show subtitles. Use the CC button on a video to switch between Fidel and English. Each only shows when the video has captions in that language.</p>
+        <div class="toggle"><span>Play longer videos as clips</span><button class="switch" role="switch" id="clipSw" aria-label="Play longer videos as clips"></button></div>
+        <p class="note">In Shorts, Mix and Following, videos over 3 minutes play a 1–3 minute part after the intro. Tap <b>Keep watching</b> for the full video. Long always shows full videos.</p>
         <div class="toggle"><span>Clear watched history</span><button class="btn ghost small" id="clearSeen">Clear</button></div>
       </div>
 
@@ -298,7 +324,7 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
 
       <div class="box">
         <h2>Your data</h2>
-        <p class="note" style="margin-top:0">Back up your words, saved videos, ratings, and listening time, move them to another device, or share them with your tutor or Claude.</p>
+        <p class="note" style="margin-top:0">Back up your words, clips, saved videos, ratings, and listening time, move them to another device, or share them with your tutor or Claude.</p>
         <div class="row" style="margin-top:12px">
           <button class="btn small" id="exportBtn">Copy my data</button>
           <button class="btn ghost small" id="importOpen">Import data</button>
@@ -442,7 +468,10 @@ const S={
   ratings:LS.get('ratings',{}),     // videoId -> {r: 0-3, t, title, channel, topic, level, dur, cc, src, watched, …}
   listen:LS.get('listen',{}),       // 'YYYY-MM-DD' -> {w: seconds playing, l: seconds playing with sound}
   seen:new Set(LS.get('seen',[])),
-  words:LS.get('words',[]),
+  words:LS.get('words',[]),         // {w, tr, src, id (video), vt (seconds into the video), clipId, box, t}
+  clips:LS.get('clips',[]),         // clip records, newest first (see makeClip)
+  clipLong:LS.get('clipLong',true), // play longer feed videos as 1–3 minute clips
+  resume:LS.get('resume',{}),       // videoId -> seconds, where you left a full video
   notes:LS.get('notes',{}),
   soundOn:false
 };
@@ -512,12 +541,14 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 
 const FOLLOW='_follow';   // topic id for videos from creators you follow
+const CLIP='_clip';       // topic id for a saved clip played from the Saved tab
 const cursorKey=(topic,q,dur)=>[topic,q,dur,S.ccOnly?'cc':''].join('|');
 function plan(n){
   const active=(S.topics.length?S.topics:DEFAULT_TOPICS).filter(k=>TOPICS[k]);
   const order=shuffle([...active]);
   return Array.from({length:n},(_,i)=>{
-    const d=S.format==='shorts'?'short':S.format==='long'?'medium':pick(['short','short','medium']);
+    // With clips on, Shorts also gets 4–20 minute videos, played as 1–3 minute clips.
+    const d=S.format==='shorts'?(S.clipLong?pick(['short','short','medium']):'short'):S.format==='long'?'medium':pick(['short','short','medium']);
     let topic,qs,k;
     if(S.level==='kids'){topic='kids';qs=LEVEL_TOPICS.kids.q;k='kids'}
     else if(S.level==='easy'){
@@ -641,7 +672,7 @@ async function details(found){
     const level=followed?'native':(srcOf[v.id]?.level||'native');
     if(level==='kids'&&(!(kids||KIDS_WORDS.test(sn.title||''))||KIDS_TEACH.test(text)))continue;
     if(level==='easy'&&CLICKBAIT.test(sn.title||''))continue;
-    if(S.format==='shorts'&&dur>180)continue;
+    if(S.format==='shorts'&&dur>(S.clipLong?1200:180))continue;
     if(S.format==='long'&&dur<=180)continue;
     const th=sn.thumbnails||{};
     const item={id:v.id,topic,src:srcOf[v.id],level,cat,kids,title:sn.title||'',desc:sn.description||'',channel:sn.channelTitle||'',channelId:sn.channelId||'',dur,cc:cd.caption==='true',
@@ -680,9 +711,9 @@ async function loadMore(){
 }
 
 function cardHTML(v,i){
-  const t=v.topic===FOLLOW?{label:'Following',am:'የሚከተሉት'}:topicInfo(v.topic)||{label:'Saved',am:'የተቀመጠ'};
+  const t=v.topic===FOLLOW?{label:'Following',am:'የሚከተሉት'}:v.topic===CLIP?{label:'Clip',am:'ቅንጭብ'}:topicInfo(v.topic)||{label:'Saved',am:'የተቀመጠ'};
   const following=isFollowing(v.channelId);
-  return `<article class="card ${v.dur<=180?'short':'wide'}" data-i="${i}" data-ch="${esc(v.channelId||'')}">
+  return `<article class="card ${v.dur<=180?'short':'wide'}${v.clip&&!v.full?' isclip':''}" data-i="${i}" data-ch="${esc(v.channelId||'')}">
   <div class="stage">
     <img class="thumb" src="${esc(v.thumb)}" alt="" loading="lazy">
     <div class="ear">${ICON.ear}<span>Listening only</span><small>Tap Read when you want to see the words.</small></div>
@@ -691,9 +722,11 @@ function cardHTML(v,i){
     <div class="subnote" role="status"></div>
   </div>
   <div class="info">
-    <div class="meta"><span class="tag">${esc(t.label)} · <span lang="am">${esc(t.am)}</span></span>${v.level==='easy'&&TOPICS[v.topic]?'<span class="tag">Easy</span>':''}${v.cc?'<span class="tag cc">CC</span>':''}${gotTag(v.id)}<span class="dur">${fmt(v.dur)}</span></div>
+    <div class="meta"><span class="tag">${esc(t.label)} · <span lang="am">${esc(t.am)}</span></span>${v.level==='easy'&&TOPICS[v.topic]?'<span class="tag">Easy</span>':''}${v.clip?`<span class="tag clip">Clip ${fmt(v.clip.start)}–${fmt(v.clip.end)}</span>`:''}${v.cc?'<span class="tag cc">CC</span>':''}${gotTag(v.id)}<span class="dur">${fmt(v.dur)}</span></div>
     <h2 class="ttl" lang="am">${esc(v.title)}</h2>
     <p class="ch"><span class="chn">${esc(v.channel)}</span>${v.channelId?`<button class="follow" data-act="follow" aria-pressed="${following}">${following?'Following':'Follow'}</button><button class="follow nt" data-act="notalk" aria-label="No talking: skip and hide this channel">No talking</button>`:''}</p>
+    ${v.clip?`<div class="cliprow"><div class="cpwrap"></div><button type="button" class="keep" data-act="keep">Keep watching ›</button></div>`:''}
+    <div class="clipedit" hidden></div>
     <div class="rate" hidden></div>
   </div>
   <div class="rail">
@@ -702,6 +735,7 @@ function cardHTML(v,i){
     <button data-act="share" aria-label="Share">${ICON.share}<span>share</span></button>
     <button data-act="sound" aria-label="Sound">${ICON.mute}</button>
     <button data-act="back" aria-label="Back 5 seconds">${ICON.back}<span>5s</span></button>
+    <button data-act="clipit" aria-label="Clip the last 10 seconds">${ICON.scissors}<span>clip</span></button>
     <button data-act="speed" aria-label="Playback speed"><b class="spd">${S.speed}×</b><span>speed</span></button>
     <button data-act="subs" aria-label="Subtitles: ${SUB_NAME[S.subs]}" aria-pressed="${S.subs!=='off'}"><b>CC</b><span class="subl">${SUB_LABEL[S.subs]}</span></button>
     <button data-act="ear" aria-label="Listen only" aria-pressed="${feedEl.classList.contains('earMode')}">${ICON.ear}<span>listen</span></button>
@@ -713,7 +747,10 @@ function cardHTML(v,i){
 function append(list){
   const wasEmpty=!feed.length;
   const frag=document.createElement('template');
-  frag.innerHTML=list.map(v=>{const i=feed.length;feed.push(v);inFeed.add(v.id);return cardHTML(v,i)}).join('');
+  frag.innerHTML=list.map(v=>{
+    if(!v.clip&&wantsClip(v)){const g=autoSegment(v);v.clip=makeClip(v,g.start,g.end,'auto');v.clip.chapter=g.chapter}
+    const i=feed.length;feed.push(v);inFeed.add(v.id);return cardHTML(v,i);
+  }).join('');
   [...frag.content.children].forEach(el=>{feedEl.insertBefore(el,endEl);io.observe(el)});
   // Snap scrolling keeps the end card in view when cards are added above it, so jump to the first video.
   if(wasEmpty)requestAnimationFrame(()=>{feedEl.scrollTop=0;const first=feedEl.querySelector('.card[data-i="0"]');if(first)activate(first)});
@@ -816,13 +853,194 @@ function makePlayer(id){
 }
 function onPlayerState(e){
   const s=e.data;
-  if(s===0){player.seekTo(0,true);player.playVideo();return}   // loop the video
+  if(s===0){if(activeCP){activeCP.ended();return}player.seekTo(0,true);player.playVideo();return}   // loop the video (or the clip)
   if(activeCard)activeCard.classList.toggle('paused',s===2);
   if(s===1&&vidOf(player)===curId){
     playingId=curId;syncPlayerVisible();
     if(player._subsFor!==curId){player._subsFor=curId;player._subs=null;applySubs(player,activeCard,false)}
   }
 }
+/* ================= clips =================
+   A clip is its own saved record pointing at part of a YouTube video:
+     {id, videoId, start, end, title, channel, level, source: 'auto'|'saved', words, transcript,
+      translation, myAttempts, box, createdAt}  (+ channelId, thumb, dur, updatedAt for display and merging)
+   'saved' clips come from "Clip this". 'auto' clips are the feed's 1–3 minute segments of longer
+   videos (kept in memory only) and the short clip stored around each word you save.
+   transcript and translation are filled in by hand later. myAttempts and box are for the
+   Practice drill to come: the app never gets caption text, so nothing here checks what you heard. */
+const newClipId=()=>'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const clipLen=c=>Math.max(1,c.end-c.start);
+const ytThumb=id=>`https://i.ytimg.com/vi/${id}/mqdefault.jpg`;
+function makeClip(v,start,end,source){
+  const now=Date.now(),dur=v.dur||0;
+  start=Math.max(0,Math.round(start));end=Math.round(dur?Math.min(end,dur):end);
+  if(end<=start)end=start+1;
+  return {id:newClipId(),videoId:v.id,start,end,title:v.title||'',channel:v.channel||'',
+    level:v.level||'native',source,words:[],transcript:'',translation:'',myAttempts:[],box:0,createdAt:now,
+    channelId:v.channelId||'',thumb:v.thumb||ytThumb(v.id),dur,updatedAt:now};
+}
+function storeClip(c){c.updatedAt=Date.now();S.clips=[c,...S.clips.filter(x=>x.id!==c.id)];LS.set('clips',S.clips);return c}
+
+/* Feed segments: start after the intro, at the first chapter in the description if it has
+   chapters, otherwise about 10% in. Run to the next chapter (1–3 minutes) or 90 seconds. */
+const toSec=s=>s.split(':').reduce((a,x)=>a*60+(+x),0);
+function chapters(desc,dur){
+  const at=new Set();
+  for(const line of String(desc||'').split('\n')){
+    const m=/(?:^|[\s(\[])((?:\d{1,2}:)?\d{1,2}:\d{2})(?![\d:])/.exec(line);
+    if(m){const s=toSec(m[1]);if(s<dur)at.add(s)}
+  }
+  const list=[...at].sort((a,b)=>a-b);
+  return list[0]===0&&list.length>=3?list:[];   // YouTube's own rule: starts at 0:00, 3+ chapters
+}
+function autoSegment(v){
+  const dur=v.dur,ch=chapters(v.desc,dur);
+  const c=ch.find(s=>s>=15&&s<=dur-45);
+  const start=c!=null?c:Math.max(0,Math.min(Math.max(30,Math.round(dur*.1)),dur-90));
+  const next=c!=null?ch.find(s=>s>c):null;
+  const len=next!=null?Math.min(180,Math.max(60,next-start)):90;
+  return {start,end:Math.min(dur,start+len),chapter:c!=null};
+}
+// Longer videos play as clips in Shorts, Mix and Following. Long shows full videos.
+const wantsClip=v=>S.clipLong&&S.format!=='long'&&v.dur>180;
+
+/* Clip player: one reusable component that plays any clip on the shared YouTube player,
+   with replay, loop and 0.75×. Give it a container for its controls; the feed uses it now,
+   and a practice card or flashcard can later do the same. Only one clip player drives the
+   shared player at a time; loading one stops the last. */
+let activeCP=null;
+async function sharedPlayer(videoId){
+  await ytReady;
+  if(!playerReady)playerReady=makePlayer(videoId);
+  return playerReady;
+}
+function ClipPlayer(root,{loop=true,onLoop=null}={}){
+  const el=document.createElement('div');el.className='clipbar';
+  el.innerHTML=`<button type="button" data-cp="replay" aria-label="Replay clip">${ICON.replay}</button>
+    <button type="button" data-cp="loop" aria-label="Loop clip" aria-pressed="${loop}">${ICON.loop}</button>
+    <button type="button" data-cp="slow" aria-label="Slow, 0.75 speed" aria-pressed="false"><b>0.75×</b></button>
+    <span class="cpt"></span>`;
+  root.append(el);
+  const time=el.querySelector('.cpt');
+  let clip=null,p=null,slow=false,timer=null;
+  const rate=()=>{try{p&&p.setPlaybackRate(slow?.75:S.speed)}catch(e){}};
+  function tick(){
+    if(activeCP!==self||!p||vidOf(p)!==clip.videoId)return;
+    const t=p.getCurrentTime()||0;
+    if(t>=clip.end-.15&&p.getPlayerState()===1){
+      p.seekTo(clip.start,true);
+      if(loop){onLoop&&onLoop()}else p.pauseVideo();
+    }
+    time.textContent=`${fmt(Math.max(0,Math.min(clipLen(clip),Math.floor(t-clip.start))))} / ${fmt(clipLen(clip))}`;
+  }
+  const self={el,
+    get clip(){return clip},
+    // Play a clip. resume: if this video is already loaded inside the clip, carry on from there.
+    async load(c,{from=null,resume=false}={}){
+      if(activeCP&&activeCP!==self)activeCP.stop();
+      activeCP=self;clip=c;
+      time.textContent=`0:00 / ${fmt(clipLen(c))}`;
+      p=await sharedPlayer(c.videoId);
+      if(activeCP!==self||clip!==c)return;
+      let at=from!=null?from:c.start;
+      if(resume&&vidOf(p)===c.videoId){const t=p.getCurrentTime();if(t>=c.start&&t<c.end-1)at=t}
+      if(vidOf(p)===c.videoId)p.seekTo(at,true);else p.loadVideoById({videoId:c.videoId,startSeconds:at});
+      rate();p.playVideo();
+      clearInterval(timer);timer=setInterval(tick,200);
+    },
+    replay(){if(!clip)return;if(activeCP!==self||!p)return self.load(clip);p.seekTo(clip.start,true);p.playVideo()},
+    setLoop(on){loop=on;el.querySelector('[data-cp=loop]').setAttribute('aria-pressed',String(on))},
+    setSlow(on){slow=on;el.querySelector('[data-cp=slow]').setAttribute('aria-pressed',String(on));if(activeCP===self)rate()},
+    stop(){clearInterval(timer);timer=null;if(activeCP===self)activeCP=null},
+    // The video itself ended inside the clip (a clip that runs to the end of the video).
+    ended(){if(!p||!clip)return;p.seekTo(clip.start,true);if(loop){p.playVideo();onLoop&&onLoop()}else p.pauseVideo()},
+    remove(){self.stop();el.remove()}
+  };
+  el.addEventListener('click',e=>{
+    const b=e.target.closest('[data-cp]');if(!b)return;e.stopPropagation();
+    if(b.dataset.cp==='replay')self.replay();
+    if(b.dataset.cp==='loop')self.setLoop(!loop);
+    if(b.dataset.cp==='slow')self.setSlow(!slow);
+  });
+  return self;
+}
+const cardCP=card=>card._cp||(card._cp=ClipPlayer(card.querySelector('.cpwrap')));
+
+/* Where you left a full video, so it picks up there next time. */
+function saveResume(v){
+  if(!v||!player||vidOf(player)!==v.id)return;
+  const t=player.getCurrentTime()||0,d=player.getDuration()||v.dur||0;
+  delete S.resume[v.id];
+  if(d>180&&t>15&&t<d-20)S.resume[v.id]=Math.round(t);
+  const keys=Object.keys(S.resume);if(keys.length>200)delete S.resume[keys[0]];
+  LS.set('resume',S.resume);
+}
+
+/* "Clip this": the last ~10 seconds, with start and end you can nudge by a second. */
+function openClipEditor(card,v){
+  if(!player||vidOf(player)!==v.id)return;
+  const t=Math.round(player.getCurrentTime()||0);
+  const draft=makeClip(v,Math.max(0,t-10),Math.max(t,2),'saved');
+  const box=card.querySelector('.clipedit');
+  box.innerHTML=`<p class="ceh"><b>New clip</b><span class="cer"></span></p>
+    <div class="cen"><span>Start</span><button type="button" data-ce="s-">−1s</button><button type="button" data-ce="s+">+1s</button>
+      <span>End</span><button type="button" data-ce="e-">−1s</button><button type="button" data-ce="e+">+1s</button></div>
+    <div class="cepw"></div>
+    <div class="row"><button type="button" class="btn small" data-ce="save">Save clip</button><button type="button" class="btn ghost small" data-ce="cancel">Cancel</button></div>`;
+  box.hidden=false;card.classList.add('editing');
+  const cp=ClipPlayer(box.querySelector('.cepw'));
+  card._edit={draft,cp,t};
+  showRange(card);cp.load(draft);
+}
+function showRange(card){
+  const d=card._edit.draft;
+  card.querySelector('.cer').textContent=`${fmt(d.start)} – ${fmt(d.end)} · ${clipLen(d)}s`;
+}
+function clipEdit(card,v,act){
+  const ed=card._edit;if(!ed)return;
+  const d=ed.draft,max=v.dur||d.end+60;
+  if(act==='s-')d.start=Math.max(0,d.start-1);
+  if(act==='s+')d.start=Math.min(d.end-1,d.start+1);
+  if(act==='e-')d.end=Math.max(d.start+1,d.end-1);
+  if(act==='e+')d.end=Math.min(max,d.end+1);
+  if(act[1]==='-'||act[1]==='+'){
+    showRange(card);
+    // After moving the end, play just the last few seconds so you hear where it stops.
+    ed.cp.load(d,{from:act[0]==='e'?Math.max(d.start,d.end-3):d.start});
+    return;
+  }
+  if(act==='save'){storeClip({...d});subNote(card,'Clip saved. Find it in Saved → Clips.')}
+  closeClipEditor(card,true);
+}
+function closeClipEditor(card,resume){
+  const ed=card._edit;if(!ed)return;
+  card._edit=null;ed.cp.remove();
+  const box=card.querySelector('.clipedit');box.hidden=true;box.innerHTML='';
+  card.classList.remove('editing');
+  if(!resume||activeCard!==card)return;
+  // Go back to where you were watching.
+  const v=feed[+card.dataset.i];
+  if(v.clip&&!v.full)cardCP(card).load(v.clip,{from:Math.min(Math.max(ed.t,v.clip.start),v.clip.end-1)});
+  else{player.seekTo(ed.t,true);try{player.setPlaybackRate(S.speed)}catch(e){}player.playVideo()}
+}
+
+/* "Keep watching": leave the clip and carry on with the full video from here. */
+function keepWatching(card,v){
+  v.full=true;card.classList.remove('isclip');
+  if(card._cp)card._cp.stop();
+  try{player.setPlaybackRate(S.speed);player.playVideo()}catch(e){}
+  subNote(card,'Playing the full video');
+}
+
+/* Saving a word links it to a short clip around the moment you heard it. */
+function clipForWord(v,t,w){
+  let c=S.clips.find(c=>c.videoId===v.id&&c.start<=t&&t<=c.end+1);
+  if(!c)c=makeClip(v,t-8,t+2,'auto');
+  if(!c.words.includes(w))c.words.push(w);
+  storeClip(c);
+  return c.id;
+}
+
 /* A video that won't play here (blocked from embedding, removed, or restricted, which can
    happen with made-for-kids videos): note it and move on to the next one. */
 function onPlayerError(e){
@@ -859,6 +1077,12 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)saveListen(
 
 function stopPlayback(){
   if(listenDirty)saveListen();
+  if(activeCard){
+    if(activeCard._edit)closeClipEditor(activeCard,false);
+    const v=feed[+activeCard.dataset.i];
+    if(v&&(!v.clip||v.full))saveResume(v);
+  }
+  if(activeCP)activeCP.stop();
   clearInterval(progTimer);clearTimeout(subsCheck);
   try{player&&player.pauseVideo&&player.pauseVideo()}catch(e){}
   if(activeCard)activeCard.classList.remove('paused');
@@ -870,12 +1094,15 @@ async function activate(card){
   const v=feed[+card.dataset.i];markSeen(v.id);curId=v.id;
   if(+card.dataset.i>=feed.length-3)loadMore();
   syncSound();
-  await ytReady;if(activeCard!==card)return;
-  const first=!playerReady;
-  if(first)playerReady=makePlayer(v.id);
-  const p=await playerReady;if(activeCard!==card)return;
-  if(!first){if(vidOf(p)===v.id)p.playVideo();else p.loadVideoById(v.id)}
-  try{p.setPlaybackRate(S.speed)}catch(x){}
+  const p=await sharedPlayer(v.id);if(activeCard!==card)return;
+  const inClip=()=>v.clip&&!v.full;
+  if(inClip())await cardCP(card).load(v.clip,{resume:true});
+  else{
+    const at=S.resume[v.id]||0;
+    if(vidOf(p)===v.id){if(at)p.seekTo(at,true)}else p.loadVideoById({videoId:v.id,startSeconds:at});
+    try{p.setPlaybackRate(S.speed)}catch(x){}
+  }
+  if(activeCard!==card)return;
   if(S.soundOn)p.unMute();
   p.playVideo();
   // If the phone blocked playback with sound, play muted instead.
@@ -887,6 +1114,13 @@ async function activate(card){
     if(vidOf(p)!==v.id){lastTick=Date.now();return}
     tickListen(p,v.id);
     const d=p.getDuration()||v.dur,t=p.getCurrentTime()||0;
+    if(inClip()){
+      // In a clip, the bar shows the clip, and the rating comes near its end.
+      const f=(t-v.clip.start)/clipLen(v.clip);
+      card.querySelector('.prog i').style.width=Math.max(0,Math.min(100,f*100))+'%';
+      if(f>=.85)askRating(card,v);
+      return;
+    }
     card.querySelector('.prog i').style.width=Math.min(100,t/d*100)+'%';
     // Ask how much you understood once you've watched most of a short, or a good chunk of a longer video.
     if(d<=75?t>=d*.85:t>=Math.min(d*.6,180))askRating(card,v);
@@ -903,6 +1137,8 @@ feedEl.addEventListener('click',e=>{
   const card=e.target.closest('.card');if(!card||card===endEl)return;
   if(card!==activeCard){activate(card);return}
   const v=feed[+card.dataset.i];
+  const ce=e.target.closest('[data-ce]');
+  if(ce){clipEdit(card,v,ce.dataset.ce);return}
   const rb=e.target.closest('[data-rate]');
   if(rb){rateVideo(card,v,+rb.dataset.rate);return}
   if(e.target.closest('.tap')){
@@ -926,6 +1162,8 @@ feedEl.addEventListener('click',e=>{
   if(act==='share')shareVideo(v,card);
   if(act==='follow')subNote(card,toggleFollow(v)?`Following ${v.channel}. Their new videos will show up in your feed.`:`Unfollowed ${v.channel}`);
   if(act==='notalk')noTalking(card,v);
+  if(act==='clipit'&&!card._edit)openClipEditor(card,v);
+  if(act==='keep')keepWatching(card,v);
   if(act==='ear'){
     const on=feedEl.classList.toggle('earMode');
     feedEl.querySelectorAll('[data-act=ear]').forEach(b=>b.setAttribute('aria-pressed',String(on)));
@@ -1013,6 +1251,7 @@ function rateVideo(card,v,r){
     level:v.level||'native',kids:!!v.kids,
     dur:v.dur,cc:!!v.cc,cat:v.cat||'',format:S.format,subs:S.subs,
     src:v.src||null,via:v.via||'feed',
+    clip:v.clip&&!v.full?{start:v.clip.start,end:v.clip.end,id:v.topic===CLIP?v.clip.id:null}:null,
     watched:Math.round(watchSec[v.id]||0)};
   LS.set('ratings',S.ratings);
   card.querySelectorAll('[data-rate]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.rate===r)));
@@ -1034,6 +1273,11 @@ function playVideo(v){
   requestAnimationFrame(()=>{el.scrollIntoView({block:'start'});activate(el)});
 }
 
+// Play a stored clip in the feed (later, Practice and flashcards can play it with ClipPlayer directly).
+function playClip(c){
+  playVideo({id:c.videoId,topic:CLIP,src:{k:'clip',clip:c.id},level:c.level,title:c.title,desc:'',channel:c.channel,
+    channelId:c.channelId||'',dur:c.dur||c.end,cc:false,thumb:c.thumb||ytThumb(c.videoId),clip:c});
+}
 let libTab='saved';
 function renderLib(){
   document.querySelectorAll('[data-lib]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lib===libTab)));
@@ -1044,6 +1288,18 @@ function renderLib(){
         <div class="acts"><a class="iconbtn" href="https://www.youtube.com/channel/${esc(c.id)}" target="_blank" rel="noopener" aria-label="Open on YouTube">${ICON.ext}</a>
         <button class="btn ghost small" data-unfollow="${esc(c.id)}">Unfollow</button></div></div>`).join('')}</div>`
       :`<p class="empty">You're not following anyone yet. Tap <b>Follow</b> next to a creator's name in the feed, and their new videos will show up in your feed.</p>`;
+    return;
+  }
+  if(libTab==='clips'){
+    el.innerHTML=S.clips.length?`<div class="vlist">${S.clips.map(c=>`<div class="vitem">
+        <button class="vt" data-clip="${esc(c.id)}" style="background-image:url('${esc(c.thumb||ytThumb(c.videoId))}')" aria-label="Play clip"><span>${clipLen(c)}s</span></button>
+        <div class="vm"><b lang="am">${esc(c.title)}</b>
+          <small>${fmt(c.start)}–${fmt(c.end)} · ${c.source==='saved'?'Clipped by you':'Saved word'} · ${esc(c.channel)}</small>
+          ${c.words.length?`<div class="words">${c.words.map(w=>`<span lang="am">${esc(w)}</span>`).join('')}</div>`:''}</div>
+        <div class="acts"><button class="iconbtn" data-clip="${esc(c.id)}" aria-label="Play clip">${ICON.playSm}</button>
+        <button class="iconbtn" data-unclip="${esc(c.id)}" aria-label="Delete clip">${ICON.x}</button></div>
+      </div>`).join('')}</div>`
+      :`<p class="empty">No clips yet. While a video plays, tap <b>clip</b> to keep the last 10 seconds. Words you save also get a short clip of where you heard them.</p>`;
     return;
   }
   const list=S[libTab];
@@ -1061,12 +1317,20 @@ $('#lib').addEventListener('click',e=>{
   if(p){const v=S[libTab].find(x=>x.id===p.dataset.play);if(v)playVideo(v);return}
   const r=e.target.closest('[data-remove]');
   if(r){S[libTab]=S[libTab].filter(x=>x.id!==r.dataset.remove);LS.set(libTab,S[libTab]);renderLib();return}
+  const c=e.target.closest('[data-clip]');
+  if(c){const x=S.clips.find(k=>k.id===c.dataset.clip);if(x)playClip(x);return}
+  const uc=e.target.closest('[data-unclip]');
+  if(uc){
+    const id=uc.dataset.unclip;S.clips=S.clips.filter(k=>k.id!==id);LS.set('clips',S.clips);
+    S.words.forEach(w=>{if(w.clipId===id)delete w.clipId});LS.set('words',S.words);
+    renderLib();return;
+  }
   const u=e.target.closest('[data-unfollow]');
   if(u){S.following=S.following.filter(c=>c.id!==u.dataset.unfollow);LS.set('following',S.following);dropFollowed(u.dataset.unfollow);renderLib()}
 });
 
 /* ================= reading sheet ================= */
-let sheetVideo=null,selWord=null;
+let sheetVideo=null,selWord=null,sheetT=null;   // sheetT: seconds into the video when the sheet opened
 function wordify(text){
   return String(text).split(/([ሀ-ፚ]+)/).map((seg,i)=>{
     if(i%2===0)return esc(seg);
@@ -1080,6 +1344,8 @@ function cleanDesc(d){
 }
 function openSheet(v){
   sheetVideo=v;selWord=null;$('#wordbar').hidden=true;
+  sheetT=null;
+  try{if(player&&vidOf(player)===v.id)sheetT=player.getCurrentTime()}catch(e){}
   try{player&&player.pauseVideo()}catch(e){}
   const desc=cleanDesc(v.desc);
   const note=S.notes[v.id]||'';
@@ -1139,7 +1405,10 @@ $('#sheetBody').addEventListener('click',async e=>{
 $('#sheetBody').addEventListener('input',e=>{if(e.target.id==='noteIn'&&sheetVideo){S.notes[sheetVideo.id]=e.target.value;LS.set('notes',S.notes)}});
 $('#wbSave').addEventListener('click',()=>{
   if(!selWord||S.words.some(x=>x.w===selWord))return;
-  S.words.unshift({w:selWord,tr:translit(selWord),src:sheetVideo.title,id:sheetVideo.id,box:0,t:Date.now()});
+  const word={w:selWord,tr:translit(selWord),src:sheetVideo.title,id:sheetVideo.id,box:0,t:Date.now()};
+  // Note when in the video you heard it, and link it to a short clip of that moment.
+  if(sheetT!=null){word.vt=Math.round(sheetT);word.clipId=clipForWord(sheetVideo,sheetT,selWord)}
+  S.words.unshift(word);
   LS.set('words',S.words);$('#wbSave').textContent='Saved';
   document.querySelectorAll(`.w[data-w="${CSS.escape(selWord)}"]`).forEach(x=>x.classList.add('saved'));
   renderWords();
@@ -1156,7 +1425,7 @@ function renderWords(){
         <a class="iconbtn" href="https://translate.google.com/?sl=am&tl=en&op=translate&text=${encodeURIComponent(w.w)}" target="_blank" rel="noopener" aria-label="Translate ${esc(w.w)}">${ICON.ext}</a>
         <button class="iconbtn" data-del="${i}" aria-label="Remove ${esc(w.w)}">${ICON.x}</button>
       </div>
-      <div class="src">from ${esc(w.src)}</div>
+      <div class="src">from ${esc(w.src)}${w.vt!=null?` · at ${fmt(w.vt)}`:''}</div>
     </div>`).join(''):`<p class="empty">No words yet. In the feed, tap <b>አንብብ</b>, then tap any word to save it.</p>`;
 }
 $('#wlist').addEventListener('click',e=>{
@@ -1236,6 +1505,9 @@ $('#levelSeg').addEventListener('click',e=>{
   S.level=b.dataset.level;LS.set('level',S.level);syncLevel();topicsDirty=true;
 });
 syncLevel();
+function syncClipSw(){$('#clipSw').setAttribute('aria-checked',String(S.clipLong))}
+$('#clipSw').addEventListener('click',()=>{S.clipLong=!S.clipLong;LS.set('clipLong',S.clipLong);syncClipSw();topicsDirty=true});
+syncClipSw();
 function syncCC(){$('#ccSw').setAttribute('aria-checked',String(S.ccOnly))}
 $('#ccSw').addEventListener('click',()=>{S.ccOnly=!S.ccOnly;LS.set('ccOnly',S.ccOnly);syncCC();topicsDirty=true});
 $('#clearSeen').addEventListener('click',e=>{S.seen.clear();LS.set('seen',[]);e.target.textContent='Cleared'});
@@ -1254,7 +1526,7 @@ renderHidden();
 function exportData(){
   saveListen();
   return JSON.stringify({app:'semi',version:1,exportedAt:new Date().toISOString(),
-    words:S.words,saved:S.saved,liked:S.liked,following:S.following,hidden:S.hidden,skips:S.skips,
+    words:S.words,saved:S.saved,liked:S.liked,following:S.following,hidden:S.hidden,skips:S.skips,clips:S.clips,
     ratings:S.ratings,notes:S.notes,listen:S.listen,seen:[...S.seen]});
 }
 // Merge imported data into this device. Never deletes anything already here.
@@ -1269,6 +1541,19 @@ function importData(text){
     S[k]=[...S[k],...add];n[k]=add.length;
   };
   mergeList('words','w');mergeList('saved','id');mergeList('liked','id');mergeList('following','id');mergeList('hidden','id');
+  // Clips: add new ones; for a clip on both devices, keep the newer edit plus every word and attempt.
+  n.clips=0;
+  for(const c of Array.isArray(d.clips)?d.clips:[]){
+    if(!c||!c.id||!c.videoId)continue;
+    const mine=S.clips.find(x=>x.id===c.id);
+    if(!mine){S.clips.push(c);n.clips++;continue}
+    const newer=(c.updatedAt||0)>(mine.updatedAt||0)?c:mine;
+    const words=[...new Set([...(mine.words||[]),...(c.words||[])])];
+    const seenA=new Set((mine.myAttempts||[]).map(a=>a.t));
+    const attempts=[...(mine.myAttempts||[]),...(c.myAttempts||[]).filter(a=>!seenA.has(a.t))];
+    Object.assign(mine,newer,{words,myAttempts:attempts});
+  }
+  S.clips.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
   // Skips: one per video and tap time.
   const haveSkip=new Set(S.skips.map(x=>x.id+'|'+x.t));
   S.skips=[...S.skips,...(Array.isArray(d.skips)?d.skips:[]).filter(x=>x&&x.id&&!haveSkip.has(x.id+'|'+x.t))]
@@ -1286,7 +1571,7 @@ function importData(text){
     const m=S.listen[day]||{w:0,l:0};S.listen[day]={w:Math.max(m.w,+x.w||0),l:Math.max(m.l,+x.l||0)};
   }
   for(const id of d.seen||[])S.seen.add(id);
-  ['words','saved','liked','following','hidden','skips','ratings','notes','listen'].forEach(k=>LS.set(k,S[k]));
+  ['words','saved','liked','following','hidden','skips','clips','ratings','notes','listen'].forEach(k=>LS.set(k,S[k]));
   LS.set('seen',[...S.seen].slice(-3000));
   renderWords();renderHidden();
   return n;
@@ -1301,7 +1586,7 @@ $('#importBtn').addEventListener('click',()=>{
   const m=$('#dataMsg');
   try{
     const n=importData($('#importIn').value);
-    const parts=[[n.words,'word'],[n.saved,'saved video'],[n.liked,'liked video'],[n.following,'creator'],[n.ratings,'rating']]
+    const parts=[[n.words,'word'],[n.saved,'saved video'],[n.liked,'liked video'],[n.following,'creator'],[n.clips,'clip'],[n.ratings,'rating']]
       .filter(([c])=>c).map(([c,w])=>`${c} ${w}${c===1?'':'s'}`);
     m.className='msg ok';
     m.textContent=parts.length?`Added ${parts.join(', ')}. Everything already here was kept.`:'Nothing new to add. This device already has all of it.';
@@ -1346,6 +1631,9 @@ const ICON={
   bookmark:sv('<path d="M6 3h12v18l-6-4-6 4z"/>','class="fill"'),
   share:sv('<path d="M12 3v13M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>'),
   playSm:sv('<path d="M8 5l11 7-11 7z" fill="currentColor"/>'),
+  scissors:sv('<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/>'),
+  loop:sv('<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>'),
+  replay:sv('<path d="M6 5v14"/><path d="M19 5L9 12l10 7z"/>'),
   x:sv('<path d="M6 6l12 12M18 6L6 18"/>')
 };
 
