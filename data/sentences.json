@@ -1,0 +1,627 @@
+{
+ "_about": "First practice sentences for Semi, written by Claude using only Lukas's class vocab (plus ቲቪ) and the patterns he knows. Have a tutor spot-check them. \"words\" links each word as written in the sentence to its vocab entry (dictionary form). Words not in the vocab (like እሱ, እሷ, ቲቪ) have no link.",
+ "sentences": [
+  {
+   "id": "s001",
+   "pattern": "past",
+   "am": "ትናንት ማታ ሙዝ በላሁ።",
+   "roman": "tinant mata muz belahu.",
+   "en": "Yesterday evening I ate a banana.",
+   "words": {
+    "ትናንት": "ትናንት",
+    "ማታ": "ማታ",
+    "ሙዝ": "ሙዝ",
+    "በላሁ": "መብላት"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s002",
+   "pattern": "past",
+   "am": "እሷ ፈተናውን ጨረሰች።",
+   "roman": "isswa fetenawn ch'eresech.",
+   "en": "She finished the exam.",
+   "words": {
+    "ፈተናውን": "ፈተና",
+    "ጨረሰች": "መጨረስ"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s003",
+   "pattern": "past",
+   "am": "ትናንት ዘነበ።",
+   "roman": "tinant zenebe.",
+   "en": "It rained yesterday.",
+   "words": {
+    "ትናንት": "ትናንት",
+    "ዘነበ": "መዝነብ"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s004",
+   "pattern": "past",
+   "am": "እሱ ቢሮ ደረሰ።",
+   "roman": "issu biro derese.",
+   "en": "He arrived at the office.",
+   "words": {
+    "ቢሮ": "ቢሮ",
+    "ደረሰ": "መድረስ"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s005",
+   "pattern": "past-neg",
+   "am": "ፈተናውን አልጨረስኩም።",
+   "roman": "fetenawn alch'ereskum.",
+   "en": "I didn't finish the exam.",
+   "words": {
+    "ፈተናውን": "ፈተና",
+    "አልጨረስኩም": "መጨረስ"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s006",
+   "pattern": "past-neg",
+   "am": "እሱ ገንዘቡን አልከፈለም።",
+   "roman": "issu genzebun alkefelem.",
+   "en": "He didn't pay the money.",
+   "words": {
+    "ገንዘቡን": "ገንዘብ",
+    "አልከፈለም": "መክፈል"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s007",
+   "pattern": "past-neg",
+   "am": "ትናንት አልዘነበም።",
+   "roman": "tinant alzenebem.",
+   "en": "It didn't rain yesterday.",
+   "words": {
+    "ትናንት": "ትናንት",
+    "አልዘነበም": "መዝነብ"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s008",
+   "pattern": "past-neg",
+   "am": "እነሱ አልሰሙም።",
+   "roman": "innesu alsemum.",
+   "en": "They didn't listen.",
+   "words": {
+    "አልሰሙም": "መስማት"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s009",
+   "pattern": "present",
+   "am": "ሁል ቀን አጠናለሁ።",
+   "roman": "hul qen at'enalehu.",
+   "en": "I study every day.",
+   "words": {
+    "ሁል": "ሁል ቀን",
+    "ቀን": "ሁል ቀን",
+    "አጠናለሁ": "ማጥናት"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s010",
+   "pattern": "present",
+   "am": "እሷ በደንብ ታበስላለች።",
+   "roman": "isswa bedenb tabeslalech.",
+   "en": "She cooks well.",
+   "words": {
+    "በደንብ": "በደንብ",
+    "ታበስላለች": "ማብሰል"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s011",
+   "pattern": "present",
+   "am": "ማታ ይዘንባል።",
+   "roman": "mata yizenbal.",
+   "en": "It rains in the evening.",
+   "words": {
+    "ማታ": "ማታ",
+    "ይዘንባል": "መዝነብ"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s012",
+   "pattern": "present",
+   "am": "እሱ ቢሮ ይሰራል።",
+   "roman": "issu biro yiseral.",
+   "en": "He works at an office.",
+   "words": {
+    "ቢሮ": "ቢሮ",
+    "ይሰራል": "መስራት"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s013",
+   "pattern": "present-neg",
+   "am": "እሷ ማታ አትበላም።",
+   "roman": "isswa mata atbelam.",
+   "en": "She doesn't eat in the evening.",
+   "words": {
+    "ማታ": "ማታ",
+    "አትበላም": "መብላት"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s014",
+   "pattern": "present-neg",
+   "am": "እሱ በደንብ አያነብም።",
+   "roman": "issu bedenb ayanebim.",
+   "en": "He doesn't read well.",
+   "words": {
+    "በደንብ": "በደንብ",
+    "አያነብም": "ማንበብ"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s015",
+   "pattern": "present-neg",
+   "am": "እኛ ገንዘብ አናጠራቅምም።",
+   "roman": "inya genzeb anat'eraqimim.",
+   "en": "We don't save money.",
+   "words": {
+    "ገንዘብ": "ገንዘብ",
+    "አናጠራቅምም": "ማጠራቀም"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s016",
+   "pattern": "present-neg",
+   "am": "ማታ አይዘንብም።",
+   "roman": "mata ayzenbim.",
+   "en": "It doesn't rain in the evening.",
+   "words": {
+    "ማታ": "ማታ",
+    "አይዘንብም": "መዝነብ"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s017",
+   "pattern": "present-cont",
+   "am": "አሁን እያጠናሁ ነው።",
+   "roman": "ahun iyat'enahu new.",
+   "en": "I'm studying now.",
+   "words": {
+    "እያጠናሁ": "ማጥናት",
+    "ነው": "መሆን"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s018",
+   "pattern": "present-cont",
+   "am": "ዝናብ እየዘነበ ነው።",
+   "roman": "zinab iyezenebe new.",
+   "en": "It's raining.",
+   "words": {
+    "ዝናብ": "ዝናብ",
+    "እየዘነበ": "መዝነብ",
+    "ነው": "መሆን"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s019",
+   "pattern": "present-cont",
+   "am": "እሷ እያበሰለች ነው።",
+   "roman": "isswa iyabeselech new.",
+   "en": "She is cooking.",
+   "words": {
+    "እያበሰለች": "ማብሰል",
+    "ነው": "መሆን"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s020",
+   "pattern": "present-cont",
+   "am": "እነሱ እየተጫወቱ ነው።",
+   "roman": "innesu iyetech'awetu new.",
+   "en": "They are playing.",
+   "words": {
+    "እየተጫወቱ": "መጫወት",
+    "ነው": "መሆን"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s021",
+   "pattern": "present-cont-neg",
+   "am": "እያጠናሁ አይደለም።",
+   "roman": "iyat'enahu aydelem.",
+   "en": "I'm not studying.",
+   "words": {
+    "እያጠናሁ": "ማጥናት",
+    "አይደለም": "አይደለም"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s022",
+   "pattern": "present-cont-neg",
+   "am": "እሱ እየሰራ አይደለም፤ እያረፈ ነው።",
+   "roman": "issu iyesera aydelem; iyarefe new.",
+   "en": "He isn't working; he's resting.",
+   "words": {
+    "እየሰራ": "መስራት",
+    "አይደለም": "አይደለም",
+    "እያረፈ": "ማረፍ",
+    "ነው": "መሆን"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s023",
+   "pattern": "past-cont",
+   "am": "ትናንት ማታ እያነበብኩ ነበር።",
+   "roman": "tinant mata iyanebebku neber.",
+   "en": "Last night I was reading.",
+   "words": {
+    "ትናንት": "ትናንት",
+    "ማታ": "ማታ",
+    "እያነበብኩ": "ማንበብ",
+    "ነበር": "መሆን"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s024",
+   "pattern": "past-cont",
+   "am": "እሷ እየሳቀች ነበር።",
+   "roman": "isswa iyesaqech neber.",
+   "en": "She was laughing.",
+   "words": {
+    "እየሳቀች": "መሳቅ",
+    "ነበር": "መሆን"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s025",
+   "pattern": "past-cont-neg",
+   "am": "እያጠናሁ አልነበረም፤ ቲቪ እያየሁ ነበር።",
+   "roman": "iyat'enahu alneberem; tivi iyayehu neber.",
+   "en": "I wasn't studying; I was watching TV.",
+   "words": {
+    "እያጠናሁ": "ማጥናት",
+    "አልነበረም": "መሆን",
+    "እያየሁ": "ማየት",
+    "ነበር": "መሆን"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s026",
+   "pattern": "when",
+   "am": "ስደክም አርፋለሁ።",
+   "roman": "sidekim arfalehu.",
+   "en": "When I'm tired, I rest.",
+   "words": {
+    "ስደክም": "መድከም",
+    "አርፋለሁ": "ማረፍ"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s027",
+   "pattern": "when",
+   "am": "ፀሐይዋ ስትገባ ኮከቦችን እናያለን።",
+   "roman": "ts'ehaywa sitgeba kokebochin inayalen.",
+   "en": "When the sun sets, we see the stars.",
+   "words": {
+    "ፀሐይዋ": "ፀሐይ",
+    "ስትገባ": "መግባት",
+    "ኮከቦችን": "ኮከብ",
+    "እናያለን": "ማየት"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s028",
+   "pattern": "when",
+   "am": "ስትደውልልኝ እያበሰልኩ ነበር።",
+   "roman": "sitdewilliny iyabeselku neber.",
+   "en": "When you called me, I was cooking.",
+   "words": {
+    "ስትደውልልኝ": "መደወል",
+    "እያበሰልኩ": "ማብሰል",
+    "ነበር": "መሆን"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s029",
+   "pattern": "when-neg",
+   "am": "ዝናቡ ሳይመጣ ቢሮ ደረስኩ።",
+   "roman": "zinabu saymet'a biro deresku.",
+   "en": "I got to the office before the rain came.",
+   "words": {
+    "ዝናቡ": "ዝናብ",
+    "ቢሮ": "ቢሮ",
+    "ደረስኩ": "መድረስ"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s030",
+   "pattern": "when-neg",
+   "am": "ሳላጠና ፈተና ገባሁ።",
+   "roman": "salat'ena fetena gebahu.",
+   "en": "I went into the exam without studying.",
+   "words": {
+    "ሳላጠና": "ማጥናት",
+    "ፈተና": "ፈተና",
+    "ገባሁ": "መግባት"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s031",
+   "pattern": "if",
+   "am": "ከደከመህ እረፍ።",
+   "roman": "kedekemeh iref.",
+   "en": "If you're tired, rest.",
+   "words": {
+    "ከደከመህ": "መድከም",
+    "እረፍ": "ማረፍ"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s032",
+   "pattern": "if",
+   "am": "ዝናብ ከዘነበ አልወጣም።",
+   "roman": "zinab kezenebe alwet'am.",
+   "en": "If it rains, I won't go out.",
+   "words": {
+    "ዝናብ": "ዝናብ",
+    "ከዘነበ": "መዝነብ",
+    "አልወጣም": "መውጣት"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s033",
+   "pattern": "if",
+   "am": "በደንብ ካጠናህ ፈተናውን ታልፋለህ።",
+   "roman": "bedenb kat'enah fetenawn talfaleh.",
+   "en": "If you study well, you'll pass the exam.",
+   "words": {
+    "በደንብ": "በደንብ",
+    "ካጠናህ": "ማጥናት",
+    "ፈተናውን": "ፈተና",
+    "ታልፋለህ": "ማለፍ"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s034",
+   "pattern": "if-neg",
+   "am": "ቶሎ ካልደረስክ አልጠብቅህም።",
+   "roman": "tolo kalderesk alt'ebiqihim.",
+   "en": "If you don't get here soon, I won't wait for you.",
+   "words": {
+    "ቶሎ": "ቶሎ",
+    "ካልደረስክ": "መድረስ",
+    "አልጠብቅህም": "መጠበቅ"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s035",
+   "pattern": "if-neg",
+   "am": "ካላጠናሽ ፈተናውን አታልፊም።",
+   "roman": "kalat'enash fetenawn atalfim.",
+   "en": "If you (f.) don't study, you won't pass the exam.",
+   "words": {
+    "ካላጠናሽ": "ማጥናት",
+    "ፈተናውን": "ፈተና",
+    "አታልፊም": "ማለፍ"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s036",
+   "pattern": "because",
+   "am": "ስለደከመኝ አረፍኩ።",
+   "roman": "seledekemenyi arefku.",
+   "en": "Because I was tired, I rested.",
+   "words": {
+    "ስለደከመኝ": "መድከም",
+    "አረፍኩ": "ማረፍ"
+   },
+   "level": 1,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s037",
+   "pattern": "because",
+   "am": "ስለዘነበ አልወጣንም።",
+   "roman": "selezenebe alwet'anim.",
+   "en": "Because it rained, we didn't go out.",
+   "words": {
+    "ስለዘነበ": "መዝነብ",
+    "አልወጣንም": "መውጣት"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s038",
+   "pattern": "because",
+   "am": "በደንብ ስላጠናች ፈተናውን አለፈች።",
+   "roman": "bedenb selat'enach fetenawn alefech.",
+   "en": "Because she studied well, she passed the exam.",
+   "words": {
+    "በደንብ": "በደንብ",
+    "ስላጠናች": "ማጥናት",
+    "ፈተናውን": "ፈተና",
+    "አለፈች": "ማለፍ"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s039",
+   "pattern": "because-neg",
+   "am": "ስላልበላሁ ርቦኛል።",
+   "roman": "selalbelahu ribonyal.",
+   "en": "Because I didn't eat, I'm hungry.",
+   "words": {
+    "ስላልበላሁ": "መብላት",
+    "ርቦኛል": "መራብ"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  },
+  {
+   "id": "s040",
+   "pattern": "because-neg",
+   "am": "ስላላጠና ፈተናውን አላለፈም።",
+   "roman": "selalat'ena fetenawn alalefem.",
+   "en": "Because he didn't study, he didn't pass the exam.",
+   "words": {
+    "ስላላጠና": "ማጥናት",
+    "ፈተናውን": "ፈተና",
+    "አላለፈም": "ማለፍ"
+   },
+   "level": 2,
+   "tags": [
+    "set-01"
+   ]
+  }
+ ]
+}
