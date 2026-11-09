@@ -1,0 +1,2467 @@
+{
+ "_about": "Lukas's class vocabulary for Semi's Practice section, built from the top sections of his class notes (notes-01 to notes-22). Romanization: e = first-order vowel, i = sixth-order, ' after a consonant = ejective (t', ch', ts'), q = ቀ, ny = ኝ/ኘ.",
+ "words": [
+  {
+   "am": "ከእንቅልፌ",
+   "roman": "ke'inqilfe",
+   "en": "from my sleep",
+   "pos": "phrase",
+   "notes": "ከ (from) + እንቅልፍ (sleep) + -ኤ (my)",
+   "tags": [
+    "class",
+    "notes-01"
+   ]
+  },
+  {
+   "am": "መንቃት",
+   "roman": "menqat",
+   "en": "to wake up",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-01"
+   ]
+  },
+  {
+   "am": "መስማት",
+   "roman": "mesmat",
+   "en": "to hear, to listen",
+   "pos": "verb",
+   "notes": "Hearing in general. Compare ማዳመጥ.",
+   "tags": [
+    "class",
+    "notes-01"
+   ]
+  },
+  {
+   "am": "ማዳመጥ",
+   "roman": "madamet'",
+   "en": "to listen (pay attention)",
+   "pos": "verb",
+   "notes": "Listening carefully, to understand. Compare መስማት.",
+   "tags": [
+    "class",
+    "notes-01"
+   ]
+  },
+  {
+   "am": "መጨመር",
+   "roman": "mech'emer",
+   "en": "to add",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-01"
+   ]
+  },
+  {
+   "am": "ጨው",
+   "roman": "ch'ew",
+   "en": "salt",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-01"
+   ]
+  },
+  {
+   "am": "ማጥናት",
+   "roman": "mat'nat",
+   "en": "to study",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-01"
+   ]
+  },
+  {
+   "am": "መስራት",
+   "roman": "meserat",
+   "en": "to work",
+   "pos": "verb",
+   "notes": "Also spelled መሥራት.",
+   "tags": [
+    "class",
+    "notes-01"
+   ]
+  },
+  {
+   "am": "ማጠብ",
+   "roman": "mat'eb",
+   "en": "to wash",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-01"
+   ]
+  },
+  {
+   "am": "ስለ",
+   "roman": "sele",
+   "en": "because (+ past verb)",
+   "pos": "grammar",
+   "notes": "ስለ + past = because. ስለሰራሁ = because I worked. Before አ it merges: ስላጠብኩ.",
+   "tags": [
+    "class",
+    "notes-01"
+   ]
+  },
+  {
+   "am": "መጨረስ",
+   "roman": "mech'eres",
+   "en": "to finish",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-02"
+   ]
+  },
+  {
+   "am": "መዝነብ",
+   "roman": "mezneb",
+   "en": "to rain",
+   "pos": "verb",
+   "notes": "You wrote mezeb; there's an n: mez-neb.",
+   "tags": [
+    "class",
+    "notes-02"
+   ]
+  },
+  {
+   "am": "ዝናብ",
+   "roman": "zinab",
+   "en": "rain",
+   "pos": "noun",
+   "notes": "ዝናቡ (zinabu) = the rain",
+   "tags": [
+    "class",
+    "notes-02"
+   ]
+  },
+  {
+   "am": "ማቆም",
+   "roman": "maqom",
+   "en": "to stop (something); to stand something up",
+   "pos": "verb",
+   "notes": "Compare መቆም (to stand up / to stop yourself).",
+   "tags": [
+    "class",
+    "notes-02"
+   ]
+  },
+  {
+   "am": "መሳቅ",
+   "roman": "mesaq",
+   "en": "to laugh",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-02"
+   ]
+  },
+  {
+   "am": "መግባት",
+   "roman": "megbat",
+   "en": "to enter, to go in",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-02"
+   ]
+  },
+  {
+   "am": "መጥራት",
+   "roman": "met'rat",
+   "en": "to call (someone)",
+   "pos": "verb",
+   "notes": "Calling someone over. By phone is መደወል.",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "መደወል",
+   "roman": "medewel",
+   "en": "to call by phone",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "ማልቀስ",
+   "roman": "malqes",
+   "en": "to cry",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "መድረስ",
+   "roman": "medres",
+   "en": "to arrive",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "ማብሰል",
+   "roman": "mabsel",
+   "en": "to cook",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "መቀመጥ",
+   "roman": "meqemet'",
+   "en": "to sit down",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "ማለፍ",
+   "roman": "malef",
+   "en": "to pass",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "ፈተና",
+   "roman": "fetena",
+   "en": "exam, test",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "ሁል ቀን",
+   "roman": "hul qen",
+   "en": "every day",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "ሁልጊዜ",
+   "roman": "hulgize",
+   "en": "all the time",
+   "pos": "adverb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "ማምለጥ",
+   "roman": "mamlet'",
+   "en": "to run away, to escape",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "መውጣት",
+   "roman": "mewt'at",
+   "en": "to go out, to leave",
+   "pos": "verb",
+   "notes": "Also: to leave work.",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "መስፋት",
+   "roman": "mesfat",
+   "en": "to sew",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "መልበስ",
+   "roman": "melbes",
+   "en": "to get dressed, to wear",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "እንደ",
+   "roman": "inde",
+   "en": "like, as (+ noun); that (+ verb)",
+   "pos": "grammar",
+   "notes": "እንደ + noun = like (a simile). እንደ + verb = that.",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "ማደር",
+   "roman": "mader",
+   "en": "to spend the night",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "የኛ",
+   "roman": "yenya",
+   "en": "our, ours",
+   "pos": "pronoun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "ውሸት",
+   "roman": "wishet",
+   "en": "a lie; fake",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-03"
+   ]
+  },
+  {
+   "am": "መቅረት",
+   "roman": "meqret",
+   "en": "to be absent",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "በፍጥነት",
+   "roman": "befit'net",
+   "en": "quickly",
+   "pos": "adverb",
+   "notes": "You wrote befenet and befeteret on two pages; both are this word.",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "ቶሎ",
+   "roman": "tolo",
+   "en": "quickly, soon",
+   "pos": "adverb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "ቶሎ ቶሎ",
+   "roman": "tolo tolo",
+   "en": "hurry up",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "ሜዳ",
+   "roman": "meda",
+   "en": "field",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "መታየት",
+   "roman": "metayet",
+   "en": "to be seen",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "መውደቅ",
+   "roman": "mewdeq",
+   "en": "to fall",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "እንቅልፌ መጣ",
+   "roman": "inqilfe met'a",
+   "en": "I'm sleepy",
+   "pos": "phrase",
+   "notes": "Literally: my sleep came.",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "ዝናቡ መጣ",
+   "roman": "zinabu met'a",
+   "en": "it's about to rain",
+   "pos": "phrase",
+   "notes": "Literally: the rain came.",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "ማወቅ",
+   "roman": "maweq",
+   "en": "to know",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "በደንብ",
+   "roman": "bedenb",
+   "en": "well, properly",
+   "pos": "adverb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "መመለስ",
+   "roman": "memeles",
+   "en": "to return; to answer",
+   "pos": "verb",
+   "notes": "Same verb for both meanings.",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "ለቅሶ",
+   "roman": "leqso",
+   "en": "mourning, crying for the dead",
+   "pos": "noun",
+   "notes": "See also ለቅሶ ቤት (house of mourning).",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "ሩቅ",
+   "roman": "ruq",
+   "en": "far",
+   "pos": "adjective",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "ዘመድ",
+   "roman": "zemed",
+   "en": "relative",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "ሩቅ ዘመድ",
+   "roman": "ruq zemed",
+   "en": "distant relative",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "ነፍስ ይማር",
+   "roman": "nefs yimar",
+   "en": "may God rest their soul",
+   "pos": "phrase",
+   "notes": "Said when someone has died. You wrote nebs; it's nefs (soul).",
+   "tags": [
+    "class",
+    "notes-04"
+   ]
+  },
+  {
+   "am": "መፍራት",
+   "roman": "mefrat",
+   "en": "to be scared",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-05"
+   ]
+  },
+  {
+   "am": "ማብላት",
+   "roman": "mablat",
+   "en": "to feed",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-05"
+   ]
+  },
+  {
+   "am": "ማጠጣት",
+   "roman": "mat'et'at",
+   "en": "to water, to give a drink",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-05"
+   ]
+  },
+  {
+   "am": "ያስፈራል",
+   "roman": "yasferal",
+   "en": "it's scary",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-05"
+   ]
+  },
+  {
+   "am": "ሕፃን",
+   "roman": "hits'an",
+   "en": "infant, baby",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-05"
+   ]
+  },
+  {
+   "am": "እንቅልፉ መጣ",
+   "roman": "inqilfu met'a",
+   "en": "he's sleepy",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-05"
+   ]
+  },
+  {
+   "am": "ፀሐይ",
+   "roman": "ts'ehay",
+   "en": "sun",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-05"
+   ]
+  },
+  {
+   "am": "ጨረቃ",
+   "roman": "ch'ereqa",
+   "en": "moon",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-05"
+   ]
+  },
+  {
+   "am": "ኮከብ",
+   "roman": "kokeb",
+   "en": "star",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-05"
+   ]
+  },
+  {
+   "am": "ፀሐይዋ ገባች",
+   "roman": "ts'ehaywa gebach",
+   "en": "the sun set",
+   "pos": "phrase",
+   "notes": "Literally: the sun went in.",
+   "tags": [
+    "class",
+    "notes-05"
+   ]
+  },
+  {
+   "am": "ሌባ",
+   "roman": "leba",
+   "en": "thief",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-05"
+   ]
+  },
+  {
+   "am": "መተያየት",
+   "roman": "meteyayet",
+   "en": "to see each other",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-05"
+   ]
+  },
+  {
+   "am": "ማየት",
+   "roman": "mayet",
+   "en": "to see, to watch",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-05"
+   ]
+  },
+  {
+   "am": "ማረፍ",
+   "roman": "maref",
+   "en": "to rest",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-06"
+   ]
+  },
+  {
+   "am": "ስብሰባ",
+   "roman": "sibseba",
+   "en": "meeting",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-06"
+   ]
+  },
+  {
+   "am": "መድከም",
+   "roman": "medkem",
+   "en": "to be tired",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-06"
+   ]
+  },
+  {
+   "am": "መጠበቅ",
+   "roman": "met'ebeq",
+   "en": "to wait",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-06"
+   ]
+  },
+  {
+   "am": "ቢሮ",
+   "roman": "biro",
+   "en": "office",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-06"
+   ]
+  },
+  {
+   "am": "መቆም",
+   "roman": "meqom",
+   "en": "to stand up; to stop",
+   "pos": "verb",
+   "notes": "Compare ማቆም (to stop something).",
+   "tags": [
+    "class",
+    "notes-06"
+   ]
+  },
+  {
+   "am": "ገበያ",
+   "roman": "gebeya",
+   "en": "market",
+   "pos": "noun",
+   "notes": "ገበያው = the market",
+   "tags": [
+    "class",
+    "notes-06"
+   ]
+  },
+  {
+   "am": "ቦታ",
+   "roman": "bota",
+   "en": "place",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-06"
+   ]
+  },
+  {
+   "am": "ቢሆንም",
+   "roman": "bihonim",
+   "en": "even though, even so",
+   "pos": "grammar",
+   "notes": "Often ቢሆንም ግን.",
+   "tags": [
+    "class",
+    "notes-07"
+   ]
+  },
+  {
+   "am": "ራሴን ያመኛል",
+   "roman": "rasen yamenyal",
+   "en": "my head hurts / I'll get a headache",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-07"
+   ]
+  },
+  {
+   "am": "ራሴን አመመኝ",
+   "roman": "rasen amemenyi",
+   "en": "I have a headache",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-07"
+   ]
+  },
+  {
+   "am": "እግር",
+   "roman": "igir",
+   "en": "foot, leg",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-07"
+   ]
+  },
+  {
+   "am": "ማመም",
+   "roman": "mamem",
+   "en": "to hurt, to be sick",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-07"
+   ]
+  },
+  {
+   "am": "የሚቀጥለው",
+   "roman": "yemiqet'ilew",
+   "en": "next",
+   "pos": "adjective",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-07"
+   ]
+  },
+  {
+   "am": "መክፈል",
+   "roman": "mekfel",
+   "en": "to pay",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-07"
+   ]
+  },
+  {
+   "am": "አንድ ላይ",
+   "roman": "and lay",
+   "en": "together",
+   "pos": "adverb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-07"
+   ]
+  },
+  {
+   "am": "መቀየር",
+   "roman": "meqeyer",
+   "en": "to change",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-07"
+   ]
+  },
+  {
+   "am": "ሐሳብ መቀየር",
+   "roman": "hasab meqeyer",
+   "en": "to change your mind",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-07"
+   ]
+  },
+  {
+   "am": "ትልቁ",
+   "roman": "tilliqu",
+   "en": "the biggest, the big one",
+   "pos": "adjective",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-08"
+   ]
+  },
+  {
+   "am": "ዓለም",
+   "roman": "alem",
+   "en": "world",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-08"
+   ]
+  },
+  {
+   "am": "በቂ",
+   "roman": "beqi",
+   "en": "enough",
+   "pos": "adjective",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-08"
+   ]
+  },
+  {
+   "am": "በቃ",
+   "roman": "beqa",
+   "en": "that's enough",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-08"
+   ]
+  },
+  {
+   "am": "ማሳየት",
+   "roman": "masayet",
+   "en": "to show",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-08"
+   ]
+  },
+  {
+   "am": "ሙዝ",
+   "roman": "muz",
+   "en": "banana",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-08"
+   ]
+  },
+  {
+   "am": "መጫወት",
+   "roman": "mech'awet",
+   "en": "to play",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-08"
+   ]
+  },
+  {
+   "am": "መብላት",
+   "roman": "meblat",
+   "en": "to eat",
+   "pos": "verb",
+   "notes": "በላ (bela) = he ate",
+   "tags": [
+    "class",
+    "notes-08"
+   ]
+  },
+  {
+   "am": "ሁሌ",
+   "roman": "hule",
+   "en": "every time, always",
+   "pos": "adverb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-08"
+   ]
+  },
+  {
+   "am": "እድል",
+   "roman": "idil",
+   "en": "opportunity, chance",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-08"
+   ]
+  },
+  {
+   "am": "ማንበብ",
+   "roman": "manbeb",
+   "en": "to read",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-08"
+   ]
+  },
+  {
+   "am": "አካባቢ",
+   "roman": "akababi",
+   "en": "area, around",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-09"
+   ]
+  },
+  {
+   "am": "ደመናማ ነው",
+   "roman": "demenama new",
+   "en": "it's cloudy",
+   "pos": "phrase",
+   "notes": "ደመና (demena) = cloud",
+   "tags": [
+    "class",
+    "notes-09"
+   ]
+  },
+  {
+   "am": "ክረምት",
+   "roman": "kiremt",
+   "en": "rainy season (winter)",
+   "pos": "noun",
+   "notes": "June to September in Ethiopia. ክረምት ነው = it's winter.",
+   "tags": [
+    "class",
+    "notes-09"
+   ]
+  },
+  {
+   "am": "ብርድ",
+   "roman": "bird",
+   "en": "cold",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-09"
+   ]
+  },
+  {
+   "am": "እረ",
+   "roman": "ere",
+   "en": "really? / come on!",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-09"
+   ]
+  },
+  {
+   "am": "ዞሮ ዞሮ",
+   "roman": "zoro zoro",
+   "en": "in the end, after all",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-09"
+   ]
+  },
+  {
+   "am": "በጋ",
+   "roman": "bega",
+   "en": "dry season (summer)",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-09"
+   ]
+  },
+  {
+   "am": "ሙቀት",
+   "roman": "muqet",
+   "en": "heat, hot",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-09"
+   ]
+  },
+  {
+   "am": "መራብ",
+   "roman": "merab",
+   "en": "to be hungry",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-09"
+   ]
+  },
+  {
+   "am": "መሆን",
+   "roman": "mehon",
+   "en": "to be",
+   "pos": "verb",
+   "notes": "In the present use ነኝ, ነህ, ነሽ, ነው, ናት... instead.",
+   "tags": [
+    "class",
+    "notes-09"
+   ]
+  },
+  {
+   "am": "መጓዝ",
+   "roman": "megwaz",
+   "en": "to travel (formal)",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-09"
+   ]
+  },
+  {
+   "am": "የተለያየ",
+   "roman": "yeteleyaye",
+   "en": "different",
+   "pos": "adjective",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-10"
+   ]
+  },
+  {
+   "am": "ተመሳሳይ",
+   "roman": "temesasay",
+   "en": "similar, the same",
+   "pos": "adjective",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-10"
+   ]
+  },
+  {
+   "am": "አንድ አይነት",
+   "roman": "and aynet",
+   "en": "the same kind",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-10"
+   ]
+  },
+  {
+   "am": "ባሕር",
+   "roman": "bahir",
+   "en": "sea",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-10"
+   ]
+  },
+  {
+   "am": "ውቅያኖስ",
+   "roman": "wiqyanos",
+   "en": "ocean",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-10"
+   ]
+  },
+  {
+   "am": "ጀልባ",
+   "roman": "jelba",
+   "en": "boat",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-10"
+   ]
+  },
+  {
+   "am": "ወንዝ",
+   "roman": "wenz",
+   "en": "river",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-10"
+   ]
+  },
+  {
+   "am": "ሐይቅ",
+   "roman": "hayq",
+   "en": "lake",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-10"
+   ]
+  },
+  {
+   "am": "አዲስ ዓመት",
+   "roman": "addis amet",
+   "en": "New Year",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-11"
+   ]
+  },
+  {
+   "am": "እናከብራለን",
+   "roman": "inakebralen",
+   "en": "we celebrate",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-11"
+   ]
+  },
+  {
+   "am": "ማክበር",
+   "roman": "makber",
+   "en": "to celebrate",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-11"
+   ]
+  },
+  {
+   "am": "የበዓል ቀን",
+   "roman": "yebe'al qen",
+   "en": "holiday (day)",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-11"
+   ]
+  },
+  {
+   "am": "ማምጣት",
+   "roman": "mamt'at",
+   "en": "to bring",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-11"
+   ]
+  },
+  {
+   "am": "ቦርሳ",
+   "roman": "borsa",
+   "en": "bag",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-11"
+   ]
+  },
+  {
+   "am": "ሻንጣ",
+   "roman": "shant'a",
+   "en": "suitcase",
+   "pos": "noun",
+   "notes": "No meaning in your notes; this is the usual meaning.",
+   "tags": [
+    "class",
+    "notes-11"
+   ]
+  },
+  {
+   "am": "ይሞቃል",
+   "roman": "yimoqal",
+   "en": "it's hot",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-11"
+   ]
+  },
+  {
+   "am": "አየሩ ቀዝቃዛ ነው",
+   "roman": "ayeru qezqaza new",
+   "en": "the weather is cold",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-11"
+   ]
+  },
+  {
+   "am": "መቆየት",
+   "roman": "meqoyet",
+   "en": "to stay; to take a while, be late",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-11"
+   ]
+  },
+  {
+   "am": "መሰለኝ",
+   "roman": "meselenyi",
+   "en": "I thought / it seemed to me",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-11"
+   ]
+  },
+  {
+   "am": "መብት",
+   "roman": "mebt",
+   "en": "right (to do something)",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-11"
+   ]
+  },
+  {
+   "am": "ሀብታም",
+   "roman": "habtam",
+   "en": "rich",
+   "pos": "adjective",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-11"
+   ]
+  },
+  {
+   "am": "ደስተኛ",
+   "roman": "destenya",
+   "en": "happy",
+   "pos": "adjective",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-12"
+   ]
+  },
+  {
+   "am": "ደስተኛ ነኝ",
+   "roman": "destenya nenyi",
+   "en": "I'm happy",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-12"
+   ]
+  },
+  {
+   "am": "ማለት",
+   "roman": "malet",
+   "en": "to mean, to say",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-12"
+   ]
+  },
+  {
+   "am": "መያዝ",
+   "roman": "meyaz",
+   "en": "to hold",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-12"
+   ]
+  },
+  {
+   "am": "ፈገግ አልኩ",
+   "roman": "fegeg alku",
+   "en": "I smiled",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-12"
+   ]
+  },
+  {
+   "am": "ማውራት",
+   "roman": "mawrat",
+   "en": "to talk",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-12"
+   ]
+  },
+  {
+   "am": "ትርፍ ጊዜ",
+   "roman": "tirf gize",
+   "en": "free time",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-12"
+   ]
+  },
+  {
+   "am": "ማጠራቀም",
+   "roman": "mat'eraqem",
+   "en": "to save up, to collect",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-12"
+   ]
+  },
+  {
+   "am": "መቆጠብ",
+   "roman": "meqot'eb",
+   "en": "to save (money, time)",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-12"
+   ]
+  },
+  {
+   "am": "ማዳን",
+   "roman": "madan",
+   "en": "to save (a person), to rescue",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-12"
+   ]
+  },
+  {
+   "am": "ገንዘብ",
+   "roman": "genzeb",
+   "en": "money",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-12"
+   ]
+  },
+  {
+   "am": "ጫማ ይዘህ ና",
+   "roman": "ch'ama yizeh na",
+   "en": "bring shoes (to a man)",
+   "pos": "phrase",
+   "notes": "Literally: come holding shoes. ጫማ = shoes.",
+   "tags": [
+    "class",
+    "notes-12"
+   ]
+  },
+  {
+   "am": "አምጣ",
+   "roman": "amt'a",
+   "en": "bring! (command, to a man)",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-12"
+   ]
+  },
+  {
+   "am": "ደግሞ",
+   "roman": "degmo",
+   "en": "again, also",
+   "pos": "adverb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-13"
+   ]
+  },
+  {
+   "am": "መንገድ",
+   "roman": "menged",
+   "en": "road",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-13"
+   ]
+  },
+  {
+   "am": "እኩል",
+   "roman": "ikul",
+   "en": "equal",
+   "pos": "adjective",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-13"
+   ]
+  },
+  {
+   "am": "ማሸነፍ",
+   "roman": "mashenef",
+   "en": "to win",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-13"
+   ]
+  },
+  {
+   "am": "መሸነፍ",
+   "roman": "meshenef",
+   "en": "to lose (be defeated)",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-13"
+   ]
+  },
+  {
+   "am": "በዓል",
+   "roman": "be'al",
+   "en": "holiday",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-14"
+   ]
+  },
+  {
+   "am": "መስቀል",
+   "roman": "mesqel",
+   "en": "cross; Meskel (holiday)",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-14"
+   ]
+  },
+  {
+   "am": "መሞት",
+   "roman": "memot",
+   "en": "to die",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-14"
+   ]
+  },
+  {
+   "am": "አጭር",
+   "roman": "ach'ir",
+   "en": "short",
+   "pos": "adjective",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-14"
+   ]
+  },
+  {
+   "am": "ማታ",
+   "roman": "mata",
+   "en": "evening",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-14"
+   ]
+  },
+  {
+   "am": "መነሳት",
+   "roman": "menesat",
+   "en": "to get up; to be photographed",
+   "pos": "verb",
+   "notes": "Being in the picture. Compare ማንሳት.",
+   "tags": [
+    "class",
+    "notes-15"
+   ]
+  },
+  {
+   "am": "ማንሳት",
+   "roman": "mansat",
+   "en": "to pick up, to lift; to take a photo",
+   "pos": "verb",
+   "notes": "Taking a picture of something.",
+   "tags": [
+    "class",
+    "notes-15"
+   ]
+  },
+  {
+   "am": "ጥያቄ",
+   "roman": "t'iyaqe",
+   "en": "question",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-15"
+   ]
+  },
+  {
+   "am": "ማጽዳት",
+   "roman": "mats'dat",
+   "en": "to clean",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-16"
+   ]
+  },
+  {
+   "am": "ማስታወስ",
+   "roman": "mastawes",
+   "en": "to remember",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-16"
+   ]
+  },
+  {
+   "am": "የት",
+   "roman": "yet",
+   "en": "where",
+   "pos": "question",
+   "notes": "Your note says 'yet'; የት means where.",
+   "tags": [
+    "class",
+    "notes-16"
+   ]
+  },
+  {
+   "am": "መቼ",
+   "roman": "mech'e",
+   "en": "when",
+   "pos": "question",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-16"
+   ]
+  },
+  {
+   "am": "ቡና",
+   "roman": "buna",
+   "en": "coffee; chatting, gossip",
+   "pos": "noun",
+   "notes": "Gossip because people chat over coffee.",
+   "tags": [
+    "class",
+    "notes-16"
+   ]
+  },
+  {
+   "am": "መስጠት",
+   "roman": "mest'et",
+   "en": "to give",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-17"
+   ]
+  },
+  {
+   "am": "ሚዜ",
+   "roman": "mize",
+   "en": "best man, wedding attendant",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-17"
+   ]
+  },
+  {
+   "am": "ሴት ሚዜ",
+   "roman": "set mize",
+   "en": "bridesmaid",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-17"
+   ]
+  },
+  {
+   "am": "ወንድ ሚዜ",
+   "roman": "wend mize",
+   "en": "groomsman",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-17"
+   ]
+  },
+  {
+   "am": "ባል",
+   "roman": "bal",
+   "en": "husband",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-17"
+   ]
+  },
+  {
+   "am": "ሚስት",
+   "roman": "mist",
+   "en": "wife",
+   "pos": "noun",
+   "notes": "You wrote amist; it's mist.",
+   "tags": [
+    "class",
+    "notes-17"
+   ]
+  },
+  {
+   "am": "ሙሽራ",
+   "roman": "mushira",
+   "en": "bride, groom",
+   "pos": "noun",
+   "notes": "ሴት ሙሽራ = bride, ወንድ ሙሽራ = groom",
+   "tags": [
+    "class",
+    "notes-17"
+   ]
+  },
+  {
+   "am": "ደክሞኛል",
+   "roman": "dekmonyal",
+   "en": "I'm tired",
+   "pos": "phrase",
+   "notes": "You wrote deknengn; this is the usual form.",
+   "tags": [
+    "class",
+    "notes-18"
+   ]
+  },
+  {
+   "am": "ከ",
+   "roman": "ke",
+   "en": "from; if (+ verb)",
+   "pos": "grammar",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-18"
+   ]
+  },
+  {
+   "am": "ምናልባት",
+   "roman": "minalbat",
+   "en": "maybe",
+   "pos": "adverb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-18"
+   ]
+  },
+  {
+   "am": "ሁላችንም",
+   "roman": "hulachinim",
+   "en": "all of us",
+   "pos": "pronoun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-18"
+   ]
+  },
+  {
+   "am": "አይደለም",
+   "roman": "aydelem",
+   "en": "it's not; no",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-18"
+   ]
+  },
+  {
+   "am": "ምንድን",
+   "roman": "mindin",
+   "en": "what",
+   "pos": "question",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-18"
+   ]
+  },
+  {
+   "am": "ነገር ግን",
+   "roman": "neger gin",
+   "en": "but",
+   "pos": "grammar",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-18"
+   ]
+  },
+  {
+   "am": "መዘግየት",
+   "roman": "mezegyet",
+   "en": "to be late (formal, written)",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-18"
+   ]
+  },
+  {
+   "am": "ማርፈድ",
+   "roman": "marfed",
+   "en": "to be late (spoken)",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-18"
+   ]
+  },
+  {
+   "am": "ሰርግ",
+   "roman": "serg",
+   "en": "wedding",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-18"
+   ]
+  },
+  {
+   "am": "ሆድ",
+   "roman": "hod",
+   "en": "stomach",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-18"
+   ]
+  },
+  {
+   "am": "አመመኝ",
+   "roman": "amemenyi",
+   "en": "it hurts me, I'm sick",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-18"
+   ]
+  },
+  {
+   "am": "ተኝቷል",
+   "roman": "tenyitwal",
+   "en": "he's asleep (already)",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-19"
+   ]
+  },
+  {
+   "am": "ከተማ",
+   "roman": "ketema",
+   "en": "city",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-19"
+   ]
+  },
+  {
+   "am": "ቆይ",
+   "roman": "qoy",
+   "en": "wait! (to a man)",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-19"
+   ]
+  },
+  {
+   "am": "ቆዪ",
+   "roman": "qoyi",
+   "en": "wait! (to a woman)",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-19"
+   ]
+  },
+  {
+   "am": "ማዘዝ",
+   "roman": "mazez",
+   "en": "to order",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-19"
+   ]
+  },
+  {
+   "am": "በር",
+   "roman": "ber",
+   "en": "door",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-19"
+   ]
+  },
+  {
+   "am": "መርሳት",
+   "roman": "mersat",
+   "en": "to forget",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-19"
+   ]
+  },
+  {
+   "am": "ይመስለኛል",
+   "roman": "yimeslenyal",
+   "en": "I think",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-19"
+   ]
+  },
+  {
+   "am": "ወር",
+   "roman": "wer",
+   "en": "month",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-19"
+   ]
+  },
+  {
+   "am": "ወራት",
+   "roman": "werat",
+   "en": "months",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-19"
+   ]
+  },
+  {
+   "am": "በጥንቃቄ",
+   "roman": "bet'inqaqe",
+   "en": "carefully",
+   "pos": "adverb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-20"
+   ]
+  },
+  {
+   "am": "መረዳት",
+   "roman": "meredat",
+   "en": "to understand",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-20"
+   ]
+  },
+  {
+   "am": "ማሰብ",
+   "roman": "maseb",
+   "en": "to think",
+   "pos": "verb",
+   "notes": "ለማሰብ = in order to think",
+   "tags": [
+    "class",
+    "notes-20"
+   ]
+  },
+  {
+   "am": "ያስፈልገኛል",
+   "roman": "yasfeligenyal",
+   "en": "I need",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-20"
+   ]
+  },
+  {
+   "am": "ተጨማሪ",
+   "roman": "tech'emari",
+   "en": "more, additional",
+   "pos": "adjective",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-20"
+   ]
+  },
+  {
+   "am": "ትናንት",
+   "roman": "tinant",
+   "en": "yesterday",
+   "pos": "noun",
+   "notes": "You write tilant; ትናንት is the standard spelling.",
+   "tags": [
+    "class",
+    "notes-20"
+   ]
+  },
+  {
+   "am": "አሁን አሁን",
+   "roman": "ahun ahun",
+   "en": "nowadays",
+   "pos": "adverb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-20"
+   ]
+  },
+  {
+   "am": "መወዳደር",
+   "roman": "mewedader",
+   "en": "to compete",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-21"
+   ]
+  },
+  {
+   "am": "ቅኔ",
+   "roman": "qine",
+   "en": "poetry with a hidden (inside) meaning",
+   "pos": "noun",
+   "notes": "The 'wax and gold' style: a surface meaning and a hidden one.",
+   "tags": [
+    "class",
+    "notes-21"
+   ]
+  },
+  {
+   "am": "መንገር",
+   "roman": "menger",
+   "en": "to tell",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-21"
+   ]
+  },
+  {
+   "am": "ማንም",
+   "roman": "manim",
+   "en": "anyone; no one (with a negative)",
+   "pos": "pronoun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-21"
+   ]
+  },
+  {
+   "am": "ረጅም",
+   "roman": "rejim",
+   "en": "long; tall",
+   "pos": "adjective",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-21"
+   ]
+  },
+  {
+   "am": "ለካ",
+   "roman": "leka",
+   "en": "oh! (so that's how it is)",
+   "pos": "phrase",
+   "notes": "Said when you suddenly realize something.",
+   "tags": [
+    "class",
+    "notes-21"
+   ]
+  },
+  {
+   "am": "ሰፈር",
+   "roman": "sefer",
+   "en": "neighborhood",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-21"
+   ]
+  },
+  {
+   "am": "የሐዘን መግለጫ",
+   "roman": "yehazen meglech'a",
+   "en": "condolences",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-21"
+   ]
+  },
+  {
+   "am": "ለቅሶ ቤት",
+   "roman": "leqso bet",
+   "en": "house of mourning",
+   "pos": "phrase",
+   "notes": "Where people gather after a death.",
+   "tags": [
+    "class",
+    "notes-21"
+   ]
+  },
+  {
+   "am": "መምሰል",
+   "roman": "memsel",
+   "en": "to look like, to seem",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-22"
+   ]
+  },
+  {
+   "am": "መለማመድ",
+   "roman": "melemamed",
+   "en": "to practice",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-22"
+   ]
+  },
+  {
+   "am": "መዘጋጀት",
+   "roman": "mezegajet",
+   "en": "to prepare, to get ready",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-22"
+   ]
+  },
+  {
+   "am": "ነዳጅ",
+   "roman": "nedaj",
+   "en": "fuel",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-22"
+   ]
+  },
+  {
+   "am": "አላውቅም",
+   "roman": "alawqim",
+   "en": "I don't know",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-22"
+   ]
+  },
+  {
+   "am": "አላወቅኩም",
+   "roman": "alaweqkum",
+   "en": "I didn't know",
+   "pos": "phrase",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-22"
+   ]
+  },
+  {
+   "am": "ቅርብ",
+   "roman": "qirb",
+   "en": "close, near",
+   "pos": "adjective",
+   "notes": "Opposite of ሩቅ (far).",
+   "tags": [
+    "class",
+    "notes-22"
+   ]
+  },
+  {
+   "am": "በቀስታ",
+   "roman": "beqesta",
+   "en": "slowly",
+   "pos": "adverb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-22"
+   ]
+  },
+  {
+   "am": "መሻሻል",
+   "roman": "meshashal",
+   "en": "to improve",
+   "pos": "verb",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-22"
+   ]
+  },
+  {
+   "am": "ምርጫ",
+   "roman": "mirch'a",
+   "en": "election; choice",
+   "pos": "noun",
+   "notes": "",
+   "tags": [
+    "class",
+    "notes-22"
+   ]
+  }
+ ],
+ "known_patterns": [
+  {
+   "id": "past",
+   "name": "Past",
+   "example": "በላሁ (I ate)"
+  },
+  {
+   "id": "past-neg",
+   "name": "Past negative",
+   "example": "አልበላሁም (I didn't eat)"
+  },
+  {
+   "id": "present",
+   "name": "Present / future",
+   "example": "አጠናለሁ (I study)"
+  },
+  {
+   "id": "present-neg",
+   "name": "Present negative",
+   "example": "አታጠናም (you don't study)"
+  },
+  {
+   "id": "present-cont",
+   "name": "Present continuous (እየ- … ነው)",
+   "example": "እያጠናሁ ነው (I'm studying)"
+  },
+  {
+   "id": "present-cont-neg",
+   "name": "Present continuous negative (እየ- … አይደለም)",
+   "example": "እያጠናሁ አይደለም (I'm not studying)"
+  },
+  {
+   "id": "past-cont",
+   "name": "Past continuous (እየ- … ነበር)",
+   "example": "እያነበብኩ ነበር (I was reading)"
+  },
+  {
+   "id": "past-cont-neg",
+   "name": "Past continuous negative (እየ- … አልነበረም)",
+   "example": "እያጠናሁ አልነበረም (I wasn't studying)"
+  },
+  {
+   "id": "when",
+   "name": "When (ስ- / ሲ-)",
+   "example": "ስደክም (when I'm tired)"
+  },
+  {
+   "id": "when-neg",
+   "name": "When not / before (ሳ- / ሳይ-)",
+   "example": "ሳላጠና (without studying)"
+  },
+  {
+   "id": "if",
+   "name": "If (ከ- / ካ-)",
+   "example": "ከደከመህ (if you're tired)"
+  },
+  {
+   "id": "if-neg",
+   "name": "If not (ካል-)",
+   "example": "ካላጠናሽ (if you don't study)"
+  },
+  {
+   "id": "because",
+   "name": "Because (ስለ- / ስላ- + past)",
+   "example": "ስለደከመኝ (because I was tired)"
+  },
+  {
+   "id": "because-neg",
+   "name": "Because … not (ስላል- + past)",
+   "example": "ስላልበላሁ (because I didn't eat)"
+  }
+ ],
+ "conjugations": [
+  {
+   "pattern": "ስለ + past (because …)",
+   "verbs": {
+    "መስራት": {
+     "እኔ": "ስለሰራሁ",
+     "አንተ": "ስለሰራህ",
+     "አንቺ": "ስለሰራሽ",
+     "እሱ": "ስለሰራ",
+     "እሷ": "ስለሰራች",
+     "እኛ": "ስለሰራን",
+     "እናንተ": "ስለሰራችሁ",
+     "እነሱ": "ስለሰሩ"
+    },
+    "ማጠብ": {
+     "እኔ": "ስላጠብኩ",
+     "አንተ": "ስላጠብክ",
+     "አንቺ": "ስላጠብሽ",
+     "እሱ": "ስላጠበ",
+     "እሷ": "ስላጠበች",
+     "እኛ": "ስላጠብን",
+     "እናንተ": "ስላጠባችሁ",
+     "እነሱ": "ስላጠቡ"
+    }
+   },
+   "tags": [
+    "class",
+    "notes-01"
+   ]
+  },
+  {
+   "pattern": "past",
+   "verbs": {
+    "ማንሳት": {
+     "እኔ": "አነሳሁ",
+     "አንተ": "አነሳህ",
+     "አንቺ": "አነሳሽ",
+     "እሱ": "አነሳ",
+     "እሷ": "አነሳች",
+     "እኛ": "አነሳን",
+     "እናንተ": "አነሳችሁ",
+     "እነሱ": "አነሱ"
+    }
+   },
+   "tags": [
+    "class",
+    "notes-15"
+   ]
+  },
+  {
+   "pattern": "past negative (አል- … -ም)",
+   "verbs": {
+    "ማንሳት": {
+     "እኔ": "አላነሳሁም",
+     "አንተ": "አላነሳህም",
+     "አንቺ": "አላነሳሽም",
+     "እሱ": "አላነሳም",
+     "እሷ": "አላነሳችም",
+     "እኛ": "አላነሳንም",
+     "እናንተ": "አላነሳችሁም",
+     "እነሱ": "አላነሱም"
+    }
+   },
+   "tags": [
+    "class",
+    "notes-15"
+   ]
+  }
+ ]
+}
