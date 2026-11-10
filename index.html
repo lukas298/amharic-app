@@ -223,6 +223,61 @@ ol.steps li::marker{color:var(--accent);font-weight:700}
 .witem .meta .lnk{min-width:0;flex:1 1 140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--fidel)}
 .witem .wnote{grid-column:1/-1;font-size:13px;color:var(--muted)}
 .witem input{grid-column:1/-1;padding:8px 10px;font-size:14px}
+/* Practice: study modes */
+.pctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+#v-practice .seg{background:var(--ink)}
+.chip.sm{padding:5px 10px;font-size:12px}
+.rhead{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:13px;color:var(--muted)}
+.rhead>span{flex:1}
+.fcard{touch-action:pan-y;user-select:none;-webkit-user-select:none;perspective:1200px;transition:transform .22s,opacity .22s;cursor:pointer;outline:none}
+.fcard .fin{display:grid;transition:transform .4s;transform-style:preserve-3d}
+.fcard.flipped .fin{transform:rotateY(180deg)}
+.fcard .face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--raise);border:1px solid var(--line);border-radius:18px;padding:22px 16px;min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;transition:border-color .15s}
+.fcard .back{transform:rotateY(180deg)}
+.fcard:not(.flipped) .back,.fcard.flipped .front{pointer-events:none}
+.fcard[data-lean=yes] .face{border-color:var(--good)}
+.fcard[data-lean=no] .face{border-color:var(--accent)}
+.fcard:focus-visible .face{outline:2px solid var(--accent)}
+.fam{font:700 30px/1.3 var(--fidel-d);overflow-wrap:anywhere}
+.fam.big{font-size:44px}
+.fen{font-size:19px;font-weight:700}
+.fen.big{font-size:26px;line-height:1.3}
+.fro{color:var(--accent);font-size:15px}
+.fr-roman{display:none}
+#review.roman .fr-roman{display:block}
+.fnt{font-size:13px;color:var(--muted)}
+.fmeta{font-size:12px;color:var(--muted)}
+.fhint{margin:8px 0 0;font-size:12px;color:var(--muted)}
+.fbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.conj{width:100%;text-align:left;font-size:14px;border-top:1px solid var(--line);padding-top:8px}
+.conj summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--muted)}
+.conj table{width:100%;border-collapse:collapse;margin-top:6px}
+.conj th,.conj td{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left;font-weight:400;font-family:var(--fidel)}
+.conj th small{color:var(--muted);font-family:var(--ui)}
+.conj td.r{color:var(--accent);font-family:var(--ui);font-size:13px}
+.hearbox:empty{display:none}
+.hearbox .clipbar{justify-content:center;flex-wrap:wrap}
+.qprompt{background:var(--raise);border:1px solid var(--line);border-radius:18px;padding:22px 16px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.qopts{display:grid;gap:8px;margin-top:12px}
+.qopt{padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--ink);color:var(--text);text-align:left;font-weight:600;display:flex;flex-direction:column;gap:2px}
+.qopt .qam{font:600 20px var(--fidel)}
+.qopt .qro{font-size:13px;color:var(--accent);font-weight:400}
+.qopt.right{border-color:var(--good);background:rgba(111,179,122,.18)}
+.qopt.wrong{border-color:#F08A75;background:rgba(240,138,117,.14)}
+.qfb{margin-top:12px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center}
+.qfb:empty{display:none}
+.qfb .ok{color:var(--good);font-weight:700}
+.qfb .no{color:#F08A75;font-weight:700}
+.qfb .mid{color:var(--accent);font-weight:700}
+.qfb .fbtns{width:100%}
+.wform{margin-top:12px}
+.wform input{font:600 22px var(--fidel),var(--ui);text-align:center}
+.diff{background:rgba(240,138,117,.35);border-radius:3px}
+/* Practice video: the feed's shared player shown in a panel at the top of Practice */
+body.pvid #v-feed[hidden]{display:block!important;position:fixed;z-index:15;top:env(safe-area-inset-top,0px);left:50%;transform:translateX(-50%);width:min(100%,560px);aspect-ratio:16/9;height:auto;flex:none;background:#000;overflow:hidden}
+body.pvid #v-feed>:not(#playerHost){visibility:hidden}
+body.pvid #playerHost{opacity:1}
+body.pvid #v-practice .page{padding-top:calc(env(safe-area-inset-top,0px) + min(56.25vw,315px) + 16px)}
 .wlist{display:flex;flex-direction:column;border-top:1px solid var(--line)}
 .witem{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
 .witem .fw{font:600 22px var(--fidel)}
@@ -1659,8 +1714,8 @@ if(!LS.get('srsMoved',false)){
   LS.set('srs',S.srs);LS.set('srsMoved',true);
 }
 // A study round: due words first (lowest box first), then up to 10 new ones.
-function buildSession(d){
-  const ws=allWords().filter(w=>inDeck(w,d));
+function buildSession(d,needEn=false){
+  const ws=allWords().filter(w=>inDeck(w,d)&&(!needEn||w.en));
   const due=ws.filter(isDue).sort((a,b)=>(S.srs[a.key].box-S.srs[b.key].box)||(S.srs[a.key].due-S.srs[b.key].due)).slice(0,SESSION);
   return [...due,...ws.filter(isNew).slice(0,Math.max(0,Math.min(NEW_PER_SESSION,SESSION-due.length)))];
 }
@@ -1676,7 +1731,8 @@ function renderPractice(){
     `<button class="chip" data-deck="${d}" aria-pressed="${deckSel===d}">${deckLabel(d)} <span>${count(d)}</span></button>`).join('')
     +(lessons.length?`<select id="lessonSel" class="${onLesson?'on':''}" aria-label="Deck from one page of class notes">
       <option value="">Notes…</option>${lessons.map(t=>`<option value="${esc(t)}"${t===deckSel?' selected':''}>${esc(deckLabel(t))} · ${count(t)}</option>`).join('')}</select>`:'');
-  const deck=ws.filter(w=>inDeck(w,deckSel)),due=deck.filter(isDue).length,n=buildSession(deckSel).length;
+  const needEn=pmode!=='cards',deck=ws.filter(w=>inDeck(w,deckSel)),due=deck.filter(w=>isDue(w)&&(!needEn||w.en)).length;
+  const n=buildSession(deckSel,needEn).length,noEn=needEn?deck.filter(w=>!w.en).length:0;
   let note='';
   if(dataOK===false&&deckSel!=='video')note='Class words couldn\'t load. Check your connection and reopen Semi.';
   else if(dataOK===null&&!deck.length)note='Loading your class words…';
@@ -1686,10 +1742,19 @@ function renderPractice(){
     const next=Math.min(...deck.map(w=>S.srs[w.key]?.due||Infinity));
     note=`All caught up in this deck.${isFinite(next)?` Next review ${new Date(next).toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'})}.`:''}`;
   }
+  if(noEn&&deck.length)note+=` ${noEn} word${noEn===1?' has':'s have'} no meaning yet, so ${noEn===1?'it\'s':'they\'re'} left out of Quiz and Write.`;
+  if(pmode==='write'&&n)note+=' Spelling is forgiving: ሀ/ሐ/ኀ, ሰ/ሠ, አ/ዐ and ጸ/ፀ count as the same.';
   $('#pHome').innerHTML=`<div class="pstats">
-      <div class="due"><b>${due}</b><span>due today</span></div>
+      <div class="due"><b>${deck.filter(isDue).length}</b><span>due today</span></div>
       <div><b>${deck.filter(isNew).length}</b><span>new</span></div>
       <div><b>${deck.filter(isLearned).length}</b><span>learned</span></div></div>
+    <div class="pctl">
+      <div class="seg" role="group" aria-label="Study mode">${[['cards','Flashcards'],['quiz','Quiz'],['write','Write']].map(([k,l])=>
+        `<button data-pmode="${k}" aria-pressed="${pmode===k}">${l}</button>`).join('')}</div>
+      ${pmode!=='write'?`<div class="seg" role="group" aria-label="Which side first">
+        <button data-pdir="am" aria-pressed="${pdir==='am'}" lang="am">አማርኛ first</button><button data-pdir="en" aria-pressed="${pdir==='en'}">English first</button></div>
+      <button class="chip sm" data-proman aria-pressed="${proman}">Romanized</button>`:''}
+    </div>
     ${n?`<button class="btn" id="studyBtn">Study ${n} word${n===1?'':'s'}</button>`:''}
     <p class="note">${note}</p>`;
   renderWordList(deck);
@@ -1739,42 +1804,297 @@ $('#wlist').addEventListener('change',e=>{
   const w=S.words.find(x=>x.w===k);if(w){w.en=e.target.value.trim();LS.set('words',S.words)}
 });
 
-// Study round: see the Amharic, tap Show, then "Still learning" (comes back this round) or "Know it".
-let deck=[],cur=null,round={n:0,ok:0,tried:new Set()};
+/* ================= practice: study round =================
+   Three ways through the same schedule:
+   Flashcards: tap to flip, swipe right (Know it) or left (Still learning).
+   Quiz: pick the meaning from four; the wrong answers come from the same deck.
+   Write: see the English, type the Amharic; spelling is forgiving.
+   Every answer moves the word on the schedule, and misses come back later in the round. */
+let pmode=LS.get('pmode','cards'),pdir=LS.get('pdir','am'),proman=LS.get('proman',false);
+let deck=[],cur=null,round=null;
+$('#pHome').addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.id==='studyBtn')return startRound();
+  if(t.dataset.pmode){pmode=t.dataset.pmode;LS.set('pmode',pmode)}
+  if(t.dataset.pdir){pdir=t.dataset.pdir;LS.set('pdir',pdir)}
+  if(t.hasAttribute('data-proman')){proman=!proman;LS.set('proman',proman)}
+  renderPractice();
+});
+function startRound(){
+  deck=buildSession(deckSel,pmode!=='cards');
+  round={mode:pmode,n:deck.length,ok:0,tried:new Set(),
+    deckPool:allWords().filter(w=>inDeck(w,deckSel)&&w.en),pool:allWords().filter(w=>w.en)};
+  $('#review').classList.toggle('roman',proman);
+  $('#pHome').hidden=true;$('#review').hidden=false;nextCard();
+}
+function endRound(){pvClose();cur=null;deck=[];$('#review').hidden=true;$('#pHome').hidden=false;renderPractice()}
+// Grade the card on screen (once). A miss goes to the back of the round.
+function answer(ok){
+  if(!cur||cur._done)return;cur._done=true;
+  if(!round.tried.has(cur.key)){round.tried.add(cur.key);if(ok)round.ok++}
+  grade(cur.key,ok);
+  if(!ok)deck.push(cur);
+}
 function nextCard(){
+  pvClose();
   cur=deck.shift();
   if(!cur){
     $('#review').innerHTML=`<div class="flash"><p class="lede">Done. You knew ${round.ok} of ${round.n} on the first try.</p>
-      <button class="btn ghost small" id="endReview">Close</button></div>`;return;
+      <button class="btn ghost small" data-end>Close</button></div>`;
+    return;
   }
-  $('#review').innerHTML=`<div class="flash">
-    <div class="big" lang="am">${esc(cur.am)}</div>
-    <div class="ans" id="ans"></div>
-    <div class="row" id="flashBtns"><button class="btn" id="showAns">Show</button></div>
-    <p class="note">${deck.length} left</p></div>`;
+  cur._done=false;
+  ({cards:showFlash,quiz:showQuiz,write:showWrite})[round.mode]();
 }
-$('#pHome').addEventListener('click',e=>{
-  if(e.target.id!=='studyBtn')return;
-  deck=buildSession(deckSel);round={n:deck.length,ok:0,tried:new Set()};
-  $('#pHome').hidden=true;$('#review').hidden=false;nextCard();
-});
+const roundHead=()=>`<div class="rhead"><span>${deck.length+1} left</span>
+  ${round.mode!=='write'?`<button class="chip sm" data-proman aria-pressed="${proman}">Romanized</button>`:''}
+  <button class="btn ghost small" data-end>End</button></div>`;
+const wordMeta=w=>esc([w.pos,...w.tags.map(deckLabel)].filter(Boolean).join(' · '));
+
+// Conjugation tables from your notes, for verbs that have one.
+const PERSONS={'እኔ':'I','አንተ':'you (m)','አንቺ':'you (f)','እሱ':'he','እሷ':'she','እኛ':'we','እናንተ':'you (pl)','እነሱ':'they'};
+function conjTables(w){
+  return CONJ.filter(c=>c.verbs&&c.verbs[w.am]).map(c=>`<details class="conj"><summary>${esc(c.pattern)}</summary><table>
+    ${Object.entries(c.verbs[w.am]).map(([who,f])=>`<tr><th lang="am">${esc(who)} <small>${esc(PERSONS[who]||'')}</small></th><td lang="am">${esc(f)}</td><td class="r">${esc(translit(f))}</td></tr>`).join('')}
+    </table></details>`).join('');
+}
+// The clip linked to a word: its saved clip, or ~10 seconds around when you saved it.
+function wordClip(w){
+  const v=w.video;if(!v||!v.id)return null;
+  const c=v.clipId&&S.clips.find(x=>x.id===v.clipId);
+  if(c)return c;
+  return v.vt==null?null:{id:'word',videoId:v.id,start:Math.max(0,v.vt-8),end:v.vt+2,title:v.title||''};
+}
+function backHTML(w){
+  const clip=wordClip(w);
+  return `<div class="fam" lang="am">${esc(w.am)}</div><div class="fro">${esc(w.roman)}</div>
+    ${w.en?`<div class="fen">${esc(w.en)}</div>`:'<div class="fnt">No meaning yet. Add it in the word list below.</div>'}
+    ${w.notes?`<div class="fnt">${esc(w.notes)}</div>`:''}
+    <div class="fmeta">${wordMeta(w)}</div>
+    ${conjTables(w)}
+    ${clip?`<button class="btn small" data-hear>${ICON.sound} Hear it in a video</button><div class="hearbox"></div>`:''}
+    ${w.video?`<div class="fmeta" lang="am">from ${esc(w.video.title)}${w.video.vt!=null?` · ${fmt(w.video.vt)}`:''}</div>`:''}`;
+}
+
+/* ---- Flashcards ---- */
+function showFlash(){
+  const w=cur,amFirst=pdir==='am'||!w.en;
+  const front=amFirst?`<div class="fam big" lang="am">${esc(w.am)}</div><div class="fro fr-roman">${esc(w.roman)}</div>`
+    :`<div class="fen big">${esc(w.en)}</div>${w.pos?`<div class="fmeta">${esc(w.pos)}</div>`:''}`;
+  $('#review').innerHTML=roundHead()+`
+    <div class="fcard" id="fcard" role="button" tabindex="0" aria-label="Flashcard. Tap to flip.">
+      <div class="fin"><div class="face front">${front}<p class="fhint">Tap to flip</p></div>
+      <div class="face back" aria-hidden="true">${backHTML(w)}</div></div>
+    </div>
+    <div class="fbtns"><button class="btn ghost" data-grade="0">Still learning</button><button class="btn" data-grade="1">Know it</button></div>
+    <p class="note" style="text-align:center">Or swipe the card: right if you know it, left if you're still learning.</p>`;
+  bindSwipe($('#fcard'));
+}
+function flip(){
+  const c=$('#fcard');if(!c)return;
+  const on=c.classList.toggle('flipped');
+  c.querySelector('.back').setAttribute('aria-hidden',String(!on));c.querySelector('.front').setAttribute('aria-hidden',String(on));
+}
+function flyOut(el,ok){
+  if(!cur||cur._done)return;
+  el.style.transform=`translateX(${ok?120:-120}%) rotate(${ok?12:-12}deg)`;el.style.opacity='0';
+  answer(ok);setTimeout(nextCard,220);
+}
+function bindSwipe(el){
+  let x0=null,dx=0,moved=false;
+  el.addEventListener('pointerdown',e=>{
+    if(e.target.closest('button,summary,a,.conj,.hearbox'))return;
+    x0=e.clientX;dx=0;moved=false;el.style.transition='none';
+  });
+  el.addEventListener('pointermove',e=>{
+    if(x0==null)return;
+    dx=e.clientX-x0;if(Math.abs(dx)>8)moved=true;if(!moved)return;
+    el.style.transform=`translateX(${dx}px) rotate(${dx/25}deg)`;
+    el.dataset.lean=dx>40?'yes':dx<-40?'no':'';
+  });
+  el.addEventListener('pointerup',()=>{
+    if(x0==null)return;x0=null;el.style.transition='';
+    if(Math.abs(dx)>90)return flyOut(el,dx>0);
+    el.style.transform='';el.dataset.lean='';
+    if(!moved)flip();
+  });
+  el.addEventListener('pointercancel',()=>{x0=null;el.style.transition='';el.style.transform='';el.dataset.lean=''});
+  el.addEventListener('keydown',e=>{
+    if(e.target!==el)return;
+    if(e.key===' '||e.key==='Enter'){e.preventDefault();flip()}
+    if(e.key==='ArrowRight')flyOut(el,true);
+    if(e.key==='ArrowLeft')flyOut(el,false);
+  });
+}
+
+/* ---- Quiz ---- */
+// Three wrong answers: same deck and same part of speech first, then anything with a meaning.
+function quizChoices(w,field){
+  const val=x=>field==='en'?x.en:x.am,seen=new Set([val(w)]),out=[];
+  const d=shuffle(round.deckPool.filter(x=>x.key!==w.key)),all=shuffle(round.pool.filter(x=>x.key!==w.key));
+  const same=x=>x.pos===w.pos;
+  for(const src of [d.filter(same),d,all.filter(same),all])for(const x of src){
+    if(out.length>=3)break;
+    if(!val(x)||seen.has(val(x)))continue;
+    seen.add(val(x));out.push(x);
+  }
+  return shuffle([w,...out]);
+}
+function showQuiz(){
+  const w=cur,amFirst=pdir==='am',ch=quizChoices(w,amFirst?'en':'am');
+  cur._choices=ch;
+  $('#review').innerHTML=roundHead()+`
+    <div class="qprompt">${amFirst?`<div class="fam big" lang="am">${esc(w.am)}</div><div class="fro fr-roman">${esc(w.roman)}</div>`
+      :`<div class="fen big">${esc(w.en)}</div>${w.pos?`<div class="fmeta">${esc(w.pos)}</div>`:''}`}</div>
+    <div class="qopts">${ch.map((x,i)=>`<button class="qopt" data-q="${i}">${amFirst?esc(x.en)
+      :`<span class="qam" lang="am">${esc(x.am)}</span><span class="qro fr-roman">${esc(x.roman)}</span>`}</button>`).join('')}</div>
+    <div class="qfb" id="qfb"></div>`;
+}
+function pickQuiz(i){
+  if(!cur||cur._done)return;
+  const ok=cur._choices[i].key===cur.key;
+  document.querySelectorAll('#review .qopt').forEach((b,j)=>{
+    b.disabled=true;
+    if(cur._choices[j].key===cur.key)b.classList.add('right');else if(j===i)b.classList.add('wrong');
+  });
+  answer(ok);
+  $('#qfb').innerHTML=(ok?'<div class="ok">Right</div>':`<div class="no">Not quite</div>`)
+    +`<div><span class="fam" lang="am">${esc(cur.am)}</span></div><div class="fro">${esc(cur.roman)}</div><div class="fen">${esc(cur.en)}</div>
+    ${cur.notes?`<div class="fnt">${esc(cur.notes)}</div>`:''}
+    <div class="fbtns" style="grid-template-columns:1fr"><button class="btn" data-next>Next</button></div>`;
+  $('#qfb [data-next]').focus({preventScroll:true});
+}
+
+/* ---- Write ---- */
+/* Forgiving spelling. Letters that sound the same count as the same: ሐ and ኀ = ሀ, ሠ = ሰ,
+   ዐ = አ, ፀ = ጸ, and ሃ = ሀ, ኣ = አ. Spaces and punctuation are ignored. One letter off is
+   "almost": you see the right spelling and choose whether to count it. Romanized answers
+   also count (the iPhone Amharic keyboard isn't always on). */
+const FOLD={0x1210:0x1200,0x1280:0x1200,0x1220:0x1230,0x12D0:0x12A0,0x1340:0x1338};
+function foldAm(str){
+  let o='';
+  for(const ch of String(str).normalize('NFC')){
+    let c=ch.codePointAt(0);
+    if(/[\s\u1360-\u1368.,!?;:'"“”‘’()\-]/.test(ch))continue;   // spaces and punctuation, including ። and ፣
+    if(c>=0x1200&&c<=0x137F){
+      const off=(c-0x1200)%8,row=c-off;
+      const r=FOLD[row]!=null?FOLD[row]:row;
+      c=(r===0x1200||r===0x12A0)&&off===3?r:r+off;
+    }
+    o+=String.fromCodePoint(c);
+  }
+  return o;
+}
+function editDist(a,b){
+  const d=Array.from({length:a.length+1},(_,i)=>[i]);
+  for(let j=1;j<=b.length;j++)d[0][j]=j;
+  for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)
+    d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+  return d[a.length][b.length];
+}
+function spellCheck(given,w){
+  const g=String(given||'').trim();
+  if(!g)return 'empty';
+  if(ETH.test(g)){
+    const a=foldAm(g),b=foldAm(w.am);
+    if(a===b)return g.replace(/\s+/g,' ')===w.am?'exact':'same';
+    return editDist([...a],[...b])===1&&[...b].length>=3?'almost':'wrong';
+  }
+  const lat=x=>String(x).toLowerCase().replace(/[^a-z]/g,'');
+  return lat(g)&&(lat(g)===lat(w.roman)||lat(g)===lat(translit(w.am)))?'roman':'wrong';
+}
+// Mark the letters that differ, when your answer and the right one are the same length.
+function diffHTML(given,right){
+  const a=[...given.trim()],b=[...right];
+  if(a.length!==b.length)return esc(given.trim());
+  return a.map((c,i)=>c===b[i]?esc(c):`<span class="diff">${esc(c)}</span>`).join('');
+}
+function showWrite(){
+  const w=cur;
+  $('#review').innerHTML=roundHead()+`
+    <div class="qprompt"><div class="fen big">${esc(w.en)}</div><div class="fmeta">${wordMeta(w)}</div></div>
+    <form class="wform" id="wform" autocomplete="off">
+      <input type="text" id="wIn" lang="am" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Type it in Amharic" aria-label="Your answer in Amharic">
+      <div class="fbtns"><button type="button" class="btn ghost" data-wshow>Show answer</button><button type="submit" class="btn">Check</button></div>
+    </form>
+    <div class="qfb" id="qfb"></div>`;
+  $('#wIn').focus({preventScroll:true});
+}
+function revealWrite(given){
+  if(!cur||cur._shown)return;
+  const w=cur,r=given==null?'empty':spellCheck(given,w);
+  if(r==='empty'&&given!=null)return;   // pressed Check with nothing typed
+  cur._shown=true;
+  $('#wIn').disabled=true;$('#wform .fbtns').hidden=true;
+  const right=`<div><span class="fam" lang="am">${esc(w.am)}</span></div><div class="fro">${esc(w.roman)}</div>${w.notes?`<div class="fnt">${esc(w.notes)}</div>`:''}`;
+  let html;
+  if(r==='exact'||r==='same'||r==='roman'){
+    answer(true);
+    html=`<div class="ok">${r==='roman'?'Right, in romanization':'Right'}</div>${r==='same'?'<div class="fnt">Same sounds. The usual spelling is:</div>':''}${right}
+      <div class="fbtns" style="grid-template-columns:1fr"><button class="btn" data-next>Next</button></div>`;
+  }else if(r==='almost'){
+    // Not graded until you choose.
+    html=`<div class="mid">Almost: one letter off</div><div class="fnt">You wrote <span lang="am" style="font-size:18px">${diffHTML(given,w.am)}</span></div>${right}
+      <div class="fbtns"><button class="btn ghost" data-next>Still learning</button><button class="btn" data-count>Count it as right</button></div>`;
+  }else{
+    answer(false);
+    html=`<div class="no">${r==='empty'?'Here it is':'Not quite'}</div>${given&&given.trim()?`<div class="fnt">You wrote <span lang="am">${esc(given.trim())}</span></div>`:''}${right}
+      <div class="fbtns" style="grid-template-columns:1fr"><button class="btn" data-next>Next</button></div>`;
+  }
+  $('#qfb').innerHTML=html;
+  $('#qfb .btn:last-child').focus({preventScroll:true});
+}
+
+/* ---- Practice video ----
+   "Hear it in a video" shows the feed's one shared YouTube player in a panel at the top of
+   Practice. The player isn't moved (that would reload it and lose sound on iPhone); the feed
+   view is just pinned up there, showing only the player, while the clip plays. */
+let pvCP=null;
+function pvOpen(root,clip){
+  pvClose();
+  document.body.classList.add('pvid');
+  pvCP=ClipPlayer(root,{loop:false});
+  const snd=document.createElement('button');snd.type='button';snd.setAttribute('aria-label','Sound');
+  const syncSnd=()=>{let m=!S.soundOn;try{m=player.isMuted()}catch(e){}snd.innerHTML=m?ICON.mute:ICON.sound;snd.setAttribute('aria-pressed',String(!m))};
+  snd.addEventListener('click',e=>{
+    e.stopPropagation();
+    try{if(player.isMuted()){player.unMute();player.playVideo();S.soundOn=true}else{player.mute();S.soundOn=false}}catch(x){}
+    syncSnd();
+  });
+  const close=document.createElement('button');close.type='button';close.setAttribute('aria-label','Close video');close.innerHTML=ICON.x;
+  close.addEventListener('click',e=>{e.stopPropagation();pvClose()});
+  pvCP.el.prepend(snd);pvCP.el.append(close);syncSnd();
+  pvCP.load(clip).then(()=>setTimeout(syncSnd,600));
+  requestAnimationFrame(()=>root.scrollIntoView({block:'nearest',behavior:'smooth'}));
+}
+function pvClose(){
+  if(!pvCP&&!document.body.classList.contains('pvid'))return;
+  if(pvCP){pvCP.remove();pvCP=null}
+  document.body.classList.remove('pvid');
+  try{player&&player.pauseVideo()}catch(e){}
+}
+function hear(btn){
+  const clip=wordClip(cur);if(!clip)return;
+  // You tapped to hear it, so turn the sound on (inside the tap, which iPhone needs).
+  if(player){try{player.unMute()}catch(e){}S.soundOn=true}
+  pvOpen(btn.nextElementSibling,clip);
+}
+
 $('#review').addEventListener('click',e=>{
-  if(e.target.id==='showAns'){
-    const where=cur.video?`from ${cur.video.title}`:[cur.pos,...cur.tags.map(deckLabel)].filter(Boolean).join(' · ');
-    $('#ans').innerHTML=`${esc(cur.roman)}
-      ${cur.en?`<div class="en-l">${esc(cur.en)}</div>`:'<div class="nt">No meaning yet. Add it in the list below.</div>'}
-      ${cur.notes?`<div class="nt">${esc(cur.notes)}</div>`:''}<small>${esc(where)}</small>`;
-    $('#flashBtns').innerHTML=`<button class="btn ghost" id="again">Still learning</button><button class="btn" id="knew">Know it</button>`;
+  const t=e.target.closest('button');if(!t)return;
+  if(t.hasAttribute('data-end'))return endRound();
+  if(t.hasAttribute('data-proman')){
+    proman=!proman;LS.set('proman',proman);
+    $('#review').classList.toggle('roman',proman);t.setAttribute('aria-pressed',String(proman));return;
   }
-  if(e.target.id==='again'||e.target.id==='knew'){
-    const ok=e.target.id==='knew';
-    if(!round.tried.has(cur.key)){round.tried.add(cur.key);if(ok)round.ok++}
-    grade(cur.key,ok);
-    if(!ok)deck.push(cur);
-    nextCard();
-  }
-  if(e.target.id==='endReview'){$('#review').hidden=true;$('#pHome').hidden=false;renderPractice()}
+  if(t.dataset.grade){const c=$('#fcard');if(c)flyOut(c,t.dataset.grade==='1');return}
+  if(t.hasAttribute('data-hear'))return hear(t);
+  if(t.dataset.q)return pickQuiz(+t.dataset.q);
+  if(t.hasAttribute('data-wshow'))return revealWrite(null);
+  if(t.hasAttribute('data-count')){answer(true);return nextCard()}
+  if(t.hasAttribute('data-next')){answer(false);return nextCard()}
 });
+$('#review').addEventListener('submit',e=>{e.preventDefault();if(e.target.id==='wform')revealWrite($('#wIn').value)});
 
 /* ================= setup ================= */
 function renderTopics(){
@@ -2042,6 +2362,7 @@ addEventListener('resize',()=>{if(!$('#v-progress').hidden)renderProgress()});
 
 /* ================= tabs ================= */
 function show(view){
+  if(view!=='practice')pvClose();
   ['feed','saved','practice','progress','setup'].forEach(v=>$('#v-'+v).hidden=v!==view);
   document.querySelectorAll('nav.tabs button').forEach(b=>{
     if(b.dataset.view===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
