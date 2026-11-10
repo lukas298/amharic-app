@@ -223,6 +223,37 @@ ol.steps li::marker{color:var(--accent);font-weight:700}
 .witem .meta .lnk{min-width:0;flex:1 1 140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--fidel)}
 .witem .wnote{grid-column:1/-1;font-size:13px;color:var(--muted)}
 .witem input{grid-column:1/-1;padding:8px 10px;font-size:14px}
+/* Practice: sections and sentences */
+.pgrp{display:flex;flex-direction:column;gap:22px}
+.psec{align-self:flex-start}
+.psec button span{font-family:var(--fidel);font-size:12px;opacity:.75;margin-left:4px}
+.pfilter{display:flex;flex-direction:column;gap:6px}
+.pfilter select{background:var(--ink);border:1px solid var(--line);border-radius:12px;color:var(--text);font:600 15px var(--ui);padding:10px 12px;width:100%}
+.scard{background:var(--raise);border:1px solid var(--line);border-radius:18px;padding:18px 16px;display:flex;flex-direction:column;gap:10px}
+.scard .spat{font-size:12px;color:var(--muted)}
+.scard .sam{font:600 26px/1.7 var(--fidel-d);margin:0;overflow-wrap:anywhere}
+.scard .sam .sw{font:inherit;border-radius:6px;padding:0 2px}
+.scard .sam .sw.linked{text-decoration:underline dotted var(--muted);text-underline-offset:6px}
+.scard .sam .sw.on{background:var(--accent);color:var(--ink);text-decoration:none}
+.scard .srom{color:var(--accent);font-size:16px}
+.scard .sen{font-size:18px;font-weight:700}
+.swbox{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:3px;font-size:14px}
+.swbox:empty{display:none}
+.swbox b{font:700 20px var(--fidel-d)}
+.swbox .tr{color:var(--accent)}
+.swbox small{color:var(--muted)}
+.fbtns.three{grid-template-columns:1fr 1fr 1fr}
+.fbtns.one{grid-template-columns:1fr}
+.slist{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.slist details{border-bottom:1px solid var(--line);padding:10px 0}
+.slist summary{cursor:pointer;font:600 18px/1.5 var(--fidel);list-style:none}
+.slist summary::-webkit-details-marker{display:none}
+.slist .smeta{display:flex;gap:4px 10px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:4px;align-items:center}
+.slist .smeta .tag{font-size:11px;padding:2px 6px}
+.slist .smeta .tag.due{background:var(--accent);color:var(--ink)}
+.slist .srev{margin-top:6px;font-size:14px}
+.slist .srev .r{color:var(--accent)}
+
 /* Practice: study modes */
 .pctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
 #v-practice .seg{background:var(--ink)}
@@ -385,11 +416,26 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
   <section class="view" id="v-practice" hidden>
     <div class="page"><div class="inner">
       <h1>Practice <span>ልምምድ</span></h1>
-      <div class="decks" id="decks" role="group" aria-label="Deck"></div>
-      <div class="box" id="pHome"></div>
-      <div class="box" id="review" hidden></div>
-      <input type="text" id="wSearch" placeholder="Search Amharic, romanization or English" autocomplete="off" spellcheck="false" aria-label="Search words">
-      <div class="wlist" id="wlist"></div>
+      <div class="seg psec" id="pSec" role="group" aria-label="Practice section">
+        <button data-psec="words">Words<span lang="am">ቃላት</span></button>
+        <button data-psec="sents">Sentences<span lang="am">ዓረፍተ ነገር</span></button>
+      </div>
+      <div class="pgrp" id="pWords">
+        <div class="decks" id="decks" role="group" aria-label="Deck"></div>
+        <div class="box" id="pHome"></div>
+        <div class="box" id="review" hidden></div>
+        <input type="text" id="wSearch" placeholder="Search Amharic, romanization or English" autocomplete="off" spellcheck="false" aria-label="Search words">
+        <div class="wlist" id="wlist"></div>
+      </div>
+      <div class="pgrp" id="pSents" hidden>
+        <div class="pfilter">
+          <select id="spatSel" aria-label="Pattern"></select>
+          <p class="note" id="spatEx" style="margin:0"></p>
+        </div>
+        <div class="box" id="sHome"></div>
+        <div class="box" id="sReview" hidden></div>
+        <div class="slist" id="slist"></div>
+      </div>
     </div></div>
   </section>
 
@@ -589,6 +635,7 @@ const S={
   seen:new Set(LS.get('seen',[])),
   words:LS.get('words',[]),         // words saved from videos: {w, tr, en, src, id (video), vt (seconds in), clipId, base (class word it's a form of), t}
   srs:LS.get('srs',{}),             // review schedule per word (Amharic): {box, due, t, n, miss}
+  sent:LS.get('sent',{}),           // review schedule per sentence id: {box, due, t, n, r (last rating 0-2)}
   clips:LS.get('clips',[]),         // clip records, newest first (see makeClip)
   clipLong:LS.get('clipLong',true), // play longer feed videos as 1–3 minute clips
   resume:LS.get('resume',{}),       // videoId -> seconds, where you left a full video
@@ -1722,7 +1769,10 @@ function buildSession(d,needEn=false){
 
 let deckSel=LS.get('deck','class'),wq='';
 function renderPractice(){
-  const ws=allWords(),dueAll=ws.filter(isDue).length;
+  document.querySelectorAll('#pSec [data-psec]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.psec===psec)));
+  $('#pWords').hidden=psec!=='words';$('#pSents').hidden=psec!=='sents';
+  renderSentences();
+  const ws=allWords(),dueAll=ws.filter(isDue).length+SENTS.filter(sIsDue).length;
   $('#pcount').textContent=dueAll?`(${dueAll})`:'';
   const lessons=[...new Set(ws.flatMap(w=>w.tags))].sort();
   if(!['all','class','video',...lessons].includes(deckSel))deckSel='all';
@@ -2045,6 +2095,155 @@ function revealWrite(given){
   $('#qfb .btn:last-child').focus({preventScroll:true});
 }
 
+/* ================= practice: sentences =================
+   Read the Fidel and try to understand it, then reveal the romanization, then the English,
+   and rate yourself. "Got it" moves a sentence up a box (back after 1, 2, 4… days),
+   "Partly" brings it back tomorrow, "Not yet" brings it back later in this round.
+   Tap any word for its vocab card: each sentence links its words to your vocab. */
+let psec=LS.get('psec','words'),spat=LS.get('spat','all');
+let sdeck=[],scur=null,sround=null;
+const SENT_ROUND=10,SENT_NEW=5;
+const sIsNew=x=>!S.sent[x.id];
+const sIsDue=x=>!!S.sent[x.id]&&S.sent[x.id].due<=endOfToday();
+const sIsRead=x=>(S.sent[x.id]?.box||0)>=1;
+const patName=id=>PATTERNS.find(p=>p.id===id)?.name||id;
+const sInPat=x=>spat==='all'||x.pattern===spat;
+function gradeSent(id,r){
+  const now=Date.now(),x=S.sent[id]||{box:0,n:0};
+  x.n++;x.t=now;x.r=r;
+  if(r===2){x.box=Math.min(INTERVAL.length-1,x.box+1);x.due=startOfDay(now)+INTERVAL[x.box]*DAY}
+  else if(r===1)x.due=startOfDay(now)+DAY;
+  else{x.box=0;x.due=now}
+  S.sent[id]=x;LS.set('sent',S.sent);
+}
+function buildSentRound(){
+  const list=SENTS.filter(sInPat);
+  const due=list.filter(sIsDue).sort((a,b)=>(S.sent[a.id].box-S.sent[b.id].box)||(S.sent[a.id].due-S.sent[b.id].due)).slice(0,SENT_ROUND);
+  const fresh=list.filter(sIsNew).sort((a,b)=>(a.level||1)-(b.level||1));
+  return [...due,...fresh.slice(0,Math.max(0,Math.min(SENT_NEW,SENT_ROUND-due.length)))];
+}
+function renderSentences(){
+  if(!SENTS.length){
+    $('#spatSel').hidden=true;$('#spatEx').textContent='';$('#slist').innerHTML='';
+    $('#sHome').innerHTML=`<p class="note" style="margin:0">${dataOK===false?'Sentences couldn\'t load. Check your connection and reopen Semi.':'Loading sentences…'}</p>`;
+    return;
+  }
+  const pats=PATTERNS.filter(p=>SENTS.some(x=>x.pattern===p.id));
+  if(spat!=='all'&&!pats.some(p=>p.id===spat))spat='all';
+  const sel=$('#spatSel');sel.hidden=false;
+  sel.innerHTML=`<option value="all">All patterns · ${SENTS.length}</option>`+pats.map(p=>
+    `<option value="${esc(p.id)}"${p.id===spat?' selected':''}>${esc(p.name)} · ${SENTS.filter(x=>x.pattern===p.id).length}</option>`).join('');
+  const ex=PATTERNS.find(p=>p.id===spat)?.example;
+  $('#spatEx').innerHTML=ex?`Example: <span lang="am">${esc(ex)}</span>`:'Pick a pattern to drill just that one.';
+  const list=SENTS.filter(sInPat),n=buildSentRound().length,due=list.filter(sIsDue).length;
+  let note;
+  if(n)note=due?`${due} due first${n>due?`, then ${n-due} new`:''}.`:`${n} new sentence${n===1?'':'s'}. Nothing is due yet.`;
+  else{
+    const next=Math.min(...list.map(x=>S.sent[x.id]?.due||Infinity));
+    note=`All caught up${spat==='all'?'':' with this pattern'}.${isFinite(next)?` Next review ${new Date(next).toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'})}.`:''}`;
+  }
+  $('#sHome').innerHTML=`<div class="pstats">
+      <div class="due"><b>${due}</b><span>due today</span></div>
+      <div><b>${list.filter(sIsNew).length}</b><span>new</span></div>
+      <div><b>${list.filter(sIsRead).length}</b><span>read</span></div></div>
+    ${n?`<button class="btn" id="sStudy" style="width:100%">Read ${n} sentence${n===1?'':'s'}</button>`:''}
+    <p class="note">${note}</p>`;
+  // The list keeps the English folded away, so it doesn't give answers away.
+  $('#slist').innerHTML=list.map(x=>{
+    const st=S.sent[x.id];
+    const tag=!st?'<span class="tag">New</span>':st.due<=endOfToday()?'<span class="tag due">Due today</span>'
+      :(d=>`<span>${['Not yet','Partly','Got it'][st.r??0]} · next in ${d} day${d===1?'':'s'}</span>`)(Math.round((startOfDay(st.due)-startOfDay(Date.now()))/DAY));
+    return `<details><summary lang="am">${esc(x.am)}</summary>
+      <div class="smeta">${tag}<span>${esc(patName(x.pattern))}</span><span>Level ${x.level||1}</span></div>
+      <div class="srev"><div class="r">${esc(x.roman)}</div><div>${esc(x.en)}</div></div></details>`;
+  }).join('');
+}
+$('#pSec').addEventListener('click',e=>{
+  const b=e.target.closest('[data-psec]');if(!b||b.dataset.psec===psec)return;
+  if(cur)endRound();if(scur)endSentRound();
+  psec=b.dataset.psec;LS.set('psec',psec);renderPractice();
+});
+$('#spatSel').addEventListener('change',e=>{spat=e.target.value;LS.set('spat',spat);renderSentences()});
+
+// Text to speech, only if this device has an Amharic voice. Many don't (iPhone has none yet), so the button stays hidden.
+let amVoice=null;
+function findVoice(){
+  try{amVoice=speechSynthesis.getVoices().find(v=>/^am([-_]|$)/i.test(v.lang))||null}catch(e){amVoice=null}
+  const b=$('#sReview [data-say]');if(b)b.hidden=!amVoice;
+}
+if('speechSynthesis' in window){findVoice();try{speechSynthesis.addEventListener('voiceschanged',findVoice)}catch(e){}}
+function say(text){
+  if(!amVoice)return;
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.voice=amVoice;u.lang=amVoice.lang;u.rate=.85;speechSynthesis.speak(u)}catch(e){}
+}
+
+function startSentRound(){
+  sdeck=buildSentRound();sround={n:sdeck.length,got:0,tried:new Set()};
+  $('#sHome').hidden=true;$('#sReview').hidden=false;nextSent();
+}
+function endSentRound(){
+  try{speechSynthesis.cancel()}catch(e){}
+  scur=null;sdeck=[];$('#sReview').hidden=true;$('#sHome').hidden=false;renderPractice();
+}
+function nextSent(){
+  scur=sdeck.shift();
+  if(!scur){
+    $('#sReview').innerHTML=`<div class="flash"><p class="lede">Done. You got ${sround.got} of ${sround.n} on the first read.</p>
+      <button class="btn ghost small" data-send>Close</button></div>`;
+    return;
+  }
+  scur._step=0;scur._done=false;
+  const words=String(scur.am).split(/([ሀ-ፚ]+)/).map((t,i)=>i%2?
+    `<button class="sw${scur.words?.[t]||findClass(t)?' linked':''}" data-sw="${esc(t)}">${t}</button>`:esc(t)).join('');
+  $('#sReview').innerHTML=`<div class="rhead"><span>${sdeck.length+1} left</span>
+      <button class="btn ghost small" data-say${amVoice?'':' hidden'}>${ICON.sound} Hear it</button>
+      <button class="btn ghost small" data-send>End</button></div>
+    <div class="scard">
+      <div class="spat">${esc(patName(scur.pattern))} · Level ${scur.level||1}</div>
+      <p class="sam" lang="am">${words}</p>
+      <div class="srom" hidden>${esc(scur.roman)}</div>
+      <div class="sen" hidden>${esc(scur.en)}</div>
+      <div class="swbox" id="swbox"></div>
+    </div>
+    <div class="fbtns one" id="sSteps"><button class="btn" data-sstep>Show romanization</button></div>
+    <p class="note" style="text-align:center">Read it and try to understand it first. Tap a word to see its card.</p>`;
+}
+function sentStep(){
+  scur._step++;
+  if(scur._step===1){$('#sReview .srom').hidden=false;$('#sSteps').innerHTML='<button class="btn" data-sstep>Show English</button>';return}
+  $('#sReview .sen').hidden=false;$('#sReview .srom').hidden=false;
+  $('#sSteps').className='fbtns three';
+  $('#sSteps').innerHTML='<button class="btn ghost" data-srate="0">Not yet</button><button class="btn ghost" data-srate="1">Partly</button><button class="btn" data-srate="2">Got it</button>';
+}
+// A word's card: the vocab entry it links to (or a class word found by its form), or just its sound.
+function sentWord(btn){
+  document.querySelectorAll('#sReview .sw.on').forEach(x=>x!==btn&&x.classList.remove('on'));
+  const on=btn.classList.toggle('on'),box=$('#swbox');
+  if(!on){box.innerHTML='';return}
+  const t=btn.dataset.sw,link=scur.words?.[t],w=link?classMap.get(link):findClass(t);
+  box.innerHTML=w?`<div><b lang="am">${esc(t)}</b>${t!==w.am?` <small>a form of</small> <b lang="am" style="font-size:17px">${esc(w.am)}</b>`:''}</div>
+      <div class="tr">${esc(w.roman)}</div><div>${esc(w.en)}</div>
+      ${w.notes?`<small>${esc(w.notes)}</small>`:''}<small>${esc([w.pos,...(w.tags||[]).filter(x=>x!=='class').map(deckLabel)].filter(Boolean).join(' · '))}</small>`
+    :`<div><b lang="am">${esc(t)}</b></div><div class="tr">${esc(translit(t))}</div>
+      <small>Not in your vocab yet. <a href="https://translate.google.com/?sl=am&tl=en&op=translate&text=${encodeURIComponent(t)}" target="_blank" rel="noopener">Translate ↗</a></small>`;
+}
+$('#sHome').addEventListener('click',e=>{if(e.target.id==='sStudy')startSentRound()});
+$('#sReview').addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.hasAttribute('data-send'))return endSentRound();
+  if(t.hasAttribute('data-say'))return say(scur.am);
+  if(t.dataset.sw!=null)return sentWord(t);
+  if(t.hasAttribute('data-sstep'))return sentStep();
+  if(t.dataset.srate!=null){
+    if(scur._done)return;scur._done=true;
+    const r=+t.dataset.srate;
+    if(!sround.tried.has(scur.id)){sround.tried.add(scur.id);if(r===2)sround.got++}
+    gradeSent(scur.id,r);
+    if(r===0)sdeck.push(scur);
+    nextSent();
+  }
+});
+
 /* ---- Practice video ----
    "Hear it in a video" shows the feed's one shared YouTube player in a panel at the top of
    Practice. The player isn't moved (that would reload it and lose sound on iPhone); the feed
@@ -2162,7 +2361,7 @@ renderHidden();
 function exportData(){
   saveListen();
   return JSON.stringify({app:'semi',version:1,exportedAt:new Date().toISOString(),
-    words:S.words,srs:S.srs,saved:S.saved,liked:S.liked,following:S.following,hidden:S.hidden,skips:S.skips,clips:S.clips,
+    words:S.words,srs:S.srs,sent:S.sent,saved:S.saved,liked:S.liked,following:S.following,hidden:S.hidden,skips:S.skips,clips:S.clips,
     ratings:S.ratings,notes:S.notes,listen:S.listen,seen:[...S.seen]});
 }
 // Merge imported data into this device. Never deletes anything already here.
@@ -2181,6 +2380,7 @@ function importData(text){
   for(const x of Array.isArray(d.words)?d.words:[]){const m=x&&S.words.find(y=>y.w===x.w);if(m&&!m.en&&x.en)m.en=x.en}
   // Review schedule: per word, keep whichever was reviewed more recently.
   for(const [k,x] of Object.entries(d.srs||{}))if(x&&x.due&&(!S.srs[k]||(x.t||0)>(S.srs[k].t||0)))S.srs[k]=x;
+  for(const [k,x] of Object.entries(d.sent||{}))if(x&&x.due&&(!S.sent[k]||(x.t||0)>(S.sent[k].t||0)))S.sent[k]=x;
   mergeList('saved','id');mergeList('liked','id');mergeList('following','id');mergeList('hidden','id');
   // Clips: add new ones; for a clip on both devices, keep the newer edit plus every word and attempt.
   n.clips=0;
@@ -2212,7 +2412,7 @@ function importData(text){
     const m=S.listen[day]||{w:0,l:0};S.listen[day]={w:Math.max(m.w,+x.w||0),l:Math.max(m.l,+x.l||0)};
   }
   for(const id of d.seen||[])S.seen.add(id);
-  ['words','srs','saved','liked','following','hidden','skips','clips','ratings','notes','listen'].forEach(k=>LS.set(k,S[k]));
+  ['words','srs','sent','saved','liked','following','hidden','skips','clips','ratings','notes','listen'].forEach(k=>LS.set(k,S[k]));
   LS.set('seen',[...S.seen].slice(-3000));
   renderPractice();renderHidden();
   return n;
