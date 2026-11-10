@@ -254,6 +254,37 @@ ol.steps li::marker{color:var(--accent);font-weight:700}
 .slist .srev{margin-top:6px;font-size:14px}
 .slist .srev .r{color:var(--accent)}
 
+/* Practice: listening drill */
+.dhead{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+.dhead b{font:600 15px/1.4 var(--fidel);color:var(--text)}
+.dlabel{font-weight:600;font-size:14px;margin-top:4px}
+.dans{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+.dans .tx{font:600 20px/1.6 var(--fidel-d)}
+.dans .tr{color:var(--accent);font-size:14px}
+.dans .en{font-size:16px;font-weight:600}
+.dans .none{color:var(--muted);font-size:14px}
+.attempts{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.attempts li{font-size:14px;background:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.attempts li small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.dwords{display:flex;flex-wrap:wrap;gap:4px}
+.dwords span{font:600 13px var(--fidel);padding:2px 7px;border-radius:6px;background:var(--raise)}
+.dfix{display:flex;flex-direction:column;gap:6px}
+.dfix summary{cursor:pointer;font-weight:600;font-size:14px}
+.dfix textarea{min-height:64px}
+.dlist{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.ditem{border-bottom:1px solid var(--line)}
+.ditem>summary{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:12px 0;cursor:pointer;list-style:none;align-items:center}
+.ditem>summary::-webkit-details-marker{display:none}
+.ditem .vt{width:96px;aspect-ratio:16/9;border-radius:8px;background:var(--raise) center/cover no-repeat;position:relative;overflow:hidden}
+.ditem .vt span{position:absolute;right:4px;bottom:4px;font-size:11px;font-weight:700;background:rgba(14,13,12,.8);border-radius:4px;padding:1px 4px}
+.ditem .vm{min-width:0;display:flex;flex-direction:column;gap:4px}
+.ditem .vm b{font:600 14px/1.4 var(--fidel);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ditem .vm small{display:flex;gap:4px 8px;flex-wrap:wrap;font-size:12px;color:var(--muted);align-items:center}
+.ditem .vm .tag{font-size:11px;padding:2px 6px}
+.ditem .vm .tag.due{background:var(--accent);color:var(--ink)}
+.ditem .vm .tag.got{background:rgba(111,179,122,.22);color:var(--good)}
+.ditem .dbody{display:flex;flex-direction:column;gap:12px;padding:0 0 14px}
+
 /* Practice: study modes */
 .pctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
 #v-practice .seg{background:var(--ink)}
@@ -417,8 +448,9 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
     <div class="page"><div class="inner">
       <h1>Practice <span>ልምምድ</span></h1>
       <div class="seg psec" id="pSec" role="group" aria-label="Practice section">
-        <button data-psec="words">Words<span lang="am">ቃላት</span></button>
-        <button data-psec="sents">Sentences<span lang="am">ዓረፍተ ነገር</span></button>
+        <button data-psec="words">Words</button>
+        <button data-psec="sents">Sentences</button>
+        <button data-psec="listen">Listening</button>
       </div>
       <div class="pgrp" id="pWords">
         <div class="decks" id="decks" role="group" aria-label="Deck"></div>
@@ -435,6 +467,11 @@ nav.tabs button[aria-current=page]{color:var(--accent)}
         <div class="box" id="sHome"></div>
         <div class="box" id="sReview" hidden></div>
         <div class="slist" id="slist"></div>
+      </div>
+      <div class="pgrp" id="pListen" hidden>
+        <div class="box" id="dHome"></div>
+        <div class="box" id="dReview" hidden></div>
+        <div class="dlist" id="dlist"></div>
       </div>
     </div></div>
   </section>
@@ -1770,9 +1807,9 @@ function buildSession(d,needEn=false){
 let deckSel=LS.get('deck','class'),wq='';
 function renderPractice(){
   document.querySelectorAll('#pSec [data-psec]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.psec===psec)));
-  $('#pWords').hidden=psec!=='words';$('#pSents').hidden=psec!=='sents';
-  renderSentences();
-  const ws=allWords(),dueAll=ws.filter(isDue).length+SENTS.filter(sIsDue).length;
+  $('#pWords').hidden=psec!=='words';$('#pSents').hidden=psec!=='sents';$('#pListen').hidden=psec!=='listen';
+  renderSentences();renderListening();
+  const ws=allWords(),dueAll=ws.filter(isDue).length+SENTS.filter(sIsDue).length+S.clips.filter(cIsDue).length;
   $('#pcount').textContent=dueAll?`(${dueAll})`:'';
   const lessons=[...new Set(ws.flatMap(w=>w.tags))].sort();
   if(!['all','class','video',...lessons].includes(deckSel))deckSel='all';
@@ -2160,7 +2197,7 @@ function renderSentences(){
 }
 $('#pSec').addEventListener('click',e=>{
   const b=e.target.closest('[data-psec]');if(!b||b.dataset.psec===psec)return;
-  if(cur)endRound();if(scur)endSentRound();
+  if(cur)endRound();if(scur)endSentRound();if(dcur)endDrill();
   psec=b.dataset.psec;LS.set('psec',psec);renderPractice();
 });
 $('#spatSel').addEventListener('change',e=>{spat=e.target.value;LS.set('spat',spat);renderSentences()});
@@ -2244,15 +2281,198 @@ $('#sReview').addEventListener('click',e=>{
   }
 });
 
+/* ================= practice: listening drill =================
+   Uses your clip records (Saved → Clips, and the short clips saved with words).
+   Play the clip (replay, loop, 0.75×), type what you heard (Amharic, romanized, or a guess at
+   the meaning), then reveal: the transcript and translation if the clip has them, otherwise
+   your earlier attempts. Rate yourself; clips use the same spacing as words.
+   The app never gets caption text from YouTube, so it can't check what you heard. "Ask for a
+   check" copies the clip and your attempt for Claude or your tutor, and you paste back what
+   they send into the clip. */
+let dcur=null,ddeck=[],dround=null;
+const DRILL_ROUND=8,DRILL_NEW=5;
+const cIsNew=c=>!c.due;
+const cIsDue=c=>!!c.due&&c.due<=endOfToday();
+const cGot=c=>(c.box||0)>=1&&!!c.due;
+const clipURL=c=>`https://www.youtube.com/watch?v=${c.videoId}&t=${Math.floor(c.start)}s`;
+const clipRange=c=>`${fmt(Math.floor(c.start))}–${fmt(Math.floor(c.end))} · ${clipLen(c)}s`;
+// Save an edit to a clip in place (newer edit wins when importing on another device).
+function touchClip(c){c.updatedAt=Date.now();LS.set('clips',S.clips)}
+function gradeClip(c,r,text){
+  const now=Date.now();
+  c.myAttempts=[...(c.myAttempts||[]),{t:now,text:String(text||'').trim(),r}];
+  if(r===2){c.box=Math.min(INTERVAL.length-1,(c.box||0)+1);c.due=startOfDay(now)+INTERVAL[c.box]*DAY}
+  else if(r===1)c.due=startOfDay(now)+DAY;
+  else{c.box=0;c.due=now}
+  c.lastR=r;touchClip(c);
+}
+function buildDrill(){
+  const due=S.clips.filter(cIsDue).sort((a,b)=>((a.box||0)-(b.box||0))||(a.due-b.due)).slice(0,DRILL_ROUND);
+  // New: clips you saved yourself first, then the ones made when you saved a word.
+  const fresh=S.clips.filter(cIsNew).sort((a,b)=>((b.source==='saved')-(a.source==='saved'))||((b.createdAt||0)-(a.createdAt||0)));
+  return [...due,...fresh.slice(0,Math.max(0,Math.min(DRILL_NEW,DRILL_ROUND-due.length)))];
+}
+const RATE3=['Not yet','Some of it','Got it'];
+function attemptsHTML(c,limit=4){
+  const a=(c.myAttempts||[]).filter(x=>x.text).slice(-limit).reverse();
+  return a.length?`<ul class="attempts">${a.map(x=>`<li lang="am">${esc(x.text)}<small>${new Date(x.t).toLocaleDateString(undefined,{month:'short',day:'numeric'})} · ${RATE3[x.r]??''}</small></li>`).join('')}</ul>`:'';
+}
+function fixHTML(c,open){
+  return `<details class="dfix"${open?' open':''}><summary>${c.transcript||c.translation?'Edit the transcript':'Paste in a transcript'}</summary>
+    <label class="f" style="margin:6px 0 0">Transcript (Fidel)</label><textarea data-fx="transcript" lang="am" placeholder="What's said in the clip, in Amharic">${esc(c.transcript||'')}</textarea>
+    <label class="f" style="margin:6px 0 0">Translation</label><textarea data-fx="translation" placeholder="In English">${esc(c.translation||'')}</textarea>
+    <div class="row"><button class="btn small" data-fxsave="${esc(c.id)}">Save</button><span class="msg" data-fxmsg></span></div>
+  </details>`;
+}
+function renderListening(){
+  const n=buildDrill().length,due=S.clips.filter(cIsDue).length;
+  let note;
+  if(!S.clips.length)note='No clips yet. In the feed, tap <b>clip</b> while a video plays to keep the last 10 seconds. Words you save from a video also get a short clip.';
+  else if(n)note=due?`${due} due first${n>due?`, then ${n-due} new`:''}.`:`${n} new clip${n===1?'':'s'}. Nothing is due yet.`;
+  else{
+    const next=Math.min(...S.clips.map(c=>c.due||Infinity));
+    note=`All caught up.${isFinite(next)?` Next review ${new Date(next).toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'})}.`:''}`;
+  }
+  $('#dHome').innerHTML=`<div class="pstats">
+      <div class="due"><b>${due}</b><span>due today</span></div>
+      <div><b>${S.clips.filter(cIsNew).length}</b><span>new</span></div>
+      <div><b>${S.clips.filter(cGot).length}</b><span>understood</span></div></div>
+    ${n?`<button class="btn" id="dStudy" style="width:100%">Listen to ${n} clip${n===1?'':'s'}</button>`:''}
+    <p class="note">${note}</p>`;
+  $('#dlist').innerHTML=S.clips.map(c=>{
+    const tag=cIsNew(c)?'<span class="tag">New</span>':cIsDue(c)?'<span class="tag due">Due today</span>'
+      :(d=>`<span>${RATE3[c.lastR??0]} · next in ${d} day${d===1?'':'s'}</span>`)(Math.round((startOfDay(c.due)-startOfDay(Date.now()))/DAY));
+    return `<details class="ditem" data-cid="${esc(c.id)}"><summary>
+        <div class="vt" style="background-image:url('${esc(c.thumb||ytThumb(c.videoId))}')"><span>${clipLen(c)}s</span></div>
+        <div class="vm"><b lang="am">${esc(c.title)}</b><small>${tag}${c.transcript?'<span class="tag got">Transcript</span>':''}<span>${esc(clipRange(c))}</span></small></div>
+      </summary>
+      <div class="dbody">
+        <div class="row"><button class="btn small" data-dplay>Play</button><button class="btn ghost small" data-dask>Ask for a check</button></div>
+        <div class="msg" data-askmsg></div>
+        <div class="hearbox"></div>
+        ${c.transcript?`<div class="dans"><div class="tx" lang="am">${esc(c.transcript)}</div><div class="tr">${esc(translit(c.transcript))}</div>${c.translation?`<div class="en">${esc(c.translation)}</div>`:''}</div>`:''}
+        ${c.words?.length?`<div class="dwords">${c.words.map(w=>`<span lang="am">${esc(w)}</span>`).join('')}</div>`:''}
+        ${attemptsHTML(c,10)}
+        ${fixHTML(c,false)}
+      </div></details>`;
+  }).join('');
+}
+function startDrill(){
+  ddeck=buildDrill();dround={n:ddeck.length,got:0,tried:new Set()};
+  $('#dHome').hidden=true;$('#dReview').hidden=false;$('#dlist').hidden=true;nextDrill();
+}
+function endDrill(){pvClose();dcur=null;ddeck=[];$('#dReview').hidden=true;$('#dHome').hidden=false;$('#dlist').hidden=false;renderPractice()}
+function nextDrill(){
+  pvClose();
+  dcur=ddeck.shift();
+  if(!dcur){
+    $('#dReview').innerHTML=`<div class="flash"><p class="lede">Done. You got ${dround.got} of ${dround.n} on the first listen.</p>
+      <button class="btn ghost small" data-dend>Close</button></div>`;
+    return;
+  }
+  dcur._shown=false;dcur._done=false;
+  $('#dReview').innerHTML=`<div class="rhead"><span>${ddeck.length+1} left</span><button class="btn ghost small" data-dend>End</button></div>
+    <div class="scard">
+      <div class="dhead"><b lang="am">${esc(dcur.title)}</b><span>${esc(dcur.channel||'')}${dcur.channel?' · ':''}${esc(clipRange(dcur))}</span></div>
+      <div class="hearbox" id="dBar"></div>
+      <label class="dlabel" for="dIn">What did you hear?</label>
+      <textarea id="dIn" lang="am" placeholder="Words you caught, in Amharic or romanized, or a guess at what it's about"></textarea>
+      <div id="dAns"></div>
+    </div>
+    <div class="fbtns one" id="dSteps"><button class="btn" data-dshow>Reveal</button></div>
+    <div class="msg" data-askmsg style="text-align:center"></div>`;
+  // Started by a tap (Listen, or rating the last clip), so the sound can come on.
+  if(player){try{player.unMute()}catch(e){}S.soundOn=true}
+  pvOpen($('#dBar'),dcur,{loop:false});
+}
+function revealDrill(){
+  if(!dcur||dcur._shown)return;dcur._shown=true;
+  const c=dcur,mine=$('#dIn').value.trim();
+  const ans=c.transcript||c.translation
+    ?`<div class="dans">${c.transcript?`<div class="tx" lang="am">${esc(c.transcript)}</div><div class="tr">${esc(translit(c.transcript))}</div>`:''}
+        ${c.translation?`<div class="en">${esc(c.translation)}</div>`:''}
+        <div class="none">Compare it with what you wrote, then rate yourself.</div></div>`
+    :`<div class="dans"><div class="none">No transcript for this clip yet, so there's nothing to compare with. Rate how much you understood.
+        Tap <b>Ask for a check</b> to send it to Claude or your tutor, then paste their answer below.</div>
+        ${attemptsHTML(c)?`<div class="dlabel">Your earlier tries</div>${attemptsHTML(c)}`:''}</div>`;
+  $('#dAns').innerHTML=ans
+    +(c.words?.length?`<div class="dlabel">Words you saved from here</div><div class="dwords">${c.words.map(w=>`<span lang="am">${esc(w)}</span>`).join('')}</div>`:'')
+    +fixHTML(c,false);
+  if(!mine)$('#dIn').placeholder='You didn\'t write anything. That\'s fine.';
+  $('#dSteps').className='fbtns three';
+  $('#dSteps').innerHTML=`<button class="btn ghost" data-drate="0">Not yet</button><button class="btn ghost" data-drate="1">Some of it</button><button class="btn" data-drate="2">Got it</button>
+    <button class="btn ghost" data-dask style="grid-column:1/-1">Ask for a check</button>`;
+}
+function checkText(c,attempt){
+  return `Can you check what I heard in this Amharic clip?
+
+${c.title}${c.channel?` (${c.channel})`:''}
+${clipURL(c)}
+From ${fmt(Math.floor(c.start))} to ${fmt(Math.floor(c.end))} (${clipLen(c)} seconds)
+
+What I heard:
+${attempt||'(I didn\'t catch anything I could write down.)'}
+
+Please send back what's said in this part, in Fidel, and an English translation.`;
+}
+async function askCheck(c,attempt,msgEl){
+  const text=checkText(c,attempt);
+  try{await navigator.clipboard.writeText(text);msgEl.className='msg ok';msgEl.textContent='Copied. Paste it to Claude or your tutor, then paste their answer into the transcript.'}
+  catch(e){
+    msgEl.className='msg';msgEl.innerHTML='Copy didn\'t work here. Select this and copy it:';
+    const t=document.createElement('textarea');t.readOnly=true;t.value=text;t.style.cssText='font:12px/1.4 ui-monospace,monospace;margin-top:6px';
+    msgEl.append(t);t.select();
+  }
+}
+function saveFix(btn){
+  const c=S.clips.find(x=>x.id===btn.dataset.fxsave);if(!c)return;
+  const box=btn.closest('.dfix');
+  c.transcript=box.querySelector('[data-fx=transcript]').value.trim();
+  c.translation=box.querySelector('[data-fx=translation]').value.trim();
+  touchClip(c);
+  const m=box.querySelector('[data-fxmsg]');m.className='msg ok';m.textContent='Saved to the clip.';
+}
+$('#dHome').addEventListener('click',e=>{if(e.target.id==='dStudy')startDrill()});
+$('#dReview').addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.hasAttribute('data-dend'))return endDrill();
+  if(t.hasAttribute('data-dshow'))return revealDrill();
+  if(t.hasAttribute('data-dask'))return askCheck(dcur,$('#dIn').value.trim(),$('#dReview [data-askmsg]'));
+  if(t.dataset.fxsave)return saveFix(t);
+  if(t.dataset.drate!=null){
+    if(dcur._done)return;dcur._done=true;
+    const r=+t.dataset.drate;
+    if(!dround.tried.has(dcur.id)){dround.tried.add(dcur.id);if(r===2)dround.got++}
+    gradeClip(dcur,r,$('#dIn').value);
+    if(r===0)ddeck.push(dcur);
+    nextDrill();
+  }
+});
+$('#dlist').addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  const item=t.closest('[data-cid]'),c=item&&S.clips.find(x=>x.id===item.dataset.cid);if(!c)return;
+  if(t.hasAttribute('data-dplay')){
+    if(player){try{player.unMute()}catch(x){}S.soundOn=true}
+    return pvOpen(item.querySelector('.hearbox'),c,{loop:true});
+  }
+  if(t.hasAttribute('data-dask')){const last=(c.myAttempts||[]).filter(a=>a.text).pop();return askCheck(c,last?.text||'',item.querySelector('[data-askmsg]'))}
+  if(t.dataset.fxsave){saveFix(t);setTimeout(renderListening,900)}
+});
+// Closing a clip in the list stops it.
+$('#dlist').addEventListener('toggle',e=>{if(!e.target.open&&e.target.classList.contains('ditem')&&e.target.querySelector('.hearbox .clipbar'))pvClose()},true);
+
 /* ---- Practice video ----
    "Hear it in a video" shows the feed's one shared YouTube player in a panel at the top of
    Practice. The player isn't moved (that would reload it and lose sound on iPhone); the feed
    view is just pinned up there, showing only the player, while the clip plays. */
-let pvCP=null;
-function pvOpen(root,clip){
+let pvCP=null,pvTimer=null;
+function pvOpen(root,clip,{loop=false}={}){
   pvClose();
   document.body.classList.add('pvid');
-  pvCP=ClipPlayer(root,{loop:false});
+  pvCP=ClipPlayer(root,{loop});
+  // Listening here counts toward your listening time, like the feed.
+  lastTick=Date.now();
+  pvTimer=setInterval(()=>{try{if(vidOf(player)===clip.videoId)tickListen(player,clip.videoId);else lastTick=Date.now()}catch(e){}},1000);
   const snd=document.createElement('button');snd.type='button';snd.setAttribute('aria-label','Sound');
   const syncSnd=()=>{let m=!S.soundOn;try{m=player.isMuted()}catch(e){}snd.innerHTML=m?ICON.mute:ICON.sound;snd.setAttribute('aria-pressed',String(!m))};
   snd.addEventListener('click',e=>{
@@ -2269,6 +2489,7 @@ function pvOpen(root,clip){
 function pvClose(){
   if(!pvCP&&!document.body.classList.contains('pvid'))return;
   if(pvCP){pvCP.remove();pvCP=null}
+  clearInterval(pvTimer);pvTimer=null;if(listenDirty)saveListen();
   document.body.classList.remove('pvid');
   try{player&&player.pauseVideo()}catch(e){}
 }
